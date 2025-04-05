@@ -227,8 +227,10 @@ const Archive = () => {
   };
 
   return (
-    <section id="archive" className="py-20 px-[30px]" onMouseMove={handleMouseMove}>
-      <h2 className="h2 mb-10 tracking-wide">ARCHIVE</h2>
+    <section id="archive" className="py-16 px-[30px]" onMouseMove={handleMouseMove}>
+      <div className="mb-10">
+        <h2 className="h2 tracking-wide">ARCHIVE</h2>
+      </div>
       
       <div className="space-y-12">
         {archiveData.sections.map((section, index) => (

@@ -116,8 +116,8 @@ const WorksGrid = () => {
             </div>
             
             <div className="mt-2">
-              <h3 className="h5 font-medium">{project.title}</h3>
-              <p className="text-small opacity-80">{project.artist}</p>
+              <h3 className="h5 font-medium leading-tight">{project.title}</h3>
+              <p className="text-small opacity-80 -mt-0.5">{project.artist}</p>
             </div>
           </div>
         ))}
@@ -176,8 +176,8 @@ const WorksGrid = () => {
               </div>
               
               <div className="p-6">
-                <h3 className="h4 font-medium mb-1">{selectedProject.title}</h3>
-                <p className="text-small opacity-80 mb-4">{selectedProject.artist}</p>
+                <h3 className="h4 font-medium leading-tight mb-0">{selectedProject.title}</h3>
+                <p className="text-small opacity-80 mb-3">{selectedProject.artist}</p>
                 <p className="text-p">{selectedProject.description}</p>
               </div>
             </motion.div>

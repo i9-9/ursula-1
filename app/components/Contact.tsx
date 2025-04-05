@@ -4,8 +4,10 @@ import Link from 'next/link';
 
 const Contact = () => {
   return (
-    <section id="contact" className="py-20 px-[30px]">
-      <h2 className="text-2xl mb-12 tracking-wide">CONTACT</h2>
+    <section id="contact" className="py-20 px-[30px] mt-12">
+      <div className="mb-10">
+        <h2 className="h2 tracking-wide">CONTACT</h2>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
         <div>
