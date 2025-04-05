@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ursula Benavidez Portfolio
+
+An elegant and minimalist portfolio website for Ursula Benavidez, art director and set designer.
+
+## Features
+
+- Responsive design for all devices
+- Minimalist, elegant layout with focus on visual content
+- Contentful CMS integration for content management
+- Smooth animations and transitions
+- Single page application with section navigation
+
+## Technology Stack
+
+- Next.js
+- TypeScript
+- Tailwind CSS
+- Contentful CMS
+- Framer Motion for animations
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js (v18 or newer)
+- npm or yarn
+- Contentful account
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Copy the `.env.local.example` file to `.env.local` and add your Contentful credentials:
+   ```
+   CONTENTFUL_SPACE_ID=your_space_id
+   CONTENTFUL_ACCESS_TOKEN=your_access_token
+   CONTENTFUL_PREVIEW_ACCESS_TOKEN=your_preview_token
+   ```
+4. Run the development server:
+   ```
+   npm run dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Contentful Setup
 
-## Learn More
+The project requires the following content models in Contentful:
 
-To learn more about Next.js, take a look at the following resources:
+### Project
+- `title` (Text)
+- `client` (Text)
+- `year` (Text)
+- `role` (Text)
+- `mainImage` (Media)
+- `additionalImages` (Media, multiple)
+- `description` (Rich Text)
+- `featured` (Boolean)
+- `priority` (Number)
+- `slug` (Text)
+- `date` (Date)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### ArchiveProject
+- `title` (Text)
+- `client` (Text)
+- `year` (Text)
+- `category` (Text)
+- `link` (Text, optional)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### HeroItem
+- `image` (Media)
+- `title` (Text)
+- `order` (Number)
 
-## Deploy on Vercel
+## Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The site is structured as a single-page application with the following sections:
+- Hero/Marquee
+- Featured Works
+- Other Projects Grid
+- Archive
+- Contact
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+The site can be deployed to Vercel or other hosting platforms that support Next.js.
