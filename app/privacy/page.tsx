@@ -54,7 +54,7 @@ export default function Privacy() {
               </ul>
               <p className="text-p opacity-80 mt-2">
                 This information is collected by our hosting service, not by us directly, and is automatically 
-                deleted after a short period. It's used only for technical purposes like troubleshooting server issues.
+                deleted after a short period. It&apos;s used only for technical purposes like troubleshooting server issues.
               </p>
             </div>
             

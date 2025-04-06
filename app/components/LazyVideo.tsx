@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 
 interface LazyVideoProps {
   src?: string;
@@ -24,11 +25,15 @@ const LazyVideo = ({ src, poster, alt, className = '' }: LazyVideoProps) => {
       { threshold: 0.1 }
     );
     
-    observer.observe(videoRef.current);
+    // Guardar una referencia al elemento actual para la limpieza
+    const currentVideoElement = videoRef.current;
+    
+    observer.observe(currentVideoElement);
     
     return () => {
-      if (videoRef.current) {
-        observer.unobserve(videoRef.current);
+      // Usar la referencia almacenada en lugar de videoRef.current
+      if (currentVideoElement) {
+        observer.unobserve(currentVideoElement);
       }
     };
   }, []);
@@ -39,13 +44,17 @@ const LazyVideo = ({ src, poster, alt, className = '' }: LazyVideoProps) => {
       videoRef.current.src = src;
       videoRef.current.load();
       
+      // Guardar una referencia al elemento actual para la limpieza
+      const currentVideoElement = videoRef.current;
+      
       // Manejamos eventos de carga
       const handleLoadedData = () => setIsLoaded(true);
-      videoRef.current.addEventListener('loadeddata', handleLoadedData);
+      currentVideoElement.addEventListener('loadeddata', handleLoadedData);
       
       return () => {
-        if (videoRef.current) {
-          videoRef.current.removeEventListener('loadeddata', handleLoadedData);
+        // Usar la referencia almacenada en lugar de videoRef.current
+        if (currentVideoElement) {
+          currentVideoElement.removeEventListener('loadeddata', handleLoadedData);
         }
       };
     }
@@ -64,11 +73,15 @@ const LazyVideo = ({ src, poster, alt, className = '' }: LazyVideoProps) => {
           preload="metadata"
         />
       ) : (
-        <img
-          src={poster}
-          alt={alt}
-          className="w-full h-full object-cover"
-        />
+        <div className="relative w-full h-full">
+          <Image
+            src={poster}
+            alt={alt}
+            className="object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        </div>
       )}
       
       {/* Overlay de carga */}

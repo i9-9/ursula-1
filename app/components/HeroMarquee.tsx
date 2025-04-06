@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import LazyVideo from './LazyVideo';
+import Image from 'next/image';
 
 interface MarqueeItem {
   id: string;
@@ -177,7 +178,7 @@ const HeroMarquee = () => {
             className="absolute inset-0 flex transition-transform duration-500 ease-out"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
-            {dummyItems.map((item) => (
+            {dummyItems.map((item, index) => (
               <div
                 key={item.id}
                 className="w-full h-full flex-shrink-0"
@@ -191,10 +192,13 @@ const HeroMarquee = () => {
                       alt={item.alt}
                     />
                   ) : (
-                    <img
+                    <Image
                       src={item.src}
                       alt={item.alt}
-                      className="w-full h-full object-cover"
+                      className="object-cover"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                      priority={currentIndex === index}
                     />
                   )}
                 </div>
