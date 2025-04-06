@@ -6,6 +6,7 @@ import WorksGrid from './components/WorksGrid';
 import Archive from './components/Archive';
 import Contact from './components/Contact';
 import { useScrollReveal, useTouchFeedback /* useSnapScroll */ } from './hooks/useScrollReveal';
+import ScrollIndicator from './components/ScrollIndicator';
 
 export default function Home() {
   // Activar los hooks de animación
@@ -16,6 +17,7 @@ export default function Home() {
   return (
     <main>
       <Navbar />
+      <ScrollIndicator />
       <HeroMarquee />
       <WorksGrid />
       <Archive />

@@ -204,3 +204,10 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--navbar-height) + 2rem);
 }
+
+/* Feedback táctil */
+.touch-active {
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0.38, 0.9);
+  transform: scale(0.97);
+  opacity: 0.8;
+}
