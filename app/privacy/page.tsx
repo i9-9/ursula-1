@@ -22,72 +22,62 @@ export default function Privacy() {
             <div>
               <h2 className="h3 mb-3">Introduction</h2>
               <p className="text-p opacity-80 mb-2">
-                This Privacy Policy explains how Ursula Benavidez (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) collects, uses, and discloses 
-                information about visitors to our website.
+                This Privacy Policy explains how this portfolio website operates with respect to visitor privacy 
+                and data protection.
               </p>
             </div>
             
             <div>
               <h2 className="h3 mb-3">Information We Collect</h2>
               <p className="text-p opacity-80 mb-2">
-                <strong>Information you provide:</strong> When you contact us, we collect the information you provide, 
-                such as your name, email address, and any message content.
+                <strong>No personal data collection:</strong> This website does not actively collect or store 
+                personal information about visitors. We don&apos;t use analytics tools, tracking scripts, or cookies 
+                that collect personal data.
               </p>
               <p className="text-p opacity-80 mb-2">
-                <strong>Automatic information:</strong> We automatically collect certain information when you visit our site, 
-                including your IP address, browser type, referring/exit pages, operating system, date/time stamps, and clickstream data.
+                <strong>Contact information:</strong> If you choose to contact us through the provided email 
+                or phone number, any information you share is only used to respond to your inquiry.
               </p>
             </div>
             
             <div>
-              <h2 className="h3 mb-3">How We Use Information</h2>
+              <h2 className="h3 mb-3">Server Logs</h2>
               <p className="text-p opacity-80 mb-2">
-                We use the information we collect to:
+                Like most websites, our hosting provider may automatically collect and store the following 
+                information in server logs:
               </p>
               <ul className="list-disc pl-5 space-y-1 opacity-80">
-                <li>Respond to your inquiries and communicate with you</li>
-                <li>Provide, maintain, and improve our website</li>
-                <li>Monitor and analyze trends, usage, and activities</li>
-                <li>Detect, prevent, and address technical issues</li>
+                <li>IP address</li>
+                <li>Browser type</li>
+                <li>Pages visited</li>
+                <li>Time and date of visit</li>
               </ul>
-            </div>
-            
-            <div>
-              <h2 className="h3 mb-3">Cookies and Similar Technologies</h2>
-              <p className="text-p opacity-80 mb-2">
-                We may use cookies and similar technologies to collect information about your browsing activities and 
-                to improve your experience on our site. You can control cookies through your browser settings.
+              <p className="text-p opacity-80 mt-2">
+                This information is collected by our hosting service, not by us directly, and is automatically 
+                deleted after a short period. It's used only for technical purposes like troubleshooting server issues.
               </p>
             </div>
             
             <div>
-              <h2 className="h3 mb-3">Data Retention</h2>
+              <h2 className="h3 mb-3">Third-Party Links</h2>
               <p className="text-p opacity-80 mb-2">
-                We retain your information for as long as necessary to fulfill the purposes outlined in this Privacy Policy, 
-                unless a longer retention period is required or permitted by law.
+                This website may include links to external sites (like social media profiles). We are not responsible 
+                for the privacy practices of these other sites. We encourage you to read the privacy policies of any 
+                external sites you visit through links on our site.
               </p>
             </div>
             
             <div>
-              <h2 className="h3 mb-3">Your Rights</h2>
+              <h2 className="h3 mb-3">Changes to This Policy</h2>
               <p className="text-p opacity-80 mb-2">
-                Depending on your location, you may have certain rights regarding your personal information, 
-                including the right to access, correct, delete, restrict, or object to our processing of your data.
+                We may update this Privacy Policy occasionally. Any changes will be posted on this page.
               </p>
             </div>
             
             <div>
-              <h2 className="h3 mb-3">Changes to This Privacy Policy</h2>
+              <h2 className="h3 mb-3">Contact</h2>
               <p className="text-p opacity-80 mb-2">
-                We may update this Privacy Policy from time to time. We will notify you of any changes by posting 
-                the new Privacy Policy on this page.
-              </p>
-            </div>
-            
-            <div>
-              <h2 className="h3 mb-3">Contact Us</h2>
-              <p className="text-p opacity-80 mb-2">
-                If you have any questions about this Privacy Policy, please contact us at{' '}
+                If you have questions about this Privacy Policy, please contact us at{' '}
                 <a href="mailto:contact@ursulabenavides.com" className="underline hover:opacity-70 transition-opacity">
                   contact@ursulabenavides.com
                 </a>.

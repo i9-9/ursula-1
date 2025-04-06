@@ -24,8 +24,8 @@ const dummyProjects: Project[] = [
     title: 'Te lo voy a decir',
     artist: 'Conociendo Rusia',
     year: '2024',
-    thumbnail: '/images/grid/conociendo rusia - te lo voy a decir.png',
-    fullImage: '/images/grid/conociendo rusia - te lo voy a decir.png',
+    thumbnail: '/images/grid-fixed/conociendo-rusia-te-lo-voy-a-decir.png',
+    fullImage: '/images/grid-fixed/conociendo-rusia-te-lo-voy-a-decir.png',
     contentType: 'image',
     description: 'Videoclip para Conociendo Rusia - Te lo voy a decir.',
   },
@@ -34,8 +34,8 @@ const dummyProjects: Project[] = [
     title: 'Cinco Horas',
     artist: 'Conociendo Rusia & Natalia Lafourcade',
     year: '2024',
-    thumbnail: '/images/grid/conociendo rusia & natalia lafourcade - cinco horas.png',
-    fullImage: '/images/grid/conociendo rusia & natalia lafourcade - cinco horas.png',
+    thumbnail: '/images/grid-fixed/conociendo-rusia-cinco-horas.png',
+    fullImage: '/images/grid-fixed/conociendo-rusia-cinco-horas.png',
     contentType: 'image',
     description: 'Videoclip para Conociendo Rusia & Natalia Lafourcade - Cinco Horas.',
   },
@@ -44,8 +44,8 @@ const dummyProjects: Project[] = [
     title: 'S.O.S',
     artist: 'Taichu ft. Lali',
     year: '2024',
-    thumbnail: '/images/grid/taichu ft. lali - s.o.s.png',
-    fullImage: '/images/grid/taichu ft. lali - s.o.s.png',
+    thumbnail: '/images/grid-fixed/taichu-lali-sos.png',
+    fullImage: '/images/grid-fixed/taichu-lali-sos.png',
     contentType: 'image',
     description: 'Videoclip para Taichu ft. Lali - S.O.S.',
   },
@@ -54,8 +54,8 @@ const dummyProjects: Project[] = [
     title: 'Buenos tiempos',
     artist: 'Dillom',
     year: '2024',
-    thumbnail: '/images/grid/dillom - buenos tiempos.png',
-    fullImage: '/images/grid/dillom - buenos tiempos.png',
+    thumbnail: '/images/grid-fixed/dillom-buenos-tiempos.png',
+    fullImage: '/images/grid-fixed/dillom-buenos-tiempos.png',
     contentType: 'image',
     description: 'Videoclip para Dillom - Buenos tiempos.',
   },
@@ -64,8 +64,8 @@ const dummyProjects: Project[] = [
     title: 'Cirugía',
     artist: 'Dillom',
     year: '2024',
-    thumbnail: '/images/grid/dillom - cirugia.png',
-    fullImage: '/images/grid/dillom - cirugia.png',
+    thumbnail: '/images/grid-fixed/dillom-cirugia.png',
+    fullImage: '/images/grid-fixed/dillom-cirugia.png',
     contentType: 'image',
     description: 'Videoclip para Dillom - Cirugía.',
   },
@@ -74,8 +74,8 @@ const dummyProjects: Project[] = [
     title: 'Ali Oli',
     artist: 'Milo J',
     year: '2024',
-    thumbnail: '/images/grid/milo j - ali oli.png',
-    fullImage: '/images/grid/milo j - ali oli.png',
+    thumbnail: '/images/grid-fixed/milo-j-ali-oli.png',
+    fullImage: '/images/grid-fixed/milo-j-ali-oli.png',
     contentType: 'image',
     description: 'Videoclip para Milo J - Ali Oli.',
   },
@@ -94,9 +94,9 @@ const WorksGrid = () => {
         {dummyProjects.map((project, index) => (
           <div 
             key={project.id}
-            className={`cursor-pointer group relative touchable reveal ${
-              index % 3 === 0 ? 'reveal-delay-1' : 
-              index % 3 === 1 ? 'reveal-delay-2' : 'reveal-delay-3'
+            className={`cursor-pointer group relative ${
+              index % 3 === 0 ? 'section-title section-title-delay-1' : 
+              index % 3 === 1 ? 'section-title section-title-delay-2' : 'section-title section-title-delay-3'
             }`}
             onClick={() => setSelectedProject(project)}
           >
