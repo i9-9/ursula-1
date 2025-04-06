@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const Contact = () => {
   return (
-    <section id="contact" className="py-20 px-[30px] mt-12">
+    <section id="contact" className="py-16 md:py-20 px-5 md:px-[30px] mt-12">
       <div className="mb-10">
         <h2 className="h2 tracking-wide text-hover section-title section-title-delay-3">CONTACT</h2>
       </div>
@@ -20,8 +20,15 @@ const Contact = () => {
             <div className="text-right">DETAILS</div>
           </div>
           
+          {/* Header for mobile */}
+          <div className="md:hidden mb-3 text-xs opacity-60">
+            <div>CONTACT DETAILS</div>
+          </div>
+          
           <div className="space-y-0">
-            <div className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-0 relative">
+            <div 
+                className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1.5 mb-0.5 relative"
+              >
               {/* Desktop layout (3 columns) */}
               <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] items-start">
                 <div className="pr-4 whitespace-nowrap overflow-visible text-p">Email</div>
@@ -37,11 +44,10 @@ const Contact = () => {
               </div>
               
               {/* Mobile layout */}
-              <div className="md:hidden space-y-0">
-                <div className="font-medium whitespace-nowrap overflow-visible text-p">Email</div>
-                <div className="flex justify-between text-p opacity-80">
-                  <div className="whitespace-nowrap"></div>
-                  <div className="whitespace-nowrap overflow-visible">
+              <div className="md:hidden">
+                <div className="flex flex-col">
+                  <div className="font-medium text-p mb-1">Email</div>
+                  <div className="text-sm">
                     <a 
                       href="mailto:contact@ursulabenavides.com" 
                       className="text-foreground hover:opacity-70 transition-opacity"
@@ -53,7 +59,9 @@ const Contact = () => {
               </div>
             </div>
             
-            <div className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-0 relative">
+            <div 
+                className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1.5 mb-0.5 relative"
+              >
               {/* Desktop layout (3 columns) */}
               <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] items-start">
                 <div className="pr-4 whitespace-nowrap overflow-visible text-p">Phone</div>
@@ -69,11 +77,10 @@ const Contact = () => {
               </div>
               
               {/* Mobile layout */}
-              <div className="md:hidden space-y-0">
-                <div className="font-medium whitespace-nowrap overflow-visible text-p">Phone</div>
-                <div className="flex justify-between text-p opacity-80">
-                  <div className="whitespace-nowrap"></div>
-                  <div className="whitespace-nowrap overflow-visible">
+              <div className="md:hidden">
+                <div className="flex flex-col">
+                  <div className="font-medium text-p mb-1">Phone</div>
+                  <div className="text-sm">
                     <a 
                       href="tel:+341234567890" 
                       className="text-foreground hover:opacity-70 transition-opacity"
@@ -97,8 +104,15 @@ const Contact = () => {
             <div className="text-right">LINK</div>
           </div>
           
+          {/* Header for mobile */}
+          <div className="md:hidden mb-3 text-xs opacity-60">
+            <div>SOCIAL MEDIA</div>
+          </div>
+          
           <div className="space-y-0">
-            <div className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-0 relative">
+            <div 
+                className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1.5 mb-0.5 relative"
+              >
               {/* Desktop layout (3 columns) */}
               <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] items-start">
                 <div className="pr-4 whitespace-nowrap overflow-visible text-p">Instagram</div>
@@ -116,11 +130,10 @@ const Contact = () => {
               </div>
               
               {/* Mobile layout */}
-              <div className="md:hidden space-y-0">
-                <div className="font-medium whitespace-nowrap overflow-visible text-p">Instagram</div>
-                <div className="flex justify-between text-p opacity-80">
-                  <div className="whitespace-nowrap"></div>
-                  <div className="whitespace-nowrap overflow-visible">
+              <div className="md:hidden">
+                <div className="flex flex-col">
+                  <div className="font-medium text-p mb-1">Instagram</div>
+                  <div className="text-sm">
                     <a 
                       href="https://instagram.com/ursulabenavidez" 
                       target="_blank" 
@@ -134,36 +147,37 @@ const Contact = () => {
               </div>
             </div>
             
-            <div className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-0 relative">
+            <div 
+                className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1.5 mb-0.5 relative"
+              >
               {/* Desktop layout (3 columns) */}
               <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] items-start">
-                <div className="pr-4 whitespace-nowrap overflow-visible text-p">LinkedIn</div>
+                <div className="pr-4 whitespace-nowrap overflow-visible text-p">Vimeo</div>
                 <div className="text-right whitespace-nowrap text-p"></div>
                 <div className="text-right whitespace-nowrap overflow-visible text-p">
                   <a 
-                    href="https://linkedin.com/in/ursulabenavidez" 
+                    href="https://vimeo.com/ursulabenavidez" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-foreground hover:opacity-70 transition-opacity"
                   >
-                    in/ursulabenavidez
+                    vimeo.com/ursulabenavidez
                   </a>
                 </div>
               </div>
               
               {/* Mobile layout */}
-              <div className="md:hidden space-y-0">
-                <div className="font-medium whitespace-nowrap overflow-visible text-p">LinkedIn</div>
-                <div className="flex justify-between text-p opacity-80">
-                  <div className="whitespace-nowrap"></div>
-                  <div className="whitespace-nowrap overflow-visible">
+              <div className="md:hidden">
+                <div className="flex flex-col">
+                  <div className="font-medium text-p mb-1">Vimeo</div>
+                  <div className="text-sm">
                     <a 
-                      href="https://linkedin.com/in/ursulabenavidez" 
+                      href="https://vimeo.com/ursulabenavidez" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-foreground hover:opacity-70 transition-opacity"
                     >
-                      in/ursulabenavidez
+                      vimeo.com/ursulabenavidez
                     </a>
                   </div>
                 </div>
@@ -173,16 +187,11 @@ const Contact = () => {
         </div>
       </div>
       
-      <div className="mt-20 pt-8 border-t border-foreground/10 text-sm opacity-60 flex justify-between items-center">
-        <p>© {new Date().getFullYear()} Ursula Benavidez. All rights reserved.</p>
-        <div className="flex gap-4">
-          <Link href="/privacy" className="hover:opacity-100 transition-opacity">
-            Privacy
-          </Link>
-          <Link href="/impressum" className="hover:opacity-100 transition-opacity">
-            Impressum
-          </Link>
-        </div>
+      <div className="mt-20 pt-8 border-t border-foreground/10 text-sm opacity-60 flex flex-row justify-between items-center">
+        <p className="text-xs md:text-sm">© {new Date().getFullYear()}</p>
+        <Link href="/privacy" className="text-xs md:text-sm hover:opacity-100 transition-opacity">
+          Privacy
+        </Link>
       </div>
     </section>
   );
