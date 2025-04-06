@@ -126,19 +126,19 @@ const HeroMarquee = () => {
           <div 
             className="flex transition-transform duration-500"
             style={{ 
-              transform: `translateX(-${currentIndex * 95}%)`,
+              transform: `translateX(-${currentIndex * 100}%)`,
               width: `${dummyItems.length * 100}%`
             }}
           >
             {dummyItems.map((item, index) => (
               <div
                 key={item.id}
-                className="relative flex-shrink-0 px-4"
-                style={{ width: '95%', height: '100%' }}
+                className="relative flex-shrink-0"
+                style={{ width: '100%', height: '100%' }}
                 onClick={() => setCurrentIndex(index)}
               >
                 <div className="w-full h-full relative">
-                  <div className="w-full aspect-video flex items-center justify-center">
+                  <div className="w-full h-full aspect-video flex items-center justify-center">
                     {item.type === 'video' ? (
                       <video
                         ref={(el) => {
@@ -148,14 +148,14 @@ const HeroMarquee = () => {
                         poster={item.src}
                         muted
                         playsInline
-                        className="max-w-full max-h-full object-contain"
+                        className="w-full h-full object-cover"
                         aria-label={item.alt}
                       />
                     ) : (
                       <img
                         src={item.src}
                         alt={item.alt}
-                        className="max-w-full max-h-full object-contain"
+                        className="w-full h-full object-cover"
                       />
                     )}
                   </div>
