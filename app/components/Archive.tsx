@@ -229,16 +229,16 @@ const Archive = () => {
   return (
     <section id="archive" className="py-16 px-[30px]" onMouseMove={handleMouseMove}>
       <div className="mb-10">
-        <h2 className="h2 tracking-wide">ARCHIVE</h2>
+        <h2 className="h2 tracking-wide text-hover section-title section-title-delay-2">ARCHIVE</h2>
       </div>
       
       <div className="space-y-12">
         {archiveData.sections.map((section, index) => (
-          <div key={index} className="archive-section">
-            <h3 className="h4 font-medium mb-6 tracking-wide">{section.title}</h3>
+          <div key={index} className={`archive-section reveal reveal-delay-${index % 3 + 1}`}>
+            <h3 className="h4 font-medium mb-8 tracking-wide text-hover heading-animate">{section.title}</h3>
             
             {/* Header for desktop */}
-            <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] mb-2 text-xs opacity-60">
+            <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] mb-3 text-xs opacity-60">
               <div>{section.title === "PROJECT" ? "CLIENT" : "PROJECT"}</div>
               <div className="text-right">YEAR</div>
               <div className="text-right">PROD COMPANY</div>

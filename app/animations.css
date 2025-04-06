@@ -1,0 +1,172 @@
+/* Animaciones */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.fade-in-slow {
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+.fade-up {
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+/* Animaciones para headings */
+.heading-animate {
+  opacity: 0;
+  transform: translateY(15px);
+  animation: headingAnimation 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+}
+
+/* Animaciones para los títulos principales de sección */
+.section-title {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: sectionTitleAnimation 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.section-title-delay-1 {
+  animation-delay: 0.2s;
+}
+
+.section-title-delay-2 {
+  animation-delay: 0.4s;
+}
+
+.section-title-delay-3 {
+  animation-delay: 0.6s;
+}
+
+@keyframes sectionTitleAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.heading-animate-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.heading-animate-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.heading-animate-delay-3 {
+  animation-delay: 0.3s;
+}
+
+@keyframes headingAnimation {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animaciones en scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 {
+  transition-delay: 0.1s;
+}
+
+.reveal-delay-2 {
+  transition-delay: 0.2s;
+}
+
+.reveal-delay-3 {
+  transition-delay: 0.3s;
+}
+
+/* Interactividad en texto */
+.text-hover {
+  transition: opacity 0.3s ease;
+}
+
+.text-hover:hover {
+  opacity: 0.7;
+}
+
+/* Animaciones para modales */
+.modal-content {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.modal-content.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Transiciones */
+.hover-view {
+  position: relative;
+}
+
+.hover-view::after {
+  content: 'Ver';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.hover-view:hover::after {
+  opacity: 1;
+}
+
+/* Animación en imágenes */
+.img-hover {
+  transition: all 0.5s ease;
+  overflow: hidden;
+}
+
+.img-hover:hover img {
+  transform: scale(1.05);
+  filter: brightness(1.05);
+}
+
+/* Cursor personalizado */
+.cursor-zoom {
+  cursor: zoom-in;
+}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import LazyVideo from './LazyVideo';
 
 interface MarqueeItem {
   id: string;
@@ -138,18 +139,12 @@ const HeroMarquee = () => {
                 onClick={() => setCurrentIndex(index)}
               >
                 <div className="w-full h-full relative">
-                  <div className="w-full h-full aspect-video flex items-center justify-center">
+                  <div className="w-full aspect-video flex items-center justify-center">
                     {item.type === 'video' ? (
-                      <video
-                        ref={(el) => {
-                          videoRefs.current[index] = el;
-                        }}
+                      <LazyVideo
                         src={item.videoUrl}
                         poster={item.src}
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover"
-                        aria-label={item.alt}
+                        alt={item.alt}
                       />
                     ) : (
                       <img

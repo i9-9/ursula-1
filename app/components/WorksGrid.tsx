@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import LazyVideo from './LazyVideo';
 
 interface Project {
   id: string;
@@ -84,14 +85,19 @@ const WorksGrid = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <section id="selected-works" className="mt-0 pt-16 pb-20 px-[30px]">
-      <h2 className="h2 mb-10 tracking-wide">SELECTED WORK</h2>
+    <section id="selected-works" className="mt-0 pt-16 pb-20 px-[30px] fade-in">
+      <div className="mb-10">
+        <h2 className="h2 tracking-wide text-hover section-title section-title-delay-1">SELECTED WORK</h2>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         {dummyProjects.map((project, index) => (
           <div 
             key={project.id}
-            className="cursor-pointer group relative"
+            className={`cursor-pointer group relative touchable reveal ${
+              index % 3 === 0 ? 'reveal-delay-1' : 
+              index % 3 === 1 ? 'reveal-delay-2' : 'reveal-delay-3'
+            }`}
             onClick={() => setSelectedProject(project)}
           >
             <div className="relative w-full aspect-video overflow-hidden bg-gray-100">
@@ -116,7 +122,7 @@ const WorksGrid = () => {
             </div>
             
             <div className="mt-2">
-              <h3 className="h5 font-medium leading-tight">{project.title}</h3>
+              <h3 className="h5 font-medium tracking-tighter">{project.title}</h3>
               <p className="text-small opacity-80 -mt-0.5">{project.artist}</p>
             </div>
           </div>
@@ -140,13 +146,13 @@ const WorksGrid = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <button 
-                className="absolute top-4 right-4 z-10 p-2 bg-background/80 hover:bg-background"
+                className="absolute top-4 right-4 z-10 p-2 bg-background/80 hover:bg-background touchable"
                 onClick={() => setSelectedProject(null)}
               >
                 ✕
               </button>
               
-              <div className="relative w-full aspect-video bg-gray-100">
+              <div className="relative w-full aspect-video bg-gray-100 modal-content active">
                 {selectedProject.contentType === 'image' ? (
                   <Image
                     src={selectedProject.fullImage}
@@ -160,11 +166,10 @@ const WorksGrid = () => {
                   <div className="w-full h-full flex items-center justify-center">
                     {/* Implementar video player cuando estén disponibles los videos */}
                     {selectedProject.videoUrl ? (
-                      <video 
+                      <LazyVideo 
                         src={selectedProject.videoUrl} 
-                        controls 
-                        className="w-full h-full object-cover"
-                        autoPlay
+                        poster={selectedProject.fullImage}
+                        alt={selectedProject.title}
                       />
                     ) : (
                       <div className="text-center p-4">
@@ -175,7 +180,7 @@ const WorksGrid = () => {
                 )}
               </div>
               
-              <div className="p-6">
+              <div className="p-6 modal-content active" style={{ transitionDelay: '0.2s' }}>
                 <h3 className="h4 font-medium leading-tight mb-0">{selectedProject.title}</h3>
                 <p className="text-small opacity-80 mb-3">{selectedProject.artist}</p>
                 <p className="text-p">{selectedProject.description}</p>
