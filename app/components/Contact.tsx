@@ -10,8 +10,8 @@ const Contact = () => {
       </div>
       
       <div className="space-y-12">
-        <div className="archive-section reveal reveal-delay-1">
-          <h3 className="h4 font-medium mb-8 tracking-wide text-hover heading-animate">GET IN TOUCH</h3>
+        <div className="archive-section">
+          <h3 className="h4 font-medium mb-8 tracking-wide text-hover section-title section-title-delay-4">GET IN TOUCH</h3>
           
           {/* Header for desktop */}
           <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] mb-3 text-xs opacity-60">
@@ -87,8 +87,8 @@ const Contact = () => {
           </div>
         </div>
 
-        <div className="archive-section reveal reveal-delay-2">
-          <h3 className="h4 font-medium mb-8 tracking-wide text-hover heading-animate">FOLLOW</h3>
+        <div className="archive-section">
+          <h3 className="h4 font-medium mb-8 tracking-wide text-hover section-title section-title-delay-5">FOLLOW</h3>
           
           {/* Header for desktop */}
           <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] mb-3 text-xs opacity-60">

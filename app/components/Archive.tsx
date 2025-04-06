@@ -234,8 +234,8 @@ const Archive = () => {
       
       <div className="space-y-12">
         {archiveData.sections.map((section, index) => (
-          <div key={index} className={`archive-section reveal reveal-delay-${index % 3 + 1}`}>
-            <h3 className="h4 font-medium mb-8 tracking-wide text-hover heading-animate">{section.title}</h3>
+          <div key={index} className="archive-section">
+            <h3 className={`h4 font-medium mb-8 tracking-wide text-hover section-title section-title-delay-${index + 1}`}>{section.title}</h3>
             
             {/* Header for desktop */}
             <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] mb-3 text-xs opacity-60">
