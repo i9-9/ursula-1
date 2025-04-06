@@ -2,54 +2,41 @@
 
 import { useEffect } from 'react';
 
-export function useScrollReveal() {
+// Hook para animar elementos cuando aparecen en el viewport
+export const useScrollReveal = () => {
   useEffect(() => {
-    const scrollHandler = () => {
-      const revealElements = document.querySelectorAll('.reveal');
+    // Evitar ejecución en servidor
+    if (typeof window === 'undefined') return;
+    
+    const animateOnScroll = () => {
+      // Seleccionar todos los elementos animables que aún no han sido animados
+      const reveals = document.querySelectorAll('.section-title:not(.revealed)');
       
-      revealElements.forEach((element) => {
-        const elementTop = element.getBoundingClientRect().top;
+      reveals.forEach((element) => {
         const windowHeight = window.innerHeight;
-        const revealPoint = 150;
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 100; // Px antes de que el elemento sea visible
         
-        if (elementTop < windowHeight - revealPoint) {
-          element.classList.add('active');
+        if (elementTop < windowHeight - elementVisible) {
+          element.classList.add('revealed');
         }
       });
     };
     
-    // Ejecutar una vez al inicio para elementos visibles en la carga
-    setTimeout(scrollHandler, 300);
+    // Ejecutar una vez al inicio
+    setTimeout(animateOnScroll, 300);
     
-    // Agregar evento de scroll
-    window.addEventListener('scroll', scrollHandler);
-    
-    // Limpiar listener
-    return () => window.removeEventListener('scroll', scrollHandler);
-  }, []);
-}
-
-export function useTouchFeedback() {
-  useEffect(() => {
-    const touchableElements = document.querySelectorAll('.touchable');
-    
-    const handleTouchStart = () => {
-      if ('vibrate' in navigator) {
-        navigator.vibrate(15); // Vibración sutil de 15ms
-      }
-    };
-    
-    touchableElements.forEach(element => {
-      element.addEventListener('touchstart', handleTouchStart);
-    });
+    // Ejecutar en cada scroll
+    window.addEventListener('scroll', animateOnScroll);
     
     return () => {
-      touchableElements.forEach(element => {
-        element.removeEventListener('touchstart', handleTouchStart);
-      });
+      window.removeEventListener('scroll', animateOnScroll);
     };
   }, []);
-}
+};
+
+// Reexportar useTouchFeedback para facilitar su uso
+export { default as useTouchFeedback } from './useTouchFeedback';
 
 export function useSnapScroll() {
   useEffect(() => {

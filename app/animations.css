@@ -21,20 +21,34 @@
 /* Animaciones para los títulos principales de sección */
 .section-title {
   opacity: 0;
-  transform: translateY(30px);
-  animation: sectionTitleAnimation 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
+.section-title.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Ajustar retrasos en cascada */
 .section-title-delay-1 {
-  animation-delay: 0.2s;
+  transition-delay: 0.1s;
 }
 
 .section-title-delay-2 {
-  animation-delay: 0.4s;
+  transition-delay: 0.2s;
 }
 
 .section-title-delay-3 {
-  animation-delay: 0.6s;
+  transition-delay: 0.3s;
+}
+
+.section-title-delay-4 {
+  transition-delay: 0.4s;
+}
+
+.section-title-delay-5 {
+  transition-delay: 0.5s;
 }
 
 @keyframes sectionTitleAnimation {
@@ -97,11 +111,23 @@
 
 /* Interactividad en texto */
 .text-hover {
-  transition: opacity 0.3s ease;
+  position: relative;
+  display: inline-block;
 }
 
-.text-hover:hover {
-  opacity: 0.7;
+.text-hover::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: currentColor;
+  transition: width 0.3s ease;
+}
+
+.text-hover:hover::after {
+  width: 100%;
 }
 
 /* Animaciones para modales */
