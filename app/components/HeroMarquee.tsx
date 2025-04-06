@@ -167,49 +167,45 @@ const HeroMarquee = () => {
   return (
     <section 
       id="hero"
-      className="pt-[var(--navbar-height)] pb-8 px-[30px] min-h-[90vh] md:min-h-[80vh] flex flex-col relative"
+      className="pt-[calc(var(--navbar-height)+2.5rem)] pb-6 px-[30px] flex flex-col justify-between h-[calc(100vh-var(--navbar-height)-2rem)]"
     >
-      <div className="flex-grow flex items-center justify-center my-8">
+      <div className="flex-grow flex items-center justify-center">
         <div 
-          className="w-full max-w-5xl mx-auto aspect-video relative cursor-grab"
+          className="w-full h-[65vh] relative cursor-grab"
           ref={sliderRef}
         >
           <div 
-            className="absolute inset-0 flex transition-transform duration-500 ease-out"
+            className="h-full w-full flex transition-transform duration-500 ease-out"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
             {dummyItems.map((item, index) => (
               <div
                 key={item.id}
-                className="w-full h-full flex-shrink-0"
-                style={{ minWidth: '100%' }}
+                className="w-full h-full flex-shrink-0 flex items-center justify-center"
               >
-                <div className="w-full h-full relative">
-                  {item.type === 'video' ? (
-                    <LazyVideo
-                      src={item.videoUrl}
-                      poster={item.src}
-                      alt={item.alt}
-                    />
-                  ) : (
+                {item.type === 'video' ? (
+                  <LazyVideo
+                    src={item.videoUrl}
+                    poster={item.src}
+                    alt={item.alt}
+                  />
+                ) : (
+                  <div className="relative h-full w-full">
                     <Image
                       src={item.src}
                       alt={item.alt}
                       className="object-cover"
                       fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                      sizes="(max-width: 768px) 100vw, 1200px"
                       priority={currentIndex === index}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
           
-          {/* Instrucción de swipe para móvil */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs bg-background/30 px-2 py-1 rounded-full text-foreground/70 md:hidden">
-            Desliza horizontalmente
-          </div>
+          {/* Instrucción de swipe para móvil - eliminamos esto de aquí */}
           
           {/* Flechas de navegación overlay */}
           <button 
@@ -235,27 +231,29 @@ const HeroMarquee = () => {
       </div>
 
       {/* Project metadata below image/video */}
-      <div className="flex justify-between items-center h-auto">
+      <div className="flex justify-between items-center h-auto mt-4">
         {/* Project info - Left side */}
         <div className="max-w-full w-full">
           <p className="text-small tracking-wide opacity-70 mb-0.5 whitespace-nowrap overflow-hidden text-ellipsis">{dummyItems[currentIndex].client}</p>
           <h2 className="text-p md:h5 lg:h4 tracking-wider font-medium whitespace-nowrap overflow-hidden text-ellipsis">{dummyItems[currentIndex].title}</h2>
         </div>
         
-        {/* Indicadores de navegación */}
-        <div className="flex items-center gap-2">
-          {dummyItems.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === currentIndex 
-                  ? 'bg-foreground' 
-                  : 'bg-foreground/20 hover:bg-foreground/40'
-              }`}
-              aria-label={`Ir a slide ${index + 1}`}
-            />
-          ))}
+        <div className="flex flex-col items-end gap-1">
+          {/* Indicadores de navegación */}
+          <div className="flex items-center gap-2">
+            {dummyItems.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  index === currentIndex 
+                    ? 'bg-foreground' 
+                    : 'bg-foreground/20 hover:bg-foreground/40'
+                }`}
+                aria-label={`Ir a slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
