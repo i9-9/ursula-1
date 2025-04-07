@@ -36,7 +36,7 @@ const ScrollIndicator = () => {
       }`}
     >
       <div 
-        className="h-full bg-foreground/60 origin-left transition-transform duration-100"
+        className="h-full bg-foreground/20 origin-left transition-transform duration-100"
         style={{ transform: `scaleX(${scrollProgress / 100})` }}
       />
     </div>
