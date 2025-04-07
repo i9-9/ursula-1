@@ -16,20 +16,26 @@ const LazyVideo = ({ src, poster, alt, className = '' }: LazyVideoProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    if (!containerRef.current) return;
-    
+    const container = containerRef.current;
+    if (!container) return;
+
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsInView(true);
+            observer.disconnect();
+          }
+        });
       },
       { threshold: 0.1 }
     );
-    
-    observer.observe(containerRef.current);
-    
+
+    observer.observe(container);
+
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
+      if (container) {
+        observer.unobserve(container);
       }
     };
   }, []);

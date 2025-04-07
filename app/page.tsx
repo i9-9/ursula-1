@@ -4,7 +4,7 @@ import WorksGrid from './components/WorksGrid';
 import Archive from './components/Archive';
 import Contact from './components/Contact';
 import ScrollIndicator from './components/ScrollIndicator';
-import { getHeroSlides, getPortfolioItems, getArchiveData } from '@/lib/contentful';
+import { getHeroSlides, getPortfolioItems } from '@/lib/contentful';
 import ClientWrapper from './components/ClientWrapper';
 
 // Server Component principal
@@ -12,8 +12,7 @@ export default async function Home() {
   // Obtener datos de Contentful
   const heroSlides = await getHeroSlides();
   const portfolioItems = await getPortfolioItems();
-  const archiveSections = await getArchiveData();
-  
+
   return (
     <main>
       <ClientWrapper>
@@ -21,7 +20,7 @@ export default async function Home() {
         <ScrollIndicator />
         <HeroMarquee slides={heroSlides} />
         <WorksGrid works={portfolioItems} />
-        <Archive archiveData={archiveSections} />
+        <Archive />
         <Contact />
       </ClientWrapper>
     </main>

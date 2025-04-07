@@ -215,57 +215,44 @@ const Archive = () => {
     year: null
   });
 
-  // Extraer categorías y años únicos para los filtros
-  const { categories, years } = useMemo(() => {
-    const cats = archiveData.sections.map(section => section.title);
-    
-    // Extraer todos los años y eliminar duplicados y vacíos
-    const allYears = archiveData.sections
-      .flatMap(section => section.items)
-      .map(item => item.year)
-      .filter(year => year !== "");
-    
-    const uniqueYears = Array.from(new Set(allYears))
-      .sort((a, b) => parseInt(b) - parseInt(a)); // Ordenar años de más reciente a más antiguo
-    
-    return {
-      categories: cats,
-      years: uniqueYears
-    };
+  // Get unique years from all items
+  const years = useMemo(() => {
+    const yearSet = new Set<string>();
+    archiveData.sections.forEach(section => {
+      section.items.forEach(item => {
+        if (item.year && item.year.trim() !== '') {
+          yearSet.add(item.year);
+        }
+      });
+    });
+    return Array.from(yearSet).sort((a, b) => parseInt(b) - parseInt(a));
   }, []);
 
-  // Filtrar secciones basado en los filtros seleccionados
+  // Filter sections based on selected filters
   const filteredSections = useMemo(() => {
-    if (!filters.category && !filters.year) {
-      return archiveData.sections; // Si no hay filtros, mostrar todo
-    }
-
-    return archiveData.sections
-      .filter(section => {
-        // Si hay un filtro de categoría y no coincide, filtrar esta sección
-        if (filters.category && section.title !== filters.category) {
-          return false;
-        }
-
-        // Si hay un filtro de año, verificar si algún item tiene ese año
-        if (filters.year) {
-          // Mantener la sección solo si contiene al menos un item con el año seleccionado
-          return section.items.some(item => item.year === filters.year);
-        }
-
-        return true;
-      })
-      .map(section => {
-        // Si hay un filtro de año, filtrar los items de la sección
-        if (filters.year) {
-          return {
-            ...section,
-            items: section.items.filter(item => item.year === filters.year)
-          };
-        }
-        
-        return section;
-      });
+    return archiveData.sections.filter(section => {
+      // If no filters are selected, show all sections
+      if (!filters.category && !filters.year) return true;
+      
+      // Filter by category
+      if (filters.category && section.title !== filters.category) return false;
+      
+      // Filter by year
+      if (filters.year) {
+        return section.items.some(item => item.year === filters.year);
+      }
+      
+      return true;
+    }).map(section => {
+      // If year filter is active, filter the items within the section
+      if (filters.year) {
+        return {
+          ...section,
+          items: section.items.filter(item => item.year === filters.year)
+        };
+      }
+      return section;
+    });
   }, [filters]);
 
   // Handler para registrar la posición del mouse
@@ -309,7 +296,7 @@ const Archive = () => {
       
       {/* Componente de filtros */}
       <ArchiveFilters 
-        categories={categories} 
+        categories={archiveData.sections.map(section => section.title)} 
         years={years} 
         selectedCategory={filters.category}
         selectedYear={filters.year}
