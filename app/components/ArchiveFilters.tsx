@@ -49,7 +49,7 @@ const ArchiveFilters = ({
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <div className="text-xs uppercase opacity-60 mr-1">Filtros:</div>
+      <div className="text-xs uppercase opacity-60 mr-1">Filters:</div>
       
       {/* Filtros por categoría */}
       <div className="flex flex-wrap gap-1.5">
@@ -90,7 +90,7 @@ const ArchiveFilters = ({
           className="text-xs px-2 py-0.5 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors ml-auto"
           onClick={onReset}
         >
-          Reiniciar
+          Reset
         </button>
       )}
     </div>

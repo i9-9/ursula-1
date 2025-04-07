@@ -3,7 +3,16 @@
 import { useState, useEffect, useRef } from 'react';
 import LazyVideo from './LazyVideo';
 import Image from 'next/image';
-import { HeroSlide } from '@/lib/contentful';
+
+interface HeroSlide {
+  id: string;
+  title: string;
+  client: string;
+  type: 'image' | 'video';
+  src: string;
+  videoUrl?: string;
+  alt?: string;
+}
 
 interface HeroMarqueeProps {
   slides: HeroSlide[];
@@ -16,7 +25,7 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   const startXRef = useRef(0);
   const isDraggingRef = useRef(false);
   
-  const items: HeroSlide[] = slides.length > 0 ? slides : [
+  const defaultSlides: HeroSlide[] = [
     { 
       id: '1', 
       src: '/images/hero/chita - sola.png', 
@@ -48,11 +57,11 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
     if (!isPlaying) return;
     
     const timer = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % defaultSlides.length);
     }, 7000);
 
     return () => clearInterval(timer);
-  }, [isPlaying, items.length]);
+  }, [isPlaying, defaultSlides.length]);
 
   // Manejar el desplazamiento horizontal con rueda del ratón
   useEffect(() => {
@@ -63,9 +72,9 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
         
         // Determinar dirección de desplazamiento
         if (e.deltaX > 30 || (e.shiftKey && e.deltaY > 30)) {
-          setCurrentIndex(prev => (prev + 1) % items.length);
+          setCurrentIndex(prev => (prev + 1) % defaultSlides.length);
         } else if (e.deltaX < -30 || (e.shiftKey && e.deltaY < -30)) {
-          setCurrentIndex(prev => prev === 0 ? items.length - 1 : prev - 1);
+          setCurrentIndex(prev => prev === 0 ? defaultSlides.length - 1 : prev - 1);
         }
       }
       // Si es scroll vertical normal (sin shift), no hacemos nada y el navegador maneja el scroll
@@ -81,7 +90,7 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
         slider.removeEventListener('wheel', handleWheel);
       }
     };
-  }, [items.length]);
+  }, [defaultSlides.length]);
 
   // Manejar eventos touch para deslizar en móviles
   useEffect(() => {
@@ -113,9 +122,9 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
       
       // Cambiar slide si el swipe fue significativo
       if (diff > 50) {
-        setCurrentIndex(prev => (prev + 1) % items.length);
+        setCurrentIndex(prev => (prev + 1) % defaultSlides.length);
       } else if (diff < -50) {
-        setCurrentIndex(prev => prev === 0 ? items.length - 1 : prev - 1);
+        setCurrentIndex(prev => prev === 0 ? defaultSlides.length - 1 : prev - 1);
       }
       
       isDraggingRef.current = false;
@@ -130,15 +139,15 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
       slider.removeEventListener('touchmove', handleTouchMove);
       slider.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [items.length]);
+  }, [defaultSlides.length]);
 
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % defaultSlides.length);
       } else if (e.key === 'ArrowLeft') {
-        setCurrentIndex((prevIndex) => prevIndex === 0 ? items.length - 1 : prevIndex - 1);
+        setCurrentIndex((prevIndex) => prevIndex === 0 ? defaultSlides.length - 1 : prevIndex - 1);
       }
     };
 
@@ -146,80 +155,76 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [items.length]);
+  }, [defaultSlides.length]);
 
-  // Función para ir al slide anterior
-  const goToPrevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? items.length - 1 : prevIndex - 1));
-  };
-
-  // Función para ir al siguiente slide
-  const goToNextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
-  };
+  const items = slides.length > 0 ? slides : defaultSlides;
 
   return (
     <section 
       id="hero"
-      className="pt-[calc(var(--navbar-height)+2.5rem)] pb-6 px-[30px] flex flex-col justify-between h-[calc(100vh-var(--navbar-height)-2rem)]"
+      className="pt-[calc(var(--navbar-height)+2.5rem)] pb-6 px-5 md:px-[30px] flex flex-col justify-between h-[calc(100vh-var(--navbar-height)-2rem)] overflow-hidden"
     >
-      <div className="flex-grow flex items-center justify-center">
-        <div 
-          className="w-full h-[65vh] relative cursor-grab"
-          ref={sliderRef}
-        >
-          <div 
-            className="h-full w-full flex transition-transform duration-500 ease-out"
-            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-          >
-            {items.map((item, index) => (
-              <div
-                key={item.id}
-                className="w-full h-full flex-shrink-0 flex items-center justify-center"
-              >
-                {item.type === 'video' ? (
-                  <LazyVideo
-                    src={item.videoUrl}
+      {/* Contenedor principal del slider */}
+      <div 
+        ref={sliderRef}
+        className="relative w-full h-full overflow-hidden"
+      >
+        {/* Contenedor de slides */}
+        <div className="absolute inset-0 flex">
+          {items.map((item, index) => (
+            <div
+              key={index}
+              className="absolute inset-0 transition-transform duration-500 ease-in-out"
+              style={{
+                transform: `translateX(${(index - currentIndex) * 100}%)`,
+                opacity: index === currentIndex ? 1 : 0,
+                pointerEvents: index === currentIndex ? 'auto' : 'none'
+              }}
+            >
+              {item.type === 'video' ? (
+                <div className="w-full h-full flex items-center justify-center">
+                  <LazyVideo 
+                    src={item.videoUrl} 
                     poster={item.src}
-                    alt={item.alt}
+                    alt={item.alt || item.title}
                   />
-                ) : (
-                  <div className="relative h-full w-full">
-                    <Image
-                      src={item.src}
-                      alt={item.alt}
-                      className="object-cover"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 1200px"
-                      priority={currentIndex === index}
-                    />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-          
-          {/* Flechas de navegación overlay */}
-          <button 
-            onClick={goToPrevSlide}
-            className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/30 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 hidden md:flex"
-            aria-label="Slide anterior"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
-          
-          <button 
-            onClick={goToNextSlide}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/30 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 hidden md:flex"
-            aria-label="Siguiente slide"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </button>
+                </div>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Image
+                    src={item.src}
+                    alt={item.alt || item.title}
+                    className="object-cover w-full h-full"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 1200px"
+                    priority={index === currentIndex}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
+        
+        {/* Flechas de navegación overlay */}
+        <button 
+          onClick={() => setCurrentIndex(prev => (prev - 1 + items.length) % items.length)}
+          className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/30 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 hidden md:flex"
+          aria-label="Slide anterior"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        
+        <button 
+          onClick={() => setCurrentIndex(prev => (prev + 1) % items.length)}
+          className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/30 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 hidden md:flex"
+          aria-label="Siguiente slide"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
       </div>
 
       {/* Project metadata below image/video */}
