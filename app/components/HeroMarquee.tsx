@@ -162,7 +162,7 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   return (
     <section 
       id="hero"
-      className="pt-[calc(var(--navbar-height)+2.5rem)] pb-6 px-5 md:px-[30px] flex flex-col justify-between h-[calc(100vh-var(--navbar-height)-2rem)] overflow-hidden"
+      className="pt-[calc(var(--navbar-height)+2.5rem)] pb-6 px-[30px] flex flex-col justify-between h-[calc(100vh-var(--navbar-height)-2rem)] overflow-hidden"
     >
       {/* Contenedor principal del slider */}
       <div 

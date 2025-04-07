@@ -65,43 +65,43 @@ const Navbar = () => {
         scrolled ? 'bg-background/90 backdrop-blur-md' : 'bg-transparent'
       }`}
     >
-      <div className="w-full flex items-center justify-between px-[30px]">
-        <Link href="/" className="text-p tracking-wider">
+      <div className="w-full grid grid-cols-12 items-center px-[30px] h-full">
+        <Link href="/" className="text-p tracking-wider col-span-6 flex items-center h-full">
           URSULA BENAVIDEZ
         </Link>
         
-        <div className="flex gap-6 md:gap-8 text-p">
+        <div className="flex gap-6 md:gap-8 text-p col-start-7 col-span-6 items-center h-full">
           <Link 
             href="#selected-works" 
-            className={`transition-all tracking-wide relative ${
+            className={`transition-all tracking-wide relative flex items-center h-full ${
               activeSection === 'selected-works' ? 'opacity-100' : 'opacity-70 hover:opacity-100'
             }`}
           >
             WORK
             {activeSection === 'selected-works' && (
-              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-foreground"></span>
+              <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground"></span>
             )}
           </Link>
           <Link 
             href="#archive" 
-            className={`transition-all tracking-wide relative ${
+            className={`transition-all tracking-wide relative flex items-center h-full ${
               activeSection === 'archive' ? 'opacity-100' : 'opacity-70 hover:opacity-100'
             }`}
           >
             ARCHIVE
             {activeSection === 'archive' && (
-              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-foreground"></span>
+              <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground"></span>
             )}
           </Link>
           <Link 
             href="#contact" 
-            className={`transition-all tracking-wide relative ${
+            className={`transition-all tracking-wide relative flex items-center h-full ${
               activeSection === 'contact' ? 'opacity-100' : 'opacity-70 hover:opacity-100'
             }`}
           >
             CONTACT
             {activeSection === 'contact' && (
-              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-foreground"></span>
+              <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground"></span>
             )}
           </Link>
         </div>

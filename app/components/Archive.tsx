@@ -289,7 +289,7 @@ const Archive = () => {
   }, []);
 
   return (
-    <section id="archive" className="py-12 md:py-16 px-5 md:px-[30px]" onMouseMove={handleMouseMove}>
+    <section id="archive" className="py-12 md:py-16 px-5 md:px-[30px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
       <div className="mb-10">
         <h2 className="h2 tracking-wide text-hover section-title section-title-delay-2">ARCHIVE</h2>
       </div>
@@ -312,10 +312,10 @@ const Archive = () => {
               <h3 className={`h4 font-medium mb-6 md:mb-8 tracking-wide text-hover section-title section-title-delay-${index + 1}`}>{section.title}</h3>
               
               {/* Header for desktop */}
-              <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] mb-3 text-xs opacity-60">
-                <div>{section.title === "PROJECT" ? "CLIENT" : "PROJECT"}</div>
-                <div className="text-right">YEAR</div>
-                <div className="text-right">PROD COMPANY</div>
+              <div className="hidden md:grid md:grid-cols-12 mb-3 text-xs opacity-60">
+                <div className="col-span-6">{section.title === "PROJECT" ? "CLIENT" : "PROJECT"}</div>
+                <div className="col-start-7 col-span-3">YEAR</div>
+                <div className="col-start-10 col-span-3">PROD COMPANY</div>
               </div>
               
               {/* Header for mobile */}
@@ -333,10 +333,10 @@ const Archive = () => {
                     onClick={() => handleItemClick(item)}
                   >
                     {/* Desktop layout (3 columns) */}
-                    <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] items-start">
-                      <div className="pr-4 whitespace-nowrap overflow-visible text-p">{item.project}</div>
-                      <div className="text-right whitespace-nowrap text-p">{item.year}</div>
-                      <div className="text-right whitespace-nowrap overflow-visible text-p">{item.company}</div>
+                    <div className="hidden md:grid md:grid-cols-12 items-start">
+                      <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p">{item.project}</div>
+                      <div className="col-start-7 col-span-3 text-left whitespace-nowrap text-p">{item.year}</div>
+                      <div className="col-start-10 col-span-3 text-left whitespace-nowrap overflow-visible text-p">{item.company}</div>
                     </div>
                     
                     {/* Mobile layout */}
@@ -358,12 +358,12 @@ const Archive = () => {
           ))
         ) : (
           <div className="py-10 text-center opacity-60">
-            <p>No se encontraron resultados para los filtros seleccionados</p>
+            <p>No results found for selected filters</p>
             <button 
               className="mt-4 text-xs px-3 py-1 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors"
               onClick={resetFilters}
             >
-              Reiniciar filtros
+              Reset filters
             </button>
           </div>
         )}
@@ -372,7 +372,7 @@ const Archive = () => {
       {/* Tooltip de imagen que sigue al cursor (solo en desktop) */}
       {hoveredItem && (
         <div 
-          className="fixed hidden md:block pointer-events-none z-50 transition-opacity duration-150 opacity-100"
+          className="fixed hidden md:block pointer-events-none transition-opacity duration-150 opacity-100 z-[100]"
           style={{
             left: `${mousePosition.x}px`,
             top: `${mousePosition.y}px`,
@@ -402,7 +402,7 @@ const Archive = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 md:hidden"
+            className="fixed inset-0 z-[999] bg-black/70 flex items-center justify-center p-4 md:hidden"
             onClick={handleCloseModal}
           >
             <motion.div

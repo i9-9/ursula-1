@@ -51,7 +51,7 @@ const ArchiveFilters = ({
     >
       <div className="text-xs uppercase opacity-60 mr-1">Filters:</div>
       
-      {/* Filtros por categoría */}
+      {/* Category filters */}
       <div className="flex flex-wrap gap-1.5">
         {categories.map(category => (
           <button 
@@ -69,7 +69,7 @@ const ArchiveFilters = ({
       {/* Separador */}
       <div className="h-3 w-px bg-foreground/20 mx-1"></div>
       
-      {/* Filtros por año */}
+      {/* Year filters */}
       <div className="flex flex-wrap gap-1.5">
         {years.slice(0, 6).map(year => (
           <button 
@@ -84,7 +84,7 @@ const ArchiveFilters = ({
         ))}
       </div>
       
-      {/* Botón de reset - solo visible si hay filtros activos */}
+      {/* Reset button - only visible if there are active filters */}
       {(selectedCategory || selectedYear) && (
         <button 
           className="text-xs px-2 py-0.5 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors ml-auto"

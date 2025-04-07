@@ -79,14 +79,14 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   return (
     <section id="selected-works" className="py-12 md:py-16 px-5 md:px-[30px] fade-in">
       <div className="mb-10">
-        <h2 className="h2 tracking-wide text-hover section-title section-title-delay-1">SELECTED WORKS</h2>
+        <h2 className="h2 tracking-wide text-hover section-title section-title-delay-1">SELECTED WORK</h2>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-12 gap-4 md:gap-6">
         {projects.map((project, index) => (
           <div 
             key={project.id}
-            className={`cursor-pointer group relative ${
+            className={`cursor-pointer group relative col-span-12 md:col-span-4 ${
               index % 3 === 0 ? 'section-title section-title-delay-1' : 
               index % 3 === 1 ? 'section-title section-title-delay-2' : 'section-title section-title-delay-3'
             }`}
@@ -127,7 +127,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-background/90 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[999999] flex items-center justify-center bg-background/90 p-4 backdrop-blur-sm"
             onClick={() => setSelectedProject(null)}
           >
             <motion.div
@@ -138,7 +138,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               onClick={(e) => e.stopPropagation()}
             >
               <button 
-                className="absolute top-4 right-4 z-10 p-2 bg-background/80 hover:bg-background touchable"
+                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-background/80 hover:bg-background touchable rounded-full border border-foreground/10"
                 onClick={() => setSelectedProject(null)}
               >
                 ✕
