@@ -3,6 +3,7 @@ import HeroMarquee from './components/HeroMarquee';
 import WorksGrid from './components/WorksGrid';
 import Archive from './components/Archive';
 import Contact from './components/Contact';
+import Footer from './components/Footer';
 import ScrollIndicator from './components/ScrollIndicator';
 import { getHeroSlides, getPortfolioItems } from '@/lib/contentful';
 import ClientWrapper from './components/ClientWrapper';
@@ -22,6 +23,7 @@ export default async function Home() {
         <WorksGrid works={portfolioItems} />
         <Archive />
         <Contact />
+        <Footer />
       </ClientWrapper>
     </main>
   );

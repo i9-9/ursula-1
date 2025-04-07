@@ -17,13 +17,16 @@ interface GridSectionProps {
 
 const GridSection = ({ items }: GridSectionProps) => {
   const [selectedItem, setSelectedItem] = useState<GridItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = (item: GridItem) => {
     setSelectedItem(item);
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setSelectedItem(null);
+    setIsModalOpen(false);
   };
 
   return (
@@ -40,6 +43,7 @@ const GridSection = ({ items }: GridSectionProps) => {
                 src={item.videoUrl}
                 poster={item.poster}
                 alt={item.title}
+                className="transition-transform duration-500 group-hover:scale-105"
               />
             </div>
             <div className="mt-4">
@@ -51,17 +55,19 @@ const GridSection = ({ items }: GridSectionProps) => {
       </div>
 
       {selectedItem && (
-        <div className="fixed inset-0 z-[999999] flex items-center justify-center isolate">
+        <div className="fixed inset-0 z-[9999999]">
           <div 
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
             onClick={closeModal}
-            style={{ zIndex: -1 }}
           />
-          <div className="relative w-full max-w-4xl mx-4 bg-background">
-            <div className="relative">
+          <div className="fixed inset-0 flex items-center justify-center">
+            <div 
+              className="relative w-full max-w-4xl mx-4 bg-background rounded"
+              onClick={e => e.stopPropagation()}
+            >
               <button
                 onClick={closeModal}
-                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-background text-p opacity-70 hover:opacity-100 transition-opacity border border-foreground/10"
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-background text-p opacity-70 hover:opacity-100 transition-opacity border border-foreground/10 z-10"
               >
                 ×
               </button>

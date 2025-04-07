@@ -65,12 +65,12 @@ const Navbar = () => {
         scrolled ? 'bg-background/90 backdrop-blur-md' : 'bg-transparent'
       }`}
     >
-      <div className="w-full grid grid-cols-12 items-center px-[30px] h-full">
-        <Link href="/" className="text-p tracking-wider col-span-6 flex items-center h-full">
+      <div className="w-full grid grid-cols-12 items-center px-5 md:px-[30px] h-full">
+        <Link href="/" className="text-p tracking-wider col-span-6 md:col-span-6 flex items-center h-full">
           URSULA BENAVIDEZ
         </Link>
         
-        <div className="flex gap-6 md:gap-8 text-p col-start-7 col-span-6 items-center h-full">
+        <div className="flex gap-6 md:gap-8 text-p col-span-6 md:col-start-7 md:col-span-6 items-center h-full justify-end md:justify-start">
           <Link 
             href="#selected-works" 
             className={`transition-all tracking-wide relative flex items-center h-full ${

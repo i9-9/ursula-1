@@ -102,8 +102,6 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 priority={index < 6}
               />
               
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-              
               {project.contentType === 'video' && (
                 <div className="absolute bottom-2 right-2 bg-black/70 text-white p-1 rounded-full w-8 h-8 flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">

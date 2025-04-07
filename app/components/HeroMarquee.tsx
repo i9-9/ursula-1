@@ -162,13 +162,31 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   return (
     <section 
       id="hero"
-      className="pt-[calc(var(--navbar-height)+2.5rem)] pb-6 px-[30px] flex flex-col justify-between h-[calc(100vh-var(--navbar-height)-2rem)] overflow-hidden"
+      className="pt-[calc(var(--navbar-height)+2.5rem)] pb-6 px-5 md:px-[30px] flex flex-col justify-between h-[calc(100vh-var(--navbar-height)-2rem)] overflow-hidden"
     >
       {/* Contenedor principal del slider */}
       <div 
         ref={sliderRef}
         className="relative w-full h-full overflow-hidden"
       >
+        {/* Área de navegación izquierda */}
+        <div 
+          className="absolute left-0 top-0 bottom-0 w-1/4 z-20"
+          style={{ 
+            cursor: 'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewport=\'0 0 100 100\'><text y=\'50%\' x=\'50%\' dy=\'.35em\' text-anchor=\'middle\' style=\'font-size:24px;fill:white;stroke:white;stroke-width:1;filter:drop-shadow(0 0 2px rgba(0,0,0,0.5))\'>←</text></svg>") 16 0, auto' 
+          }}
+          onClick={() => setCurrentIndex(prev => (prev - 1 + items.length) % items.length)}
+        />
+
+        {/* Área de navegación derecha */}
+        <div 
+          className="absolute right-0 top-0 bottom-0 w-1/4 z-20"
+          style={{ 
+            cursor: 'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewport=\'0 0 100 100\'><text y=\'50%\' x=\'50%\' dy=\'.35em\' text-anchor=\'middle\' style=\'font-size:24px;fill:white;stroke:white;stroke-width:1;filter:drop-shadow(0 0 2px rgba(0,0,0,0.5))\'>→</text></svg>") 16 0, auto' 
+          }}
+          onClick={() => setCurrentIndex(prev => (prev + 1) % items.length)}
+        />
+
         {/* Contenedor de slides */}
         <div className="absolute inset-0 flex">
           {items.map((item, index) => (

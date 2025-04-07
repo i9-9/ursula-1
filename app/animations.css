@@ -21,8 +21,8 @@
 /* Animaciones para los títulos principales de sección */
 .section-title {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .section-title.revealed {
@@ -32,29 +32,29 @@
 
 /* Ajustar retrasos en cascada */
 .section-title-delay-1 {
-  transition-delay: 0.1s;
+  transition-delay: 0.05s;
 }
 
 .section-title-delay-2 {
-  transition-delay: 0.2s;
+  transition-delay: 0.1s;
 }
 
 .section-title-delay-3 {
-  transition-delay: 0.3s;
+  transition-delay: 0.15s;
 }
 
 .section-title-delay-4 {
-  transition-delay: 0.4s;
+  transition-delay: 0.2s;
 }
 
 .section-title-delay-5 {
-  transition-delay: 0.5s;
+  transition-delay: 0.25s;
 }
 
 @keyframes sectionTitleAnimation {
   0% {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(12px);
   }
   100% {
     opacity: 1;

@@ -45,54 +45,58 @@ const ArchiveFilters = ({
   
   return (
     <div 
-      className={`flex flex-wrap items-center gap-2 mb-6 transition-opacity duration-500 ${
+      className={`grid grid-cols-12 items-center mb-6 transition-opacity duration-500 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      <div className="text-xs uppercase opacity-60 mr-1">Filters:</div>
-      
-      {/* Category filters */}
-      <div className="flex flex-wrap gap-1.5">
-        {categories.map(category => (
-          <button 
-            key={category}
-            className={`text-xs px-2 py-0.5 rounded-full border border-foreground/10 transition-colors ${
-              selectedCategory === category ? 'bg-foreground text-background' : 'hover:bg-foreground/5'
-            }`}
-            onClick={() => handleCategoryChange(category)}
-          >
-            {category}
-          </button>
-        ))}
-      </div>
-      
-      {/* Separador */}
-      <div className="h-3 w-px bg-foreground/20 mx-1"></div>
-      
-      {/* Year filters */}
-      <div className="flex flex-wrap gap-1.5">
-        {years.slice(0, 6).map(year => (
-          <button 
-            key={year}
-            className={`text-xs px-2 py-0.5 rounded-full border border-foreground/10 transition-colors ${
-              selectedYear === year ? 'bg-foreground text-background' : 'hover:bg-foreground/5'
-            }`}
-            onClick={() => handleYearChange(year)}
-          >
-            {year}
-          </button>
-        ))}
+      <div className="col-span-9 flex items-center gap-2">
+        <div className="text-xs uppercase opacity-60">Filters:</div>
+        
+        {/* Category filters */}
+        <div className="flex flex-wrap gap-1.5">
+          {categories.map(category => (
+            <button 
+              key={category}
+              className={`text-xs px-2 py-0.5 rounded-full border border-foreground/10 transition-colors ${
+                selectedCategory === category ? 'bg-foreground text-background' : 'hover:bg-foreground/5'
+              }`}
+              onClick={() => handleCategoryChange(category)}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+
+        {/* Separador */}
+        <div className="h-3 w-px bg-foreground/20 mx-1"></div>
+        
+        {/* Year filters */}
+        <div className="flex flex-wrap gap-1.5">
+          {years.slice(0, 6).map(year => (
+            <button 
+              key={year}
+              className={`text-xs px-2 py-0.5 rounded-full border border-foreground/10 transition-colors ${
+                selectedYear === year ? 'bg-foreground text-background' : 'hover:bg-foreground/5'
+              }`}
+              onClick={() => handleYearChange(year)}
+            >
+              {year}
+            </button>
+          ))}
+        </div>
       </div>
       
       {/* Reset button - only visible if there are active filters */}
-      {(selectedCategory || selectedYear) && (
-        <button 
-          className="text-xs px-2 py-0.5 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors ml-auto"
-          onClick={onReset}
-        >
-          Reset
-        </button>
-      )}
+      <div className="col-start-10 col-span-3 flex justify-start">
+        {(selectedCategory || selectedYear) && (
+          <button 
+            className="text-xs px-2 py-0.5 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors"
+            onClick={onReset}
+          >
+            Reset
+          </button>
+        )}
+      </div>
     </div>
   );
 };

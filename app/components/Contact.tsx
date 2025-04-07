@@ -1,7 +1,5 @@
 'use client';
 
-import Link from 'next/link';
-
 const Contact = () => {
   return (
     <>
@@ -182,15 +180,6 @@ const Contact = () => {
           </div>
         </div>
       </section>
-      
-      <footer className="py-4 md:py-6 px-5 md:px-[30px]">
-        <div className="mt-4 pt-1 text-sm opacity-60 grid grid-cols-12 items-center">
-          <p className="text-xs md:text-sm col-span-6">© {new Date().getFullYear()}</p>
-          <Link href="/privacy" className="text-xs md:text-sm hover:opacity-100 transition-opacity col-start-10 col-span-3 text-left">
-            Privacy
-          </Link>
-        </div>
-      </footer>
     </>
   );
 };
