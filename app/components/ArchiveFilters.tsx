@@ -5,20 +5,22 @@ import { useState, useEffect } from 'react';
 interface ArchiveFiltersProps {
   categories: string[];
   years: string[];
-  onFilterChange: (filters: { category: string | null, year: string | null }) => void;
-  initialCategory?: string | null;
-  initialYear?: string | null;
+  selectedCategory: string | null;
+  selectedYear: string | null;
+  onCategoryChange: (category: string | null) => void;
+  onYearChange: (year: string | null) => void;
+  onReset: () => void;
 }
 
 const ArchiveFilters = ({ 
   categories, 
   years, 
-  onFilterChange,
-  initialCategory = null,
-  initialYear = null
+  selectedCategory,
+  selectedYear,
+  onCategoryChange,
+  onYearChange,
+  onReset
 }: ArchiveFiltersProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory);
-  const [selectedYear, setSelectedYear] = useState<string | null>(initialYear);
   const [isVisible, setIsVisible] = useState(false);
   
   useEffect(() => {
@@ -33,34 +35,13 @@ const ArchiveFilters = ({
   // Manejar cambios de filtro
   const handleCategoryChange = (category: string | null) => {
     const newCategory = category === selectedCategory ? null : category;
-    setSelectedCategory(newCategory);
-    onFilterChange({
-      category: newCategory,
-      year: selectedYear
-    });
+    onCategoryChange(newCategory);
   };
   
   const handleYearChange = (year: string | null) => {
     const newYear = year === selectedYear ? null : year;
-    setSelectedYear(newYear);
-    onFilterChange({
-      category: selectedCategory,
-      year: newYear
-    });
+    onYearChange(newYear);
   };
-  
-  // Reiniciar filtros
-  const resetFilters = () => {
-    setSelectedCategory(null);
-    setSelectedYear(null);
-    onFilterChange({ category: null, year: null });
-  };
-  
-  // Actualizar estado local si cambian los valores iniciales
-  useEffect(() => {
-    setSelectedCategory(initialCategory);
-    setSelectedYear(initialYear);
-  }, [initialCategory, initialYear]);
   
   return (
     <div 
@@ -107,7 +88,7 @@ const ArchiveFilters = ({
       {(selectedCategory || selectedYear) && (
         <button 
           className="text-xs px-2 py-0.5 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors ml-auto"
-          onClick={resetFilters}
+          onClick={onReset}
         >
           Reiniciar
         </button>

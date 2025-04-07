@@ -11,12 +11,12 @@ interface LazyVideoProps {
 }
 
 const LazyVideo = ({ src, poster, alt, className = '' }: LazyVideoProps) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [isInView, setIsInView] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    if (!videoRef.current) return;
+    if (!containerRef.current) return;
     
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -25,53 +25,39 @@ const LazyVideo = ({ src, poster, alt, className = '' }: LazyVideoProps) => {
       { threshold: 0.1 }
     );
     
-    // Guardar una referencia al elemento actual para la limpieza
-    const currentVideoElement = videoRef.current;
-    
-    observer.observe(currentVideoElement);
+    observer.observe(containerRef.current);
     
     return () => {
-      // Usar la referencia almacenada en lugar de videoRef.current
-      if (currentVideoElement) {
-        observer.unobserve(currentVideoElement);
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
       }
     };
   }, []);
   
-  useEffect(() => {
-    if (isInView && videoRef.current && src) {
-      // Solo cargamos el video cuando está en la vista
-      videoRef.current.src = src;
-      videoRef.current.load();
-      
-      // Guardar una referencia al elemento actual para la limpieza
-      const currentVideoElement = videoRef.current;
-      
-      // Manejamos eventos de carga
-      const handleLoadedData = () => setIsLoaded(true);
-      currentVideoElement.addEventListener('loadeddata', handleLoadedData);
-      
-      return () => {
-        // Usar la referencia almacenada en lugar de videoRef.current
-        if (currentVideoElement) {
-          currentVideoElement.removeEventListener('loadeddata', handleLoadedData);
-        }
-      };
-    }
-  }, [isInView, src]);
+  // Extraer el ID del video de YouTube de la URL
+  const getYouTubeId = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
   
   return (
-    <div className={`relative w-full h-full ${className}`}>
-      {src ? (
-        <video
-          ref={videoRef}
-          poster={poster}
-          muted
-          playsInline
-          className={`w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
-          aria-label={alt}
-          preload="metadata"
-        />
+    <div ref={containerRef} className={`relative w-full h-full ${className}`}>
+      {src && isInView ? (
+        <div className="relative w-full h-full">
+          <iframe
+            src={`https://www.youtube.com/embed/${getYouTubeId(src)}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${getYouTubeId(src)}`}
+            className="absolute top-0 left-0 w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            onLoad={() => setIsLoaded(true)}
+          />
+          {!isLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+              <div className="w-6 h-6 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin"></div>
+            </div>
+          )}
+        </div>
       ) : (
         <div className="relative w-full h-full">
           <Image
@@ -81,13 +67,6 @@ const LazyVideo = ({ src, poster, alt, className = '' }: LazyVideoProps) => {
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
           />
-        </div>
-      )}
-      
-      {/* Overlay de carga */}
-      {!isLoaded && src && isInView && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-          <div className="w-6 h-6 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin"></div>
         </div>
       )}
     </div>

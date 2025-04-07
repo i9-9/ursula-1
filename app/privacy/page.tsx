@@ -60,7 +60,7 @@ export default function Privacy() {
             
             <div>
               <h2 className="h3 mb-3">Third-Party Links</h2>
-              <p className="text-p opacity-80 mb-2">
+              <p className="text-p opacity-80 mb-2https://ursula-b.vercel.app/_next/image?url=%2Fimages%2Fhero%2Fswaggerboys%20%26%20dillom%20-%20el%20morocho%2C%20el%20rubio%20y%20el%20colo.png&w=3840&q=75">
                 This website may include links to external sites (like social media profiles). We are not responsible 
                 for the privacy practices of these other sites. We encourage you to read the privacy policies of any 
                 external sites you visit through links on our site.

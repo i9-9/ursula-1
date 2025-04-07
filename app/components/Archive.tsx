@@ -286,9 +286,19 @@ const Archive = () => {
     setMousePosition({ x, y });
   };
 
-  // Handler para cambios en los filtros usando useCallback para evitar recrear la función
-  const handleFilterChange = useCallback((newFilters: { category: string | null, year: string | null }) => {
-    setFilters(newFilters);
+  const handleItemClick = (item: ArchiveItem) => {
+    setSelectedItem(item);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedItem(null);
+  };
+
+  const resetFilters = useCallback(() => {
+    setFilters({
+      category: null,
+      year: null
+    });
   }, []);
 
   return (
@@ -301,9 +311,11 @@ const Archive = () => {
       <ArchiveFilters 
         categories={categories} 
         years={years} 
-        onFilterChange={handleFilterChange}
-        initialCategory={filters.category}
-        initialYear={filters.year}
+        selectedCategory={filters.category}
+        selectedYear={filters.year}
+        onCategoryChange={(category) => setFilters(prev => ({ ...prev, category }))}
+        onYearChange={(year) => setFilters(prev => ({ ...prev, year }))}
+        onReset={resetFilters}
       />
       
       <div className="space-y-16 md:space-y-12">
@@ -331,7 +343,7 @@ const Archive = () => {
                     className="group cursor-pointer hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1.5 mb-0.5 relative"
                     onMouseEnter={() => setHoveredItem(item.project)}
                     onMouseLeave={() => setHoveredItem(null)}
-                    onClick={() => setSelectedItem(item)}
+                    onClick={() => handleItemClick(item)}
                   >
                     {/* Desktop layout (3 columns) */}
                     <div className="hidden md:grid md:grid-cols-[2fr_0.5fr_1.5fr] items-start">
@@ -362,7 +374,7 @@ const Archive = () => {
             <p>No se encontraron resultados para los filtros seleccionados</p>
             <button 
               className="mt-4 text-xs px-3 py-1 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors"
-              onClick={() => setFilters({ category: null, year: null })}
+              onClick={resetFilters}
             >
               Reiniciar filtros
             </button>
@@ -404,7 +416,7 @@ const Archive = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 md:hidden"
-            onClick={() => setSelectedItem(null)}
+            onClick={handleCloseModal}
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
@@ -433,7 +445,7 @@ const Archive = () => {
               <div className="px-4 pb-4 flex justify-end">
                 <button 
                   className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded"
-                  onClick={() => setSelectedItem(null)}
+                  onClick={handleCloseModal}
                 >
                   Close
                 </button>

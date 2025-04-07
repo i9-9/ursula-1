@@ -4,85 +4,77 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import LazyVideo from './LazyVideo';
+import { PortfolioItem } from '@/lib/contentful';
 
-interface Project {
-  id: string;
-  title: string;
-  artist: string;
-  year: string;
-  thumbnail: string;
-  fullImage: string;
-  contentType: 'image' | 'video';
-  videoUrl?: string;
-  description: string;
+interface WorksGridProps {
+  works: PortfolioItem[];
 }
 
-// This would come from CMS in production
-const dummyProjects: Project[] = [
-  {
-    id: 'grid-1',
-    title: 'Te lo voy a decir',
-    artist: 'Conociendo Rusia',
-    year: '2024',
-    thumbnail: '/images/grid-fixed/conociendo-rusia-te-lo-voy-a-decir.png',
-    fullImage: '/images/grid-fixed/conociendo-rusia-te-lo-voy-a-decir.png',
-    contentType: 'image',
-    description: 'Videoclip para Conociendo Rusia - Te lo voy a decir.',
-  },
-  {
-    id: 'grid-2',
-    title: 'Cinco Horas',
-    artist: 'Conociendo Rusia & Natalia Lafourcade',
-    year: '2024',
-    thumbnail: '/images/grid-fixed/conociendo-rusia-cinco-horas.png',
-    fullImage: '/images/grid-fixed/conociendo-rusia-cinco-horas.png',
-    contentType: 'image',
-    description: 'Videoclip para Conociendo Rusia & Natalia Lafourcade - Cinco Horas.',
-  },
-  {
-    id: 'grid-3',
-    title: 'S.O.S',
-    artist: 'Taichu ft. Lali',
-    year: '2024',
-    thumbnail: '/images/grid-fixed/taichu-lali-sos.png',
-    fullImage: '/images/grid-fixed/taichu-lali-sos.png',
-    contentType: 'image',
-    description: 'Videoclip para Taichu ft. Lali - S.O.S.',
-  },
-  {
-    id: 'grid-4',
-    title: 'Buenos tiempos',
-    artist: 'Dillom',
-    year: '2024',
-    thumbnail: '/images/grid-fixed/dillom-buenos-tiempos.png',
-    fullImage: '/images/grid-fixed/dillom-buenos-tiempos.png',
-    contentType: 'image',
-    description: 'Videoclip para Dillom - Buenos tiempos.',
-  },
-  {
-    id: 'grid-5',
-    title: 'Cirugía',
-    artist: 'Dillom',
-    year: '2024',
-    thumbnail: '/images/grid-fixed/dillom-cirugia.png',
-    fullImage: '/images/grid-fixed/dillom-cirugia.png',
-    contentType: 'image',
-    description: 'Videoclip para Dillom - Cirugía.',
-  },
-  {
-    id: 'grid-6',
-    title: 'Ali Oli',
-    artist: 'Milo J',
-    year: '2024',
-    thumbnail: '/images/grid-fixed/milo-j-ali-oli.png',
-    fullImage: '/images/grid-fixed/milo-j-ali-oli.png',
-    contentType: 'image',
-    description: 'Videoclip para Milo J - Ali Oli.',
-  },
-];
-
-const WorksGrid = () => {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+const WorksGrid = ({ works = [] }: WorksGridProps) => {
+  const [selectedProject, setSelectedProject] = useState<PortfolioItem | null>(null);
+  
+  const projects: PortfolioItem[] = works.length > 0 ? works : [
+    {
+      id: 'grid-1',
+      title: 'Te lo voy a decir',
+      artist: 'Conociendo Rusia',
+      year: '2024',
+      thumbnail: '/images/grid-fixed/conociendo-rusia-te-lo-voy-a-decir.png',
+      fullImage: '/images/grid-fixed/conociendo-rusia-te-lo-voy-a-decir.png',
+      contentType: 'image',
+      description: 'Videoclip para Conociendo Rusia - Te lo voy a decir.',
+    },
+    {
+      id: 'grid-2',
+      title: 'Cinco Horas',
+      artist: 'Conociendo Rusia & Natalia Lafourcade',
+      year: '2024',
+      thumbnail: '/images/grid-fixed/conociendo-rusia-cinco-horas.png',
+      fullImage: '/images/grid-fixed/conociendo-rusia-cinco-horas.png',
+      contentType: 'image',
+      description: 'Videoclip para Conociendo Rusia & Natalia Lafourcade - Cinco Horas.',
+    },
+    {
+      id: 'grid-3',
+      title: 'S.O.S',
+      artist: 'Taichu ft. Lali',
+      year: '2024',
+      thumbnail: '/images/grid-fixed/taichu-lali-sos.png',
+      fullImage: '/images/grid-fixed/taichu-lali-sos.png',
+      contentType: 'image',
+      description: 'Videoclip para Taichu ft. Lali - S.O.S.',
+    },
+    {
+      id: 'grid-4',
+      title: 'Buenos tiempos',
+      artist: 'Dillom',
+      year: '2024',
+      thumbnail: '/images/grid-fixed/dillom-buenos-tiempos.png',
+      fullImage: '/images/grid-fixed/dillom-buenos-tiempos.png',
+      contentType: 'image',
+      description: 'Videoclip para Dillom - Buenos tiempos.',
+    },
+    {
+      id: 'grid-5',
+      title: 'Cirugía',
+      artist: 'Dillom',
+      year: '2024',
+      thumbnail: '/images/grid-fixed/dillom-cirugia.png',
+      fullImage: '/images/grid-fixed/dillom-cirugia.png',
+      contentType: 'image',
+      description: 'Videoclip para Dillom - Cirugía.',
+    },
+    {
+      id: 'grid-6',
+      title: 'Ali Oli',
+      artist: 'Milo J',
+      year: '2024',
+      thumbnail: '/images/grid-fixed/milo-j-ali-oli.png',
+      fullImage: '/images/grid-fixed/milo-j-ali-oli.png',
+      contentType: 'image',
+      description: 'Videoclip para Milo J - Ali Oli.',
+    },
+  ];
 
   return (
     <section id="selected-works" className="mt-0 pt-16 pb-20 px-[30px] fade-in">
@@ -91,7 +83,7 @@ const WorksGrid = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-        {dummyProjects.map((project, index) => (
+        {projects.map((project, index) => (
           <div 
             key={project.id}
             className={`cursor-pointer group relative ${

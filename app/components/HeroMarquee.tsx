@@ -3,62 +3,56 @@
 import { useState, useEffect, useRef } from 'react';
 import LazyVideo from './LazyVideo';
 import Image from 'next/image';
+import { HeroSlide } from '@/lib/contentful';
 
-interface MarqueeItem {
-  id: string;
-  src: string;
-  alt: string;
-  title: string;
-  client: string;
-  type: 'image' | 'video';
-  videoUrl?: string;
+interface HeroMarqueeProps {
+  slides: HeroSlide[];
 }
 
-// This would come from CMS in production
-const dummyItems: MarqueeItem[] = [
-  { 
-    id: '1', 
-    src: '/images/hero/chita - sola.png', 
-    alt: 'Chita - Sola', 
-    title: 'SOLA',
-    client: 'CHITA',
-    type: 'image'
-  },
-  { 
-    id: '2', 
-    src: '/images/hero/saramalacara - mas feliz.png', 
-    alt: 'Sara Malacara - Más Feliz', 
-    title: 'MÁS FELIZ',
-    client: 'SARA MALACARA',
-    type: 'image'
-  },
-  { 
-    id: '3', 
-    src: '/images/hero/swaggerboys & dillom - el morocho, el rubio y el colo.png', 
-    alt: 'Swagger Boys & Dillom - El Morocho, El Rubio y El Colo', 
-    title: 'EL MOROCHO, EL RUBIO Y EL COLO',
-    client: 'SWAGGER BOYS & DILLOM',
-    type: 'image'
-  },
-];
-
-const HeroMarquee = () => {
+const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true);
   const sliderRef = useRef<HTMLDivElement>(null);
   const startXRef = useRef(0);
   const isDraggingRef = useRef(false);
+  
+  const items: HeroSlide[] = slides.length > 0 ? slides : [
+    { 
+      id: '1', 
+      src: '/images/hero/chita - sola.png', 
+      alt: 'Chita - Sola', 
+      title: 'SOLA',
+      client: 'CHITA',
+      type: 'image'
+    },
+    { 
+      id: '2', 
+      src: '/images/hero/saramalacara - mas feliz.png', 
+      alt: 'Sara Malacara - Más Feliz', 
+      title: 'MÁS FELIZ',
+      client: 'SARA MALACARA',
+      type: 'image'
+    },
+    { 
+      id: '3', 
+      src: '/images/hero/swaggerboys & dillom - el morocho, el rubio y el colo.png', 
+      alt: 'Swagger Boys & Dillom - El Morocho, El Rubio y El Colo', 
+      title: 'EL MOROCHO, EL RUBIO Y EL COLO',
+      client: 'SWAGGER BOYS & DILLOM',
+      type: 'image'
+    },
+  ];
 
   // Auto-advance slides every 7 seconds if not paused
   useEffect(() => {
     if (!isPlaying) return;
     
     const timer = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % dummyItems.length);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
     }, 7000);
 
     return () => clearInterval(timer);
-  }, [isPlaying]);
+  }, [isPlaying, items.length]);
 
   // Manejar el desplazamiento horizontal con rueda del ratón
   useEffect(() => {
@@ -69,9 +63,9 @@ const HeroMarquee = () => {
         
         // Determinar dirección de desplazamiento
         if (e.deltaX > 30 || (e.shiftKey && e.deltaY > 30)) {
-          setCurrentIndex(prev => (prev + 1) % dummyItems.length);
+          setCurrentIndex(prev => (prev + 1) % items.length);
         } else if (e.deltaX < -30 || (e.shiftKey && e.deltaY < -30)) {
-          setCurrentIndex(prev => prev === 0 ? dummyItems.length - 1 : prev - 1);
+          setCurrentIndex(prev => prev === 0 ? items.length - 1 : prev - 1);
         }
       }
       // Si es scroll vertical normal (sin shift), no hacemos nada y el navegador maneja el scroll
@@ -87,7 +81,7 @@ const HeroMarquee = () => {
         slider.removeEventListener('wheel', handleWheel);
       }
     };
-  }, []);
+  }, [items.length]);
 
   // Manejar eventos touch para deslizar en móviles
   useEffect(() => {
@@ -119,9 +113,9 @@ const HeroMarquee = () => {
       
       // Cambiar slide si el swipe fue significativo
       if (diff > 50) {
-        setCurrentIndex(prev => (prev + 1) % dummyItems.length);
+        setCurrentIndex(prev => (prev + 1) % items.length);
       } else if (diff < -50) {
-        setCurrentIndex(prev => prev === 0 ? dummyItems.length - 1 : prev - 1);
+        setCurrentIndex(prev => prev === 0 ? items.length - 1 : prev - 1);
       }
       
       isDraggingRef.current = false;
@@ -136,15 +130,15 @@ const HeroMarquee = () => {
       slider.removeEventListener('touchmove', handleTouchMove);
       slider.removeEventListener('touchend', handleTouchEnd);
     };
-  }, []);
+  }, [items.length]);
 
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % dummyItems.length);
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
       } else if (e.key === 'ArrowLeft') {
-        setCurrentIndex((prevIndex) => prevIndex === 0 ? dummyItems.length - 1 : prevIndex - 1);
+        setCurrentIndex((prevIndex) => prevIndex === 0 ? items.length - 1 : prevIndex - 1);
       }
     };
 
@@ -152,16 +146,16 @@ const HeroMarquee = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [items.length]);
 
   // Función para ir al slide anterior
   const goToPrevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? dummyItems.length - 1 : prevIndex - 1));
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? items.length - 1 : prevIndex - 1));
   };
 
   // Función para ir al siguiente slide
   const goToNextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % dummyItems.length);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
   };
 
   return (
@@ -178,7 +172,7 @@ const HeroMarquee = () => {
             className="h-full w-full flex transition-transform duration-500 ease-out"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
           >
-            {dummyItems.map((item, index) => (
+            {items.map((item, index) => (
               <div
                 key={item.id}
                 className="w-full h-full flex-shrink-0 flex items-center justify-center"
@@ -204,8 +198,6 @@ const HeroMarquee = () => {
               </div>
             ))}
           </div>
-          
-          {/* Instrucción de swipe para móvil - eliminamos esto de aquí */}
           
           {/* Flechas de navegación overlay */}
           <button 
@@ -233,26 +225,50 @@ const HeroMarquee = () => {
       {/* Project metadata below image/video */}
       <div className="flex justify-between items-center h-auto mt-4">
         {/* Project info - Left side */}
-        <div className="max-w-full w-full">
-          <p className="text-small tracking-wide opacity-70 mb-0.5 whitespace-nowrap overflow-hidden text-ellipsis">{dummyItems[currentIndex].client}</p>
-          <h2 className="text-p md:h5 lg:h4 tracking-wider font-medium whitespace-nowrap overflow-hidden text-ellipsis">{dummyItems[currentIndex].title}</h2>
+        <div className="max-w-[60%] w-full">
+          <p className="text-small tracking-wide opacity-70 mb-0.5 whitespace-nowrap overflow-hidden text-ellipsis">{items[currentIndex].client}</p>
+          <h2 className="text-p md:h5 lg:h4 tracking-wider font-medium whitespace-nowrap overflow-hidden text-ellipsis">{items[currentIndex].title}</h2>
         </div>
         
-        <div className="flex flex-col items-end gap-1">
+        {/* Contenedor de navegación - Derecha */}
+        <div className="flex items-center gap-4 min-w-[40%] justify-end">
+          {/* Botón de pausa/play */}
+          <button
+            onClick={() => setIsPlaying(!isPlaying)}
+            className="opacity-60 hover:opacity-100 transition-opacity"
+            aria-label={isPlaying ? "Pausar slider" : "Reanudar slider"}
+          >
+            {isPlaying ? (
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="2" width="3" height="8" fill="currentColor"/>
+                <rect x="7" y="2" width="3" height="8" fill="currentColor"/>
+              </svg>
+            ) : (
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 2L10 6L4 10V2Z" fill="currentColor"/>
+              </svg>
+            )}
+          </button>
+
           {/* Indicadores de navegación */}
           <div className="flex items-center gap-2">
-            {dummyItems.map((_, index) => (
+            {items.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
                 className={`w-2 h-2 rounded-full transition-all ${
                   index === currentIndex 
                     ? 'bg-foreground' 
-                    : 'bg-foreground/20 hover:bg-foreground/40'
+                    : 'bg-foreground/30'
                 }`}
-                aria-label={`Ir a slide ${index + 1}`}
+                aria-label={`Ir al slide ${index + 1}`}
               />
             ))}
+          </div>
+          
+          {/* Indicador de numeración */}
+          <div className="text-xs opacity-60">
+            {currentIndex + 1} / {items.length}
           </div>
         </div>
       </div>

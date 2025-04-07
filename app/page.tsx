@@ -1,27 +1,29 @@
-'use client';
-
 import Navbar from './components/Navbar';
 import HeroMarquee from './components/HeroMarquee';
 import WorksGrid from './components/WorksGrid';
 import Archive from './components/Archive';
 import Contact from './components/Contact';
-import { useScrollReveal, useTouchFeedback /* useSnapScroll */ } from './hooks/useScrollReveal';
 import ScrollIndicator from './components/ScrollIndicator';
+import { getHeroSlides, getPortfolioItems, getArchiveData } from '@/lib/contentful';
+import ClientWrapper from './components/ClientWrapper';
 
-export default function Home() {
-  // Activar los hooks de animación
-  useScrollReveal();
-  useTouchFeedback();
-  // useSnapScroll(); // Deshabilitado temporalmente para evitar problemas con los enlaces
+// Server Component principal
+export default async function Home() {
+  // Obtener datos de Contentful
+  const heroSlides = await getHeroSlides();
+  const portfolioItems = await getPortfolioItems();
+  const archiveSections = await getArchiveData();
   
   return (
     <main>
-      <Navbar />
-      <ScrollIndicator />
-      <HeroMarquee />
-      <WorksGrid />
-      <Archive />
-      <Contact />
+      <ClientWrapper>
+        <Navbar />
+        <ScrollIndicator />
+        <HeroMarquee slides={heroSlides} />
+        <WorksGrid works={portfolioItems} />
+        <Archive archiveData={archiveSections} />
+        <Contact />
+      </ClientWrapper>
     </main>
   );
 }
