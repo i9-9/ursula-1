@@ -77,16 +77,16 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   ];
 
   return (
-    <section id="selected-works" className="py-12 md:py-16 px-5 md:px-[30px] fade-in">
+    <section id="selected-works" className="py-12 md:py-16 px-2.5 md:px-[15px] fade-in">
       <div className="mb-10">
         <h2 className="h2 tracking-wide text-hover section-title section-title-delay-1">SELECTED WORK</h2>
       </div>
       
-      <div className="grid grid-cols-12 gap-4 md:gap-6">
+      <div className="w-full grid grid-cols-12 gap-y-8 gap-x-6 md:gap-x-8">
         {projects.map((project, index) => (
           <div 
             key={project.id}
-            className={`cursor-pointer group relative col-span-12 md:col-span-4 ${
+            className={`cursor-pointer group relative col-span-12 md:col-span-6 lg:col-span-4 ${
               index % 3 === 0 ? 'section-title section-title-delay-1' : 
               index % 3 === 1 ? 'section-title section-title-delay-2' : 'section-title section-title-delay-3'
             }`}
