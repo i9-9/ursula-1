@@ -380,7 +380,7 @@ const Archive = () => {
             animation: 'fadeIn 0.2s ease-in-out'
           }}
         >
-          <div className="w-52 h-36 relative shadow-xl rounded overflow-hidden">
+          <div className="w-[400px] h-[300px] relative shadow-xl rounded overflow-hidden">
             <Image
               src="/images/archive/1.jpg"
               alt={hoveredItem}

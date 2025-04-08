@@ -13,7 +13,21 @@ interface WorksGridProps {
 
 const WorksGrid = ({ works = [] }: WorksGridProps) => {
   const [selectedProject, setSelectedProject] = useState<PortfolioItem | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [hoveredProject, setHoveredProject] = useState<PortfolioItem | null>(null);
   
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, project: PortfolioItem) => {
+    setMousePosition({
+      x: e.clientX,
+      y: e.clientY
+    });
+    setHoveredProject(project);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredProject(null);
+  };
+
   const projects: PortfolioItem[] = works.length > 0 ? works : [
     {
       id: 'grid-1',
@@ -92,6 +106,8 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               index % 3 === 1 ? 'section-title section-title-delay-2' : 'section-title section-title-delay-3'
             }`}
             onClick={() => setSelectedProject(project)}
+            onMouseMove={(e) => handleMouseMove(e, project)}
+            onMouseLeave={handleMouseLeave}
           >
             <div className="relative w-full aspect-video overflow-hidden bg-gray-100 rounded-lg">
               <Image
@@ -110,15 +126,34 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   </svg>
                 </div>
               )}
-            </div>
-            
-            <div className="mt-2">
-              <h3 className="h5 font-medium">{project.title}</h3>
-              <p className="text-small opacity-80 -mt-0.5">{project.artist}</p>
+
+              {/* Mobile version - visible below image */}
+              <div className="md:hidden mt-2">
+                <h3 className="h5 font-medium">{project.title}</h3>
+                <p className="text-small opacity-80 -mt-0.5">{project.artist}</p>
+              </div>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Floating overlay that follows the mouse */}
+      {hoveredProject && (
+        <div 
+          className="hidden md:block fixed pointer-events-none z-50 fade-in"
+          style={{
+            left: mousePosition.x,
+            top: mousePosition.y,
+            transform: 'translate(-50%, -100%)',
+            marginTop: '-10px'
+          }}
+        >
+          <div className="bg-white p-2 rounded-lg shadow-lg w-[240px]">
+            <h3 className="h5 font-medium italic">{hoveredProject.title}</h3>
+            <p className="text-small opacity-80 -mt-0.5">{hoveredProject.artist}</p>
+          </div>
+        </div>
+      )}
       
       {typeof window !== 'undefined' && selectedProject && createPortal(
         <AnimatePresence>

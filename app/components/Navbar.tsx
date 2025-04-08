@@ -66,11 +66,11 @@ const Navbar = () => {
       }`}
     >
       <div className="w-full grid grid-cols-12 items-center px-2.5 md:px-[15px] h-full">
-        <Link href="/" className="text-p col-span-6 md:col-span-6 flex items-center h-full font-neue-haas-grotesk-display" style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}>
+        <Link href="/" className="text-[11px] col-span-6 md:col-span-6 flex items-center h-full font-neue-haas-grotesk-display" style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}>
           URSULA BENAVIDEZ
         </Link>
         
-        <div className="flex gap-4 md:gap-6 text-p col-span-6 md:col-start-7 md:col-span-6 items-center h-full justify-end md:justify-start">
+        <div className="flex gap-4 md:gap-6 text-[11px] col-span-6 md:col-start-7 md:col-span-3 items-center h-full justify-end md:justify-start">
           <Link 
             href="#selected-works" 
             className={`transition-all relative flex items-center h-full font-neue-haas-grotesk-display`}
@@ -101,6 +101,10 @@ const Navbar = () => {
               <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground"></span>
             )}
           </Link>
+        </div>
+
+        <div className="col-start-10 col-span-3 text-[11px] text-foreground hidden md:flex items-center h-full">
+          art direction & set design
         </div>
       </div>
     </nav>
