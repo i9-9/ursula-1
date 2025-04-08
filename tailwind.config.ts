@@ -10,6 +10,8 @@ const config: Config = {
     extend: {
       fontFamily: {
         'neue-montreal': ['var(--font-neue-montreal)'],
+        'neue-haas-grotesk-text': ['neue-haas-grotesk-text', 'sans-serif'],
+        'neue-haas-grotesk-display': ['neue-haas-grotesk-display', 'sans-serif'],
       },
       colors: {
         background: 'var(--background)',

@@ -3,14 +3,14 @@
 const Contact = () => {
   return (
     <>
-      <section id="contact" className="py-12 md:py-16 px-2.5 md:px-[15px]" style={{ zIndex: 1 }}>
-        <div className="mb-10">
-          <h2 className="h2 tracking-wide section-title section-title-delay-3">CONTACT</h2>
+      <section id="contact" className="py-6 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }}>
+        <div className="mb-4">
+          <h2 className="h2 text-hover section-title section-title-delay-2">CONTACT</h2>
         </div>
         
-        <div className="space-y-12">
+        <div className="space-y-6 md:space-y-4">
           <div className="archive-section">
-            <h3 className="text-p font-medium mb-8 tracking-wide section-title section-title-delay-4">GET IN TOUCH</h3>
+            <h3 className="text-p font-medium mb-8 section-title section-title-delay-4">GET IN TOUCH</h3>
             
             {/* Header for desktop */}
             <div className="hidden md:grid md:grid-cols-12 mb-3 text-xs opacity-60">
@@ -25,17 +25,17 @@ const Contact = () => {
             
             <div className="space-y-0">
               <div 
-                  className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1.5 mb-0.5 relative"
+                  className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0.25 relative"
                 >
                 {/* Desktop layout */}
                 <div className="hidden md:grid md:grid-cols-12 items-start">
                   <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p">Email</div>
                   <div className="col-start-7 col-span-6 text-left whitespace-nowrap overflow-visible text-p">
                     <a 
-                      href="mailto:ursulabenavidez19@gmail.com" 
-                      className="text-p hover:opacity-70 transition-opacity"
+                      href="mailto:info@ursulabenavidez.com" 
+                      className="text-foreground hover:opacity-70 transition-opacity"
                     >
-                      ursulabenavidez19@gmail.com
+                      info@ursulabenavidez.com
                     </a>
                   </div>
                 </div>
@@ -46,10 +46,10 @@ const Contact = () => {
                     <div className="font-medium text-p mb-1">Email</div>
                     <div className="text-sm">
                       <a 
-                        href="mailto:ursulabenavidez19@gmail.com" 
+                        href="mailto:info@ursulabenavidez.com" 
                         className="text-foreground hover:opacity-70 transition-opacity"
                       >
-                        ursulabenavidez19@gmail.com
+                        info@ursulabenavidez.com
                       </a>
                     </div>
                   </div>
@@ -57,7 +57,7 @@ const Contact = () => {
               </div>
               
               <div 
-                  className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1.5 mb-0.5 relative"
+                  className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0.25 relative"
                 >
                 {/* Desktop layout */}
                 <div className="hidden md:grid md:grid-cols-12 items-start">
@@ -91,7 +91,7 @@ const Contact = () => {
           </div>
 
           <div className="archive-section">
-            <h3 className="text-p font-medium mb-8 tracking-wide section-title section-title-delay-5">FOLLOW</h3>
+            <h3 className="text-p font-medium mb-8 section-title section-title-delay-5">FOLLOW</h3>
             
             {/* Header for desktop */}
             <div className="hidden md:grid md:grid-cols-12 mb-3 text-xs opacity-60">
@@ -106,7 +106,7 @@ const Contact = () => {
             
             <div className="space-y-0">
               <div 
-                  className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1.5 mb-0.5 relative"
+                  className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0.25 relative"
                 >
                 {/* Desktop layout */}
                 <div className="hidden md:grid md:grid-cols-12 items-start">
@@ -142,7 +142,7 @@ const Contact = () => {
               </div>
               
               <div 
-                  className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1.5 mb-0.5 relative"
+                  className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0.25 relative"
                 >
                 {/* Desktop layout */}
                 <div className="hidden md:grid md:grid-cols-12 items-start">

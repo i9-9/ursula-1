@@ -58,7 +58,7 @@ const ArchiveFilters = ({
             <button 
               key={category}
               className={`text-xs px-2 py-0.5 rounded-lg border border-foreground/10 transition-colors ${
-                selectedCategory === category ? 'bg-foreground text-background' : 'hover:bg-foreground/5'
+                selectedCategory === category ? 'bg-black/20 text-black' : 'hover:bg-black/5'
               }`}
               onClick={() => handleCategoryChange(category)}
             >
@@ -76,7 +76,7 @@ const ArchiveFilters = ({
             <button 
               key={year}
               className={`text-xs px-2 py-0.5 rounded-lg border border-foreground/10 transition-colors ${
-                selectedYear === year ? 'bg-foreground text-background' : 'hover:bg-foreground/5'
+                selectedYear === year ? 'bg-black/20 text-black' : 'hover:bg-black/5'
               }`}
               onClick={() => handleYearChange(year)}
             >
@@ -90,7 +90,7 @@ const ArchiveFilters = ({
       <div className="col-start-10 col-span-3 flex justify-start">
         {(selectedCategory || selectedYear) && (
           <button 
-            className="text-xs px-2 py-0.5 rounded-lg bg-foreground/10 hover:bg-foreground/20 transition-colors"
+            className="text-xs px-2 py-0.5 rounded-lg bg-black/10 hover:bg-black/20 transition-colors"
             onClick={onReset}
           >
             Reset

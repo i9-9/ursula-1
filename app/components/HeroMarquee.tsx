@@ -386,8 +386,8 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
       <div className="flex justify-between items-center h-auto mt-4">
         {/* Project info - Left side */}
         <div className="max-w-[60%] w-full">
-          <p className="text-small tracking-wide opacity-70 mb-0.5 whitespace-nowrap overflow-hidden text-ellipsis">{items[currentIndex].client}</p>
-          <h2 className="text-p md:h5 lg:h4 tracking-wider font-medium whitespace-nowrap overflow-hidden text-ellipsis">{items[currentIndex].title}</h2>
+          <p className="text-small opacity-70 mb-0.5 whitespace-nowrap overflow-hidden text-ellipsis">{items[currentIndex].client}</p>
+          <h2 className="text-p md:h5 lg:h4 font-medium whitespace-nowrap overflow-hidden text-ellipsis">{items[currentIndex].title}</h2>
         </div>
         
         {/* Contenedor de navegación - Derecha */}
@@ -418,8 +418,8 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
                 onClick={() => setCurrentIndex(index)}
                 className={`w-2 h-2 rounded-full transition-all ${
                   index === currentIndex 
-                    ? 'bg-foreground' 
-                    : 'bg-foreground/30'
+                    ? 'bg-black' 
+                    : 'bg-black/30'
                 }`}
                 aria-label={`Ir al slide ${index + 1}`}
               />

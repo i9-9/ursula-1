@@ -78,12 +78,12 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   ];
 
   return (
-    <section id="selected-works" className="py-12 md:py-16 px-2.5 md:px-[15px] fade-in">
-      <div className="mb-10">
-        <h2 className="h2 tracking-wide text-hover section-title section-title-delay-1">SELECTED WORK</h2>
+    <section id="selected-works" className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in">
+      <div className="mb-4">
+        <h2 className="h2 text-hover section-title section-title-delay-1">SELECTED WORK</h2>
       </div>
       
-      <div className="w-full grid grid-cols-12 gap-y-8 gap-x-6 md:gap-x-8">
+      <div className="w-full grid grid-cols-12 gap-y-6 gap-x-6 md:gap-x-8">
         {projects.map((project, index) => (
           <div 
             key={project.id}
@@ -113,7 +113,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             </div>
             
             <div className="mt-2">
-              <h3 className="h5 font-medium tracking-tighter">{project.title}</h3>
+              <h3 className="h5 font-medium">{project.title}</h3>
               <p className="text-small opacity-80 -mt-0.5">{project.artist}</p>
             </div>
           </div>

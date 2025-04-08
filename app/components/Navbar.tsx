@@ -66,40 +66,37 @@ const Navbar = () => {
       }`}
     >
       <div className="w-full grid grid-cols-12 items-center px-2.5 md:px-[15px] h-full">
-        <Link href="/" className="text-p tracking-wider col-span-6 md:col-span-6 flex items-center h-full">
+        <Link href="/" className="text-p col-span-6 md:col-span-6 flex items-center h-full font-neue-haas-grotesk-display" style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}>
           URSULA BENAVIDEZ
         </Link>
         
-        <div className="flex gap-6 md:gap-8 text-p col-span-6 md:col-start-7 md:col-span-6 items-center h-full justify-end md:justify-start">
+        <div className="flex gap-4 md:gap-6 text-p col-span-6 md:col-start-7 md:col-span-6 items-center h-full justify-end md:justify-start">
           <Link 
             href="#selected-works" 
-            className={`transition-all tracking-wide relative flex items-center h-full ${
-              activeSection === 'selected-works' ? 'opacity-100' : 'opacity-70 hover:opacity-100'
-            }`}
+            className={`transition-all relative flex items-center h-full font-neue-haas-grotesk-display`}
+            style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
           >
-            WORK
+            work
             {activeSection === 'selected-works' && (
               <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground"></span>
             )}
           </Link>
           <Link 
             href="#archive" 
-            className={`transition-all tracking-wide relative flex items-center h-full ${
-              activeSection === 'archive' ? 'opacity-100' : 'opacity-70 hover:opacity-100'
-            }`}
+            className={`transition-all relative flex items-center h-full font-neue-haas-grotesk-display`}
+            style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
           >
-            ARCHIVE
+            archive
             {activeSection === 'archive' && (
               <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground"></span>
             )}
           </Link>
           <Link 
             href="#contact" 
-            className={`transition-all tracking-wide relative flex items-center h-full ${
-              activeSection === 'contact' ? 'opacity-100' : 'opacity-70 hover:opacity-100'
-            }`}
+            className={`transition-all relative flex items-center h-full font-neue-haas-grotesk-display`}
+            style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
           >
-            CONTACT
+            contact
             {activeSection === 'contact' && (
               <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground"></span>
             )}

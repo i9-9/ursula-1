@@ -289,9 +289,9 @@ const Archive = () => {
   }, []);
 
   return (
-    <section id="archive" className="py-12 md:py-16 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
-      <div className="mb-10">
-        <h2 className="h2 tracking-wide text-hover section-title section-title-delay-2">ARCHIVE</h2>
+    <section id="archive" className="py-6 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
+      <div className="mb-4">
+        <h2 className="h2 text-hover section-title section-title-delay-2">ARCHIVE</h2>
       </div>
       
       {/* Componente de filtros */}
@@ -305,14 +305,14 @@ const Archive = () => {
         onReset={resetFilters}
       />
       
-      <div className="space-y-16 md:space-y-12">
+      <div className="space-y-6 md:space-y-4">
         {filteredSections.length > 0 ? (
           filteredSections.map((section, index) => (
             <div key={index} className="archive-section">
-              <h3 className={`h4 font-medium mb-6 md:mb-8 tracking-wide text-hover section-title section-title-delay-${index + 1}`}>{section.title}</h3>
+              <h3 className={`h4 font-medium mb-4 md:mb-6 text-hover section-title section-title-delay-${index + 1}`}>{section.title}</h3>
               
               {/* Header for desktop */}
-              <div className="hidden md:grid md:grid-cols-12 mb-3 text-xs opacity-60">
+              <div className="hidden md:grid md:grid-cols-12 mb-2 text-xs opacity-60">
                 <div className="col-span-6">{section.title === "PROJECT" ? "CLIENT" : "PROJECT"}</div>
                 <div className="col-start-7 col-span-3">YEAR</div>
                 <div className="col-start-10 col-span-3">PROD COMPANY</div>
@@ -327,7 +327,7 @@ const Archive = () => {
                 {section.items.map((item, idx) => (
                   <div 
                     key={idx} 
-                    className="group cursor-pointer hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1.5 mb-0.5 relative"
+                    className="group cursor-pointer hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0 relative"
                     onMouseEnter={() => setHoveredItem(item.project)}
                     onMouseLeave={() => setHoveredItem(null)}
                     onClick={() => handleItemClick(item)}
