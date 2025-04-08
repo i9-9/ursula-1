@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import LazyVideo from './LazyVideo';
 import { PortfolioItem } from '@/lib/contentful';
+import { createPortal } from 'react-dom';
 
 interface WorksGridProps {
   works: PortfolioItem[];
@@ -119,24 +120,24 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         ))}
       </div>
       
-      <AnimatePresence>
-        {selectedProject && (
+      {typeof window !== 'undefined' && selectedProject && createPortal(
+        <AnimatePresence>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[999999] flex items-center justify-center bg-background/90 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[99999999] flex items-center justify-center bg-background/90 p-4 backdrop-blur-sm"
             onClick={() => setSelectedProject(null)}
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="relative max-w-4xl w-full max-h-[90vh] overflow-hidden bg-background shadow-lg"
+              className="relative max-w-4xl w-full max-h-[90vh] overflow-hidden bg-background shadow-lg rounded-lg"
               onClick={(e) => e.stopPropagation()}
             >
               <button 
-                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-background/80 hover:bg-background touchable rounded-full border border-foreground/10"
+                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-background/80 hover:bg-background touchable rounded-lg border border-foreground/10"
                 onClick={() => setSelectedProject(null)}
               >
                 ✕
@@ -154,7 +155,6 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    {/* Implementar video player cuando estén disponibles los videos */}
                     {selectedProject.videoUrl ? (
                       <LazyVideo 
                         src={selectedProject.videoUrl} 
@@ -177,8 +177,9 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               </div>
             </motion.div>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   );
 };
