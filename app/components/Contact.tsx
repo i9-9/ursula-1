@@ -3,7 +3,7 @@
 const Contact = () => {
   return (
     <>
-      <section id="contact" className="py-12 md:py-16 px-5 md:px-[30px]" style={{ zIndex: 1 }}>
+      <section id="contact" className="py-12 md:py-16 px-2.5 md:px-[15px]" style={{ zIndex: 1 }}>
         <div className="mb-10">
           <h2 className="h2 tracking-wide section-title section-title-delay-3">CONTACT</h2>
         </div>
@@ -32,10 +32,10 @@ const Contact = () => {
                   <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p">Email</div>
                   <div className="col-start-7 col-span-6 text-left whitespace-nowrap overflow-visible text-p">
                     <a 
-                      href="mailto:contact@ursulabenavides.com" 
-                      className="text-foreground hover:opacity-70 transition-opacity"
+                      href="mailto:ursulabenavidez19@gmail.com" 
+                      className="text-p hover:opacity-70 transition-opacity"
                     >
-                      contact@ursulabenavides.com
+                      ursulabenavidez19@gmail.com
                     </a>
                   </div>
                 </div>
@@ -46,10 +46,10 @@ const Contact = () => {
                     <div className="font-medium text-p mb-1">Email</div>
                     <div className="text-sm">
                       <a 
-                        href="mailto:contact@ursulabenavides.com" 
+                        href="mailto:ursulabenavidez19@gmail.com" 
                         className="text-foreground hover:opacity-70 transition-opacity"
                       >
-                        contact@ursulabenavides.com
+                        ursulabenavidez19@gmail.com
                       </a>
                     </div>
                   </div>
@@ -64,10 +64,10 @@ const Contact = () => {
                   <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p">Phone</div>
                   <div className="col-start-7 col-span-6 text-left whitespace-nowrap overflow-visible text-p">
                     <a 
-                      href="tel:+341234567890" 
+                      href="tel:+5491167137800" 
                       className="text-foreground hover:opacity-70 transition-opacity"
                     >
-                      +34 123 456 7890
+                      +54 9 11 6713-7800
                     </a>
                   </div>
                 </div>
@@ -78,10 +78,10 @@ const Contact = () => {
                     <div className="font-medium text-p mb-1">Phone</div>
                     <div className="text-sm">
                       <a 
-                        href="tel:+341234567890" 
+                        href="tel:+5491167137800" 
                         className="text-foreground hover:opacity-70 transition-opacity"
                       >
-                        +34 123 456 7890
+                        +54 9 11 6713-7800
                       </a>
                     </div>
                   </div>

@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const Footer = () => {
   return (
-    <footer className="py-4 md:py-6 px-5 md:px-[30px]">
+    <footer className="py-4 md:py-6 px-2.5 md:px-[15px]">
       <div className="grid grid-cols-12 items-center">
         <p className="text-xs md:text-sm col-span-6 md:col-span-6 opacity-60">© {new Date().getFullYear()}</p>
         <Link 

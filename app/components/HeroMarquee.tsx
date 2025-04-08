@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import LazyVideo from './LazyVideo';
 import Image from 'next/image';
 
@@ -60,7 +60,7 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   const items = slides.length > 0 ? slides : defaultSlides;
 
   // Función para obtener el color complementario (inverso)
-  const getComplementaryColor = (hex: string): string => {
+  const getComplementaryColor = useCallback((hex: string): string => {
     // Convertir hex a RGB
     let r = parseInt(hex.slice(1, 3), 16);
     let g = parseInt(hex.slice(3, 5), 16);
@@ -73,10 +73,10 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
     
     // Convertir de nuevo a formato hex
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-  };
+  }, []);
 
   // Función para detectar el color en una posición específica
-  const getColorAtPosition = (
+  const getColorAtPosition = useCallback((
     x: number, 
     y: number, 
     element: HTMLImageElement | HTMLVideoElement,
@@ -110,10 +110,10 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
       console.error('Error al obtener color en posición:', error);
       return '#FFFFFF'; // Color por defecto en caso de error
     }
-  };
+  }, []);
 
   // Función para analizar el color de fondo en la posición de cada flecha
-  const analyzeArrowBackgrounds = () => {
+  const analyzeArrowBackgrounds = useCallback(() => {
     const currentSlideElement = document.querySelector(`.slide-${currentIndex}`);
     if (!currentSlideElement) return;
     
@@ -148,7 +148,7 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
     // Establecer colores complementarios para las flechas
     setLeftArrowColor(getComplementaryColor(leftColor));
     setRightArrowColor(getComplementaryColor(rightColor));
-  };
+  }, [currentIndex, items, getColorAtPosition, getComplementaryColor]);
 
   // Ejecutar análisis cuando cambia el slide
   useEffect(() => {
@@ -158,7 +158,7 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
     }, 200);
     
     return () => clearTimeout(timer);
-  }, [currentIndex]);
+  }, [analyzeArrowBackgrounds]);
 
   // Event listener para actualizar colores al redimensionar la ventana
   useEffect(() => {
@@ -170,7 +170,7 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [currentIndex]);
+  }, [analyzeArrowBackgrounds]);
 
   // Auto-advance slides every 7 seconds if not paused
   useEffect(() => {
@@ -335,12 +335,7 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
                     src={item.videoUrl} 
                     poster={item.src}
                     alt={item.alt || item.title}
-                    onLoadedData={() => {
-                      if (index === currentIndex) {
-                        // Actualizar colores cuando el video está listo
-                        setTimeout(analyzeArrowBackgrounds, 100);
-                      }
-                    }}
+                    className="w-full h-full"
                   />
                 </div>
               ) : (

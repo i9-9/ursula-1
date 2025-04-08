@@ -289,7 +289,7 @@ const Archive = () => {
   }, []);
 
   return (
-    <section id="archive" className="py-12 md:py-16 px-5 md:px-[30px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
+    <section id="archive" className="py-12 md:py-16 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
       <div className="mb-10">
         <h2 className="h2 tracking-wide text-hover section-title section-title-delay-2">ARCHIVE</h2>
       </div>

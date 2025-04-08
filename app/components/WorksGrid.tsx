@@ -93,7 +93,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             }`}
             onClick={() => setSelectedProject(project)}
           >
-            <div className="relative w-full aspect-video overflow-hidden bg-gray-100">
+            <div className="relative w-full aspect-video overflow-hidden bg-gray-100 rounded-lg">
               <Image
                 src={project.thumbnail}
                 alt={project.title}
@@ -126,18 +126,18 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[99999999] flex items-center justify-center bg-background/90 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[99999999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
             onClick={() => setSelectedProject(null)}
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="relative max-w-4xl w-full max-h-[90vh] overflow-hidden bg-background shadow-lg rounded-lg"
+              className="relative max-w-4xl w-full max-h-[90vh] overflow-hidden bg-white shadow-lg rounded-lg"
               onClick={(e) => e.stopPropagation()}
             >
               <button 
-                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-background/80 hover:bg-background touchable rounded-lg border border-foreground/10"
+                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-white/80 hover:bg-white touchable rounded-lg border border-black/10"
                 onClick={() => setSelectedProject(null)}
               >
                 ✕
@@ -170,7 +170,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 )}
               </div>
               
-              <div className="p-6 modal-content active" style={{ transitionDelay: '0.2s' }}>
+              <div className="p-6 modal-content active bg-white text-black" style={{ transitionDelay: '0.2s' }}>
                 <h3 className="h4 font-medium leading-tight mb-0">{selectedProject.title}</h3>
                 <p className="text-small opacity-80 mb-3">{selectedProject.artist}</p>
                 <p className="text-p">{selectedProject.description}</p>

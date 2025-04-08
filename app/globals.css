@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #f5f5f5;
@@ -55,18 +58,13 @@
   --font-mono: var(--font-neue-montreal);
 }
 
-/* Dark mode class for manual toggle instead of media query */
-.dark {
-  --background: #1a1a1a;
-  --foreground: #f5f5f5;
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-neue-montreal);
   font-size: var(--font-size-p);
   line-height: 1.5;
+  overflow-x: hidden;
 }
 
 /* Typography Classes */
@@ -226,4 +224,15 @@ html {
   transition: transform 0.15s cubic-bezier(0.2, 0, 0.38, 0.9);
   transform: scale(0.97);
   opacity: 0.8;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
