@@ -126,18 +126,12 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   </svg>
                 </div>
               )}
-
-              {/* Mobile version - visible below image */}
-              <div className="md:hidden mt-2">
-                <h3 className="h5 font-medium">{project.title}</h3>
-                <p className="text-small opacity-80 -mt-0.5">{project.artist}</p>
-              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Floating overlay that follows the mouse */}
+      {/* Floating overlay that follows the mouse (desktop only) */}
       {hoveredProject && (
         <div 
           className="hidden md:block fixed pointer-events-none z-50 fade-in"
@@ -151,6 +145,34 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
           <div className="bg-white p-2 rounded-lg shadow-lg w-[240px]">
             <h3 className="h5 font-medium italic">{hoveredProject.title}</h3>
             <p className="text-small opacity-80 -mt-0.5">{hoveredProject.artist}</p>
+          </div>
+        </div>
+      )}
+      
+      {/* Modal for mobile view */}
+      {selectedProject && (
+        <div className="md:hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg w-full max-w-md">
+            <div className="relative w-full aspect-video">
+              <Image
+                src={selectedProject.thumbnail}
+                alt={selectedProject.title}
+                fill
+                className="object-cover rounded-t-lg"
+              />
+            </div>
+            <div className="p-4">
+              <h3 className="h5 font-medium italic">{selectedProject.title}</h3>
+              <p className="text-small opacity-80 -mt-0.5">{selectedProject.artist}</p>
+            </div>
+            <div className="p-4 border-t border-gray-100 flex justify-end">
+              <button 
+                onClick={() => setSelectedProject(null)}
+                className="text-small px-4 py-2 bg-black text-white rounded"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

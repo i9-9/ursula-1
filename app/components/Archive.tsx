@@ -409,10 +409,10 @@ const Archive = () => {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-white max-w-sm w-full rounded-lg overflow-hidden"
+              className="bg-white max-w-[90vw] w-full rounded-lg overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative w-full aspect-video">
+              <div className="relative w-full aspect-[4/3]">
                 <Image 
                   src="/images/archive/1.jpg"
                   alt={selectedItem.project}
@@ -421,7 +421,7 @@ const Archive = () => {
                 />
               </div>
               
-              <div className="p-4">
+              <div className="p-6">
                 <h4 className="text-lg font-medium">{selectedItem.project}</h4>
                 <div className="mt-1 flex flex-wrap gap-x-2 text-sm opacity-70">
                   {selectedItem.year && <span>{selectedItem.year}</span>}
@@ -429,7 +429,7 @@ const Archive = () => {
                 </div>
               </div>
               
-              <div className="px-4 pb-4 flex justify-end">
+              <div className="px-6 pb-6 flex justify-end">
                 <button 
                   className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded"
                   onClick={handleCloseModal}
