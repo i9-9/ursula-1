@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,11 +59,6 @@ const Navbar = () => {
     };
   }, []);
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
-  };
-
   return (
     <nav 
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 h-[var(--navbar-height)] flex items-center ${
@@ -79,7 +73,7 @@ const Navbar = () => {
         <div className="flex gap-4 md:gap-6 text-[11px] col-span-6 md:col-start-7 md:col-span-3 items-center h-full justify-end md:justify-start">
           <Link 
             href="#selected-works" 
-            className={`transition-all relative flex items-center h-full font-neue-haas-grotesk-display`}
+            className={`relative flex items-center h-full font-neue-haas-grotesk-display`}
             style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
           >
             work
@@ -89,7 +83,7 @@ const Navbar = () => {
           </Link>
           <Link 
             href="#archive" 
-            className={`transition-all relative flex items-center h-full font-neue-haas-grotesk-display`}
+            className={`relative flex items-center h-full font-neue-haas-grotesk-display`}
             style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
           >
             archive
@@ -99,7 +93,7 @@ const Navbar = () => {
           </Link>
           <Link 
             href="#contact" 
-            className={`transition-all relative flex items-center h-full font-neue-haas-grotesk-display`}
+            className={`relative flex items-center h-full font-neue-haas-grotesk-display`}
             style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
           >
             contact
