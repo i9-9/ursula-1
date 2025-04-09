@@ -1,9 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import LazyVideo from './LazyVideo';
 import { PortfolioItem } from '@/lib/contentful';
 import { createPortal } from 'react-dom';
 
@@ -31,64 +29,64 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   const projects: PortfolioItem[] = works.length > 0 ? works : [
     {
       id: 'grid-1',
-      title: 'Te lo voy a decir',
-      artist: 'Conociendo Rusia',
+      title: 'Tres Pecados Después',
+      artist: 'Milo J',
       year: '2024',
-      thumbnail: '/images/grid-fixed/conociendo-rusia-te-lo-voy-a-decir.png',
-      fullImage: '/images/grid-fixed/conociendo-rusia-te-lo-voy-a-decir.png',
-      contentType: 'image',
-      description: 'Videoclip para Conociendo Rusia - Te lo voy a decir.',
+      thumbnail: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
+      fullImage: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
+      contentType: 'video',
+      description: 'Videoclip para Milo J - Tres Pecados Después.',
     },
     {
       id: 'grid-2',
-      title: 'Cinco Horas',
-      artist: 'Conociendo Rusia & Natalia Lafourcade',
+      title: 'Ali Oli',
+      artist: 'Milo J',
       year: '2024',
-      thumbnail: '/images/grid-fixed/conociendo-rusia-cinco-horas.png',
-      fullImage: '/images/grid-fixed/conociendo-rusia-cinco-horas.png',
-      contentType: 'image',
-      description: 'Videoclip para Conociendo Rusia & Natalia Lafourcade - Cinco Horas.',
+      thumbnail: '/videos_grid/2 Milo J - Ali Oli.mp4',
+      fullImage: '/videos_grid/2 Milo J - Ali Oli.mp4',
+      contentType: 'video',
+      description: 'Videoclip para Milo J - Ali Oli.',
     },
     {
       id: 'grid-3',
-      title: 'S.O.S',
-      artist: 'Taichu ft. Lali',
+      title: 'Sola',
+      artist: 'Chita',
       year: '2024',
-      thumbnail: '/images/grid-fixed/taichu-lali-sos.png',
-      fullImage: '/images/grid-fixed/taichu-lali-sos.png',
-      contentType: 'image',
-      description: 'Videoclip para Taichu ft. Lali - S.O.S.',
+      thumbnail: '/videos_grid/3 - Chita - Sola.mp4',
+      fullImage: '/videos_grid/3 - Chita - Sola.mp4',
+      contentType: 'video',
+      description: 'Videoclip para Chita - Sola.',
     },
     {
       id: 'grid-4',
-      title: 'Buenos tiempos',
-      artist: 'Dillom',
+      title: 'S.O.S',
+      artist: 'Taichu ft Lali',
       year: '2024',
-      thumbnail: '/images/grid-fixed/dillom-buenos-tiempos.png',
-      fullImage: '/images/grid-fixed/dillom-buenos-tiempos.png',
-      contentType: 'image',
-      description: 'Videoclip para Dillom - Buenos tiempos.',
+      thumbnail: '/videos_grid/4 - Taichu ft Lali - S.O.S.mp4',
+      fullImage: '/videos_grid/4 - Taichu ft Lali - S.O.S.mp4',
+      contentType: 'video',
+      description: 'Videoclip para Taichu ft Lali - S.O.S.',
     },
     {
       id: 'grid-5',
       title: 'Cirugía',
       artist: 'Dillom',
       year: '2024',
-      thumbnail: '/images/grid-fixed/dillom-cirugia.png',
-      fullImage: '/images/grid-fixed/dillom-cirugia.png',
-      contentType: 'image',
+      thumbnail: '/videos_grid/5 - Dillom - Cirugia.mp4',
+      fullImage: '/videos_grid/5 - Dillom - Cirugia.mp4',
+      contentType: 'video',
       description: 'Videoclip para Dillom - Cirugía.',
     },
     {
       id: 'grid-6',
-      title: 'Ali Oli',
-      artist: 'Milo J',
+      title: 'Bonafont MX',
+      artist: 'Dir. Carmen Rivoira - Prod. Mamahungara',
       year: '2024',
-      thumbnail: '/images/grid-fixed/milo-j-ali-oli.png',
-      fullImage: '/images/grid-fixed/milo-j-ali-oli.png',
-      contentType: 'image',
-      description: 'Videoclip para Milo J - Ali Oli.',
-    },
+      thumbnail: '/videos_grid/6 - Dir. Carmen Rivoira - Prod. Mamahungara - Bonafont MX.mp4',
+      fullImage: '/videos_grid/6 - Dir. Carmen Rivoira - Prod. Mamahungara - Bonafont MX.mp4',
+      contentType: 'video',
+      description: 'Commercial para Bonafont MX. Dirección: Carmen Rivoira. Producción: Mamahungara.',
+    }
   ];
 
   return (
@@ -110,22 +108,15 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             onMouseLeave={handleMouseLeave}
           >
             <div className="relative w-full aspect-video overflow-hidden bg-gray-100 rounded-lg">
-              <Image
+              <video
                 src={project.thumbnail}
-                alt={project.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 33vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                priority={index < 6}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                autoPlay
               />
-              
-              {project.contentType === 'video' && (
-                <div className="absolute bottom-2 right-2 bg-black/70 text-white p-1 rounded-full w-8 h-8 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                    <path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18c.62-.39.62-1.29 0-1.69L9.54 5.98C8.87 5.55 8 6.03 8 6.82z" />
-                  </svg>
-                </div>
-              )}
             </div>
           </div>
         ))}
@@ -142,7 +133,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             marginTop: '-10px'
           }}
         >
-          <div className="bg-white p-2 rounded-lg shadow-lg w-[240px]">
+          <div className="bg-white px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
             <h3 className="h5 font-medium italic">{hoveredProject.title}</h3>
             <p className="text-small opacity-80 -mt-0.5">{hoveredProject.artist}</p>
           </div>
@@ -154,11 +145,12 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         <div className="md:hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg w-full max-w-md">
             <div className="relative w-full aspect-video">
-              <Image
+              <video
                 src={selectedProject.thumbnail}
-                alt={selectedProject.title}
-                fill
-                className="object-cover rounded-t-lg"
+                className="w-full h-full object-cover rounded-t-lg"
+                controls
+                playsInline
+                autoPlay
               />
             </div>
             <div className="p-4">
@@ -201,30 +193,13 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               </button>
               
               <div className="relative w-full aspect-video bg-gray-100 modal-content active">
-                {selectedProject.contentType === 'image' ? (
-                  <Image
-                    src={selectedProject.fullImage}
-                    alt={selectedProject.title}
-                    fill
-                    sizes="(max-width: 1200px) 100vw, 1200px"
-                    className="object-cover"
-                    priority
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    {selectedProject.videoUrl ? (
-                      <LazyVideo 
-                        src={selectedProject.videoUrl} 
-                        poster={selectedProject.fullImage}
-                        alt={selectedProject.title}
-                      />
-                    ) : (
-                      <div className="text-center p-4">
-                        <p>Video próximamente</p>
-                      </div>
-                    )}
-                  </div>
-                )}
+                <video
+                  src={selectedProject.fullImage}
+                  className="w-full h-full object-cover"
+                  controls
+                  playsInline
+                  autoPlay
+                />
               </div>
               
               <div className="p-6 modal-content active bg-white text-black" style={{ transitionDelay: '0.2s' }}>
