@@ -91,8 +91,8 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
 
   return (
     <section id="selected-works" className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in">
-      <div className="mb-4">
-        <h2 className="h2 text-hover section-title section-title-delay-1">SELECTED WORK</h2>
+      <div className="mb-10">
+        <h2 className="h2 section-title section-title-delay-1">SELECTED WORK</h2>
       </div>
       
       <div className="w-full grid grid-cols-12 gap-y-6 gap-x-6 md:gap-x-8">

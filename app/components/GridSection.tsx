@@ -19,7 +19,7 @@ export default function GridSection({ items, onOpenModal }: GridSectionProps) {
   return (
     <section className="py-12 md:py-16 fade-in">
       <div className="mb-10">
-        <h2 className="h2 tracking-wide text-hover section-title section-title-delay-1">Grid Section</h2>
+        <h2 className="h2 tracking-wide section-title section-title-delay-1">Grid Section</h2>
       </div>
       <div className="">
         {items.map((item) => (

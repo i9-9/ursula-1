@@ -291,7 +291,7 @@ const Archive = () => {
   return (
     <section id="archive" className="py-6 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
       <div className="mb-4">
-        <h2 className="h2 text-hover section-title section-title-delay-2">ARCHIVE</h2>
+        <h2 className="h2 section-title section-title-delay-2">ARCHIVE</h2>
       </div>
       
       {/* Componente de filtros */}
@@ -309,7 +309,7 @@ const Archive = () => {
         {filteredSections.length > 0 ? (
           filteredSections.map((section, index) => (
             <div key={index} className="archive-section">
-              <h3 className={`h4 font-medium mb-4 md:mb-6 text-hover section-title section-title-delay-${index + 1}`}>{section.title}</h3>
+              <h3 className={`h4 font-medium mb-4 md:mb-6 section-title section-title-delay-${index + 1}`}>{section.title}</h3>
               
               {/* Header for desktop */}
               <div className="hidden md:grid md:grid-cols-12 mb-2 text-xs opacity-60">

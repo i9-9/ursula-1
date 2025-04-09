@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,6 +60,11 @@ const Navbar = () => {
     };
   }, []);
 
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle('dark');
+  };
+
   return (
     <nav 
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 h-[var(--navbar-height)] flex items-center ${
@@ -111,4 +117,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;
