@@ -93,12 +93,20 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   useScrollReveal();
 
   return (
-    <section id="selected-works" className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in pt-20 md:pt-0">
+    <section 
+      id="selected-works" 
+      className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in pt-20 md:pt-0"
+      aria-label="Selected works section"
+    >
       <div className="mb-10">
         <h2 className="h2 section-title section-title-delay-1 font-neue-haas-grotesk-display">SELECTED WORK</h2>
       </div>
       
-      <div className="w-full grid grid-cols-12 gap-y-6 gap-x-6 md:gap-x-8">
+      <div 
+        className="w-full grid grid-cols-12 gap-y-6 gap-x-6 md:gap-x-8"
+        role="grid"
+        aria-label="Projects grid"
+      >
         {projects.map((project, index) => (
           <div 
             key={project.id}
@@ -109,6 +117,14 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             onClick={() => setSelectedProject(project)}
             onMouseMove={(e) => handleMouseMove(e, project)}
             onMouseLeave={handleMouseLeave}
+            role="gridcell"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                setSelectedProject(project);
+              }
+            }}
+            aria-label={`${project.title} by ${project.artist}`}
           >
             <div className="relative w-full aspect-video overflow-hidden bg-gray-100 rounded-lg">
               <video
@@ -122,8 +138,9 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 onError={(e) => console.error('Error loading video:', e)}
                 onLoadStart={() => console.log('Video loading started')}
                 onLoadedData={() => console.log('Video loaded')}
+                aria-hidden="true"
               />
-              <div className="absolute inset-0 bg-black/5 animate-pulse" />
+              <div className="absolute inset-0 bg-black/5 animate-pulse" aria-hidden="true" />
             </div>
           </div>
         ))}
@@ -139,18 +156,25 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             transform: 'translate(-50%, -100%)',
             marginTop: '-10px'
           }}
+          role="tooltip"
+          aria-hidden="true"
         >
-          <div className="bg-white/95 dark:bg-black/95 border border-foreground/10 px-3 py-2 rounded-lg shadow-lg whitespace-nowrap backdrop-blur-sm">
-            <h3 className="h5 font-medium italic text-foreground">{hoveredProject.title}</h3>
-            <p className="text-small text-foreground/80 -mt-0.5">{hoveredProject.artist}</p>
+          <div className="fixed z-[999999] bg-white dark:bg-black border border-black/10 dark:border-white/10 px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
+            <h3 className="h5 font-medium italic text-black dark:text-white">{hoveredProject.title}</h3>
+            <p className="text-small text-black/80 dark:text-white/80 -mt-0.5">{hoveredProject.artist}</p>
           </div>
         </div>
       )}
       
       {/* Modal for mobile view */}
       {selectedProject && (
-        <div className="md:hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg w-full max-w-md">
+        <div 
+          className="md:hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
+          <div className="bg-white dark:bg-black rounded-lg w-full max-w-md">
             <div className="relative w-full aspect-video">
               <video
                 src={selectedProject.thumbnail}
@@ -159,16 +183,18 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 playsInline
                 autoPlay
                 muted
+                aria-label={`${selectedProject.title} video`}
               />
             </div>
             <div className="p-4">
-              <h3 className="h5 font-medium italic">{selectedProject.title}</h3>
-              <p className="text-small opacity-80 -mt-0.5">{selectedProject.artist}</p>
+              <h3 id="modal-title" className="h5 font-medium italic text-gray-900 dark:text-white">{selectedProject.title}</h3>
+              <p className="text-small text-gray-600 dark:text-gray-400 -mt-0.5">{selectedProject.artist}</p>
             </div>
-            <div className="p-4 border-t border-gray-100 flex justify-end">
+            <div className="p-4 border-t border-gray-100 dark:border-gray-800 flex justify-end">
               <button 
                 onClick={() => setSelectedProject(null)}
-                className="text-small px-4 py-2 bg-black text-white rounded"
+                className="text-small px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded"
+                aria-label="Close modal"
               >
                 Close
               </button>
@@ -185,22 +211,26 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[99999999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
             onClick={() => setSelectedProject(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="desktop-modal-title"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="relative max-w-4xl w-full max-h-[90vh] overflow-hidden bg-white shadow-lg rounded-lg"
+              className="relative max-w-4xl w-full max-h-[90vh] overflow-hidden bg-white dark:bg-black shadow-lg rounded-lg"
               onClick={(e) => e.stopPropagation()}
             >
               <button 
-                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-white/80 hover:bg-white touchable rounded-lg border border-black/10"
+                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-900 touchable rounded-lg border border-gray-200 dark:border-gray-800"
                 onClick={() => setSelectedProject(null)}
+                aria-label="Close modal"
               >
-                ✕
+                <span className="text-gray-900 dark:text-white">✕</span>
               </button>
               
-              <div className="relative w-full aspect-video bg-gray-100 modal-content active">
+              <div className="relative w-full aspect-video bg-gray-100 dark:bg-gray-900 modal-content active">
                 <video
                   src={selectedProject.fullImage}
                   className="w-full h-full object-cover"
@@ -208,13 +238,14 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   playsInline
                   autoPlay
                   muted
+                  aria-label={`${selectedProject.title} video`}
                 />
               </div>
               
-              <div className="p-6 modal-content active bg-white text-black" style={{ transitionDelay: '0.2s' }}>
-                <h3 className="h4 font-medium leading-tight mb-0">{selectedProject.title}</h3>
-                <p className="text-small opacity-80 mb-3">{selectedProject.artist}</p>
-                <p className="text-p">{selectedProject.description}</p>
+              <div className="p-6 modal-content active bg-white dark:bg-black">
+                <h3 id="desktop-modal-title" className="h4 font-medium leading-tight mb-0 text-gray-900 dark:text-white">{selectedProject.title}</h3>
+                <p className="text-small text-gray-600 dark:text-gray-400 mb-3">{selectedProject.artist}</p>
+                <p className="text-p text-gray-700 dark:text-gray-300">{selectedProject.description}</p>
               </div>
             </motion.div>
           </motion.div>
