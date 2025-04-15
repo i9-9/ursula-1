@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PortfolioItem } from '@/lib/contentful';
 import { createPortal } from 'react-dom';
+import { useScrollReveal } from '@/app/hooks/useScrollReveal';
 
 interface WorksGridProps {
   works: PortfolioItem[];
@@ -89,10 +90,12 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
     }
   ];
 
+  useScrollReveal();
+
   return (
     <section id="selected-works" className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in pt-20 md:pt-0">
       <div className="mb-10">
-        <h2 className="h2 section-title section-title-delay-1">SELECTED WORK</h2>
+        <h2 className="h2 section-title section-title-delay-1 font-neue-haas-grotesk-display">SELECTED WORK</h2>
       </div>
       
       <div className="w-full grid grid-cols-12 gap-y-6 gap-x-6 md:gap-x-8">
@@ -116,7 +119,11 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 playsInline
                 preload="metadata"
                 autoPlay
+                onError={(e) => console.error('Error loading video:', e)}
+                onLoadStart={() => console.log('Video loading started')}
+                onLoadedData={() => console.log('Video loaded')}
               />
+              <div className="absolute inset-0 bg-black/5 animate-pulse" />
             </div>
           </div>
         ))}
@@ -133,7 +140,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             marginTop: '-10px'
           }}
         >
-          <div className="bg-background border border-foreground/10 px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
+          <div className="bg-white/95 dark:bg-black/95 border border-foreground/10 px-3 py-2 rounded-lg shadow-lg whitespace-nowrap backdrop-blur-sm">
             <h3 className="h5 font-medium italic text-foreground">{hoveredProject.title}</h3>
             <p className="text-small text-foreground/80 -mt-0.5">{hoveredProject.artist}</p>
           </div>

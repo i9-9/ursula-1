@@ -4,6 +4,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import ArchiveFilters from './ArchiveFilters';
+import { useScrollReveal } from '@/app/hooks/useScrollReveal';
 
 interface ArchiveItem {
   project: string;
@@ -207,6 +208,8 @@ const archiveData: ArchiveDataProps = {
 };
 
 const Archive = () => {
+  useScrollReveal();
+
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<ArchiveItem | null>(null);
@@ -289,7 +292,7 @@ const Archive = () => {
   return (
     <section id="archive" className="py-6 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
       <div className="mb-4">
-        <h2 className="h2 section-title section-title-delay-2">ARCHIVE</h2>
+        <h2 className="h2 section-title section-title-delay-2 font-neue-haas-grotesk-display">ARCHIVE</h2>
       </div>
       
       <div 
