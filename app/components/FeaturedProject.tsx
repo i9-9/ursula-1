@@ -123,21 +123,19 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
   useEffect(() => {
     // Set initial scroll position to show first slide complete
     if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current
-      const containerWidth = container.clientWidth
-      const videoWidth = containerWidth * 0.9
+      const container = scrollContainerRef.current;
       // Start at the beginning of the first set
-      container.scrollLeft = 0
+      container.scrollLeft = 0;
     }
     
-    startAutoAdvance()
+    startAutoAdvance();
     
     return () => {
       if (intervalRef.current) {
-        clearInterval(intervalRef.current)
+        clearInterval(intervalRef.current);
       }
     }
-  }, [])
+  }, []);
 
   // Separate useEffect for handling auto-advance when currentIndex changes
   useEffect(() => {

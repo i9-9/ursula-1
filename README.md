@@ -1,87 +1,165 @@
 # Ursula Benavidez Portfolio
 
-An elegant and minimalist portfolio website for Ursula Benavidez, art director and set designer.
+Portfolio website for Ursula Benavidez, Art Director & Set Designer.
 
-## Features
+## Tech Stack
 
-- Responsive design for all devices
-- Minimalist, elegant layout with focus on visual content
-- Contentful CMS integration for content management
-- Smooth animations and transitions
-- Single page application with section navigation
+### Frontend Framework
+- **Next.js 14** - React framework with App Router
+- **TypeScript** - Type safety and better developer experience
+- **React** - UI library
 
-## Technology Stack
+### Styling
+- **Tailwind CSS** - Utility-first CSS framework
+- **Framer Motion** - Animation library
+- **CSS Variables** - Theme customization and dark mode
 
-- Next.js
-- TypeScript
-- Tailwind CSS
-- Contentful CMS
-- Framer Motion for animations
+### Fonts
+- **Neue Haas Grotesk** - Primary font family (Display & Text variants)
+- **Adobe Fonts (Typekit)** - Font delivery
 
-## Getting Started
+### Architecture
 
-### Prerequisites
+```
+app/
+├── components/         # React components
+│   ├── Archive.tsx    # Archive section with filterable projects
+│   ├── Contact.tsx    # Contact/About section
+│   ├── FeaturedProject.tsx  # Featured project carousel
+│   ├── Navbar.tsx    # Navigation bar with theme toggle
+│   └── WorksGrid.tsx  # Grid of works/projects
+├── globals.css        # Global styles and CSS variables
+├── layout.tsx         # Root layout with theme setup
+└── page.tsx          # Home page component
 
-- Node.js (v18 or newer)
-- npm or yarn
-- Contentful account
+public/
+├── images/           # Static images
+│   ├── archive/     # Archive section images
+│   ├── grid/        # Grid section images
+│   ├── hero/        # Hero section images
+│   └── logo/        # Logo files
+└── videos_grid/     # Video content
 
-### Installation
+```
 
-1. Clone the repository
-2. Install dependencies:
-   ```
-   npm install
-   ```
-3. Copy the `.env.local.example` file to `.env.local` and add your Contentful credentials:
-   ```
-   CONTENTFUL_SPACE_ID=your_space_id
-   CONTENTFUL_ACCESS_TOKEN=your_access_token
-   CONTENTFUL_PREVIEW_ACCESS_TOKEN=your_preview_token
-   ```
-4. Run the development server:
-   ```
-   npm run dev
-   ```
+### Key Features
 
-## Contentful Setup
+1. **Theme System**
+   - Light/Dark mode toggle
+   - CSS variables for consistent theming
+   - Persistent theme preference
 
-The project requires the following content models in Contentful:
+2. **Responsive Design**
+   - Mobile-first approach
+   - Breakpoint-specific layouts
+   - Touch-friendly interactions
 
-### Project
-- `title` (Text)
-- `client` (Text)
-- `year` (Text)
-- `role` (Text)
-- `mainImage` (Media)
-- `additionalImages` (Media, multiple)
-- `description` (Rich Text)
-- `featured` (Boolean)
-- `priority` (Number)
-- `slug` (Text)
-- `date` (Date)
+3. **Media Handling**
+   - Optimized image loading
+   - Video autoplay with performance considerations
+   - Lazy loading for better performance
 
-### ArchiveProject
-- `title` (Text)
-- `client` (Text)
-- `year` (Text)
-- `category` (Text)
-- `link` (Text, optional)
+4. **Interactive Elements**
+   - Smooth animations
+   - Hover effects
+   - Modal interactions
 
-### HeroItem
-- `image` (Media)
-- `title` (Text)
-- `order` (Number)
+5. **Navigation**
+   - Sticky navbar
+   - Section highlighting
+   - Smooth scrolling
 
-## Development
+### Component Structure
 
-The site is structured as a single-page application with the following sections:
-- Hero/Marquee
-- Featured Works
-- Other Projects Grid
-- Archive
-- Contact
+1. **Navbar**
+   - Fixed positioning
+   - Theme toggle
+   - Section navigation
+   - Responsive menu
 
-## Deployment
+2. **Featured Project**
+   - Infinite carousel
+   - Auto-advance functionality
+   - Video integration
 
-The site can be deployed to Vercel or other hosting platforms that support Next.js.
+3. **Works Grid**
+   - Responsive grid layout
+   - Hover tooltips
+   - Modal video player
+
+4. **Archive**
+   - Filterable project list
+   - Category organization
+   - Animated transitions
+
+5. **Contact/About**
+   - Contact information
+   - Social links
+   - Logo integration
+
+### Performance Considerations
+
+- Image optimization using Next.js Image component
+- Video lazy loading
+- CSS optimization with Tailwind
+- Component-level code splitting
+- Responsive image loading
+
+### Browser Support
+
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+- Responsive design for all screen sizes
+- Touch device support
+
+### Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+```
+
+### Environment Setup
+
+Required environment variables:
+```env
+NEXT_PUBLIC_SITE_URL=your-site-url
+```
+
+### Deployment
+
+The site is configured for deployment on Vercel, taking advantage of:
+- Edge Functions
+- Image Optimization
+- Automatic HTTPS
+- Global CDN
+
+### Future Improvements
+
+1. **Performance**
+   - Implement image lazy loading
+   - Add video compression
+   - Optimize bundle size
+
+2. **Features**
+   - Add search functionality
+   - Implement filtering in WorksGrid
+   - Add animations between page transitions
+
+3. **SEO**
+   - Add meta tags
+   - Implement sitemap
+   - Add structured data
+
+4. **Accessibility**
+   - Improve keyboard navigation
+   - Add ARIA labels
+   - Enhance screen reader support
