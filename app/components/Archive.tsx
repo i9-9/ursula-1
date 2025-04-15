@@ -24,7 +24,7 @@ interface ArchiveDataProps {
 const archiveData: ArchiveDataProps = {
   sections: [
     {
-      title: "VIDEOCLIP",
+      title: "MUSIC VIDEO",
       items: [
         {
           project: "yatra - pelirroja",
@@ -124,7 +124,7 @@ const archiveData: ArchiveDataProps = {
       ]
     },
     {
-      title: "PROJECT",
+      title: "COMMERCIAL",
       items: [
         {
           project: "spotify argentina",
@@ -214,6 +214,7 @@ const Archive = () => {
     category: null,
     year: null
   });
+  const [isExpanded, setIsExpanded] = useState(false);
 
   // Get unique years from all items
   const years = useMemo(() => {
@@ -255,13 +256,10 @@ const Archive = () => {
     });
   }, [filters]);
 
-  // Handler para registrar la posición del mouse
   const handleMouseMove = (e: React.MouseEvent) => {
-    // Ajustamos la posición para evitar que el tooltip salga de la ventana
-    const tooltipWidth = 210; // Ancho del tooltip incluyendo el margen
-    const tooltipHeight = 150; // Alto del tooltip incluyendo el margen
+    const tooltipWidth = 210;
+    const tooltipHeight = 150;
     
-    // Comprobamos si estamos cerca del borde derecho o inferior
     const x = e.clientX + tooltipWidth > window.innerWidth 
               ? e.clientX - tooltipWidth 
               : e.clientX;
@@ -294,80 +292,110 @@ const Archive = () => {
         <h2 className="h2 section-title section-title-delay-2">ARCHIVE</h2>
       </div>
       
-      {/* Componente de filtros */}
-      <ArchiveFilters 
-        categories={archiveData.sections.map(section => section.title)} 
-        years={years} 
-        selectedCategory={filters.category}
-        selectedYear={filters.year}
-        onCategoryChange={(category) => setFilters(prev => ({ ...prev, category }))}
-        onYearChange={(year) => setFilters(prev => ({ ...prev, year }))}
-        onReset={resetFilters}
-      />
+      <div 
+        className="cursor-pointer py-4 flex items-center justify-between border-t border-foreground/10"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <h3 className="h4 font-medium section-title section-title-delay-1">
+          {isExpanded ? 'Close' : 'Open'}
+        </h3>
+        <div className={`text-xs opacity-60 transition-transform duration-300 ${
+          isExpanded ? 'rotate-180' : ''
+        }`}>
+          ▼
+        </div>
+      </div>
       
-      <div className="space-y-6 md:space-y-4">
-        {filteredSections.length > 0 ? (
-          filteredSections.map((section, index) => (
-            <div key={index} className="archive-section">
-              <h3 className={`h4 font-medium mb-4 md:mb-6 section-title section-title-delay-${index + 1}`}>{section.title}</h3>
-              
-              {/* Header for desktop */}
-              <div className="hidden md:grid md:grid-cols-12 mb-2 text-xs opacity-60">
-                <div className="col-span-6">{section.title === "PROJECT" ? "CLIENT" : "PROJECT"}</div>
-                <div className="col-start-7 col-span-3">YEAR</div>
-                <div className="col-start-10 col-span-3">PROD COMPANY</div>
-              </div>
-              
-              {/* Header for mobile */}
-              <div className="md:hidden mb-3 text-xs opacity-60">
-                <div>{section.title === "PROJECT" ? "CLIENT" : "PROJECT"}</div>
-              </div>
-              
-              <div className="space-y-0">
-                {section.items.map((item, idx) => (
-                  <div 
-                    key={idx} 
-                    className="group cursor-pointer hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0 relative"
-                    onMouseEnter={() => setHoveredItem(item.project)}
-                    onMouseLeave={() => setHoveredItem(null)}
-                    onClick={() => handleItemClick(item)}
-                  >
-                    {/* Desktop layout (3 columns) */}
-                    <div className="hidden md:grid md:grid-cols-12 items-start">
-                      <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p">{item.project}</div>
-                      <div className="col-start-7 col-span-3 text-left whitespace-nowrap text-p">{item.year}</div>
-                      <div className="col-start-10 col-span-3 text-left whitespace-nowrap overflow-visible text-p">{item.company}</div>
-                    </div>
-                    
-                    {/* Mobile layout */}
-                    <div className="md:hidden">
-                      <div className="flex flex-col">
-                        <div className="font-medium text-p mb-1">{item.project}</div>
-                        {(item.year || item.company) && (
-                          <div className="text-sm opacity-70 flex items-center flex-wrap">
-                            {item.year && <span className="mr-2">{item.year}</span>}
-                            {item.company && <span>{item.company}</span>}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            {/* Componente de filtros */}
+            <ArchiveFilters 
+              categories={archiveData.sections.map(section => section.title)} 
+              years={years} 
+              selectedCategory={filters.category}
+              selectedYear={filters.year}
+              onCategoryChange={(category) => setFilters(prev => ({ ...prev, category }))}
+              onYearChange={(year) => setFilters(prev => ({ ...prev, year }))}
+              onReset={resetFilters}
+            />
+            
+            <div className="space-y-0">
+              {filteredSections.length > 0 ? (
+                filteredSections.map((section, index) => (
+                  <div key={index} className="archive-section">
+                    <div className={`py-4`}>
+                      <h3 className={`h4 font-medium section-title section-title-delay-${index + 1}`}>
+                        {section.title}
+                      </h3>
+                      
+                      {/* Header for desktop */}
+                      <div className="hidden md:grid md:grid-cols-12 mb-2 text-xs opacity-60">
+                        <div className="col-span-6">{section.title === "COMMERCIAL" ? "CLIENT" : "PROJECT"}</div>
+                        <div className="col-start-7 col-span-3">YEAR</div>
+                        <div className="col-start-10 col-span-3">PROD COMPANY</div>
+                      </div>
+                      
+                      {/* Header for mobile */}
+                      <div className="md:hidden mb-3 text-xs opacity-60">
+                        <div>{section.title === "COMMERCIAL" ? "CLIENT" : "PROJECT"}</div>
+                      </div>
+                      
+                      <div className="space-y-0">
+                        {section.items.map((item, idx) => (
+                          <div 
+                            key={idx} 
+                            className="group cursor-pointer hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0 relative"
+                            onMouseEnter={() => setHoveredItem(item.project)}
+                            onMouseLeave={() => setHoveredItem(null)}
+                            onClick={() => handleItemClick(item)}
+                          >
+                            {/* Desktop layout (3 columns) */}
+                            <div className="hidden md:grid md:grid-cols-12 items-start">
+                              <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p">{item.project}</div>
+                              <div className="col-start-7 col-span-3 text-left whitespace-nowrap text-p">{item.year}</div>
+                              <div className="col-start-10 col-span-3 text-left whitespace-nowrap overflow-visible text-p">{item.company}</div>
+                            </div>
+                            
+                            {/* Mobile layout */}
+                            <div className="md:hidden">
+                              <div className="flex flex-col">
+                                <div className="font-medium text-p mb-1">{item.project}</div>
+                                {(item.year || item.company) && (
+                                  <div className="text-sm opacity-70 flex items-center flex-wrap">
+                                    {item.year && <span className="mr-2">{item.year}</span>}
+                                    {item.company && <span>{item.company}</span>}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                           </div>
-                        )}
+                        ))}
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                ))
+              ) : (
+                <div className="py-10 text-center opacity-60">
+                  <p>No results found for selected filters</p>
+                  <button 
+                    className="mt-4 text-xs px-3 py-1 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors"
+                    onClick={resetFilters}
+                  >
+                    Reset filters
+                  </button>
+                </div>
+              )}
             </div>
-          ))
-        ) : (
-          <div className="py-10 text-center opacity-60">
-            <p>No results found for selected filters</p>
-            <button 
-              className="mt-4 text-xs px-3 py-1 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors"
-              onClick={resetFilters}
-            >
-              Reset filters
-            </button>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
 
       {/* Tooltip de imagen que sigue al cursor (solo en desktop) */}
       {hoveredItem && (

@@ -90,7 +90,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   ];
 
   return (
-    <section id="selected-works" className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in">
+    <section id="selected-works" className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in pt-20 md:pt-0">
       <div className="mb-10">
         <h2 className="h2 section-title section-title-delay-1">SELECTED WORK</h2>
       </div>
@@ -133,9 +133,9 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             marginTop: '-10px'
           }}
         >
-          <div className="bg-white px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
-            <h3 className="h5 font-medium italic">{hoveredProject.title}</h3>
-            <p className="text-small opacity-80 -mt-0.5">{hoveredProject.artist}</p>
+          <div className="bg-background border border-foreground/10 px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
+            <h3 className="h5 font-medium italic text-foreground">{hoveredProject.title}</h3>
+            <p className="text-small text-foreground/80 -mt-0.5">{hoveredProject.artist}</p>
           </div>
         </div>
       )}
@@ -151,6 +151,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 controls
                 playsInline
                 autoPlay
+                muted
               />
             </div>
             <div className="p-4">
@@ -199,6 +200,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   controls
                   playsInline
                   autoPlay
+                  muted
                 />
               </div>
               

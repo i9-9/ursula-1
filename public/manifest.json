@@ -1,0 +1,21 @@
+{
+  "name": "Ursula Benavidez - Art Direction",
+  "short_name": "Ursula Benavidez",
+  "description": "Ursula Benavidez - Art Direction",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f5f5",
+  "theme_color": "#1a1a1a",
+  "icons": [
+    {
+      "src": "/seo/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/seo/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+} 

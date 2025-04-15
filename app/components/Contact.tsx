@@ -1,17 +1,17 @@
 'use client';
 
+import Image from 'next/image';
+
 const Contact = () => {
   return (
     <>
       <section id="contact" className="py-6 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }}>
         <div className="mb-4">
-          <h2 className="h2 section-title section-title-delay-2">CONTACT</h2>
+          <h2 className="h2 section-title section-title-delay-2">ABOUT</h2>
         </div>
         
         <div className="space-y-6 md:space-y-4">
           <div className="archive-section">
-            <h3 className="text-p font-medium mb-8 section-title section-title-delay-4">GET IN TOUCH</h3>
-            
             {/* Header for desktop */}
             <div className="hidden md:grid md:grid-cols-12 mb-3 text-xs opacity-60">
               <div className="col-span-6">TYPE</div>
@@ -24,6 +24,28 @@ const Contact = () => {
             </div>
             
             <div className="space-y-0">
+              <div 
+                  className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0.25 relative"
+                >
+                {/* Desktop layout */}
+                <div className="hidden md:grid md:grid-cols-12 items-start">
+                  <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p">Location</div>
+                  <div className="col-start-7 col-span-6 text-left whitespace-nowrap overflow-visible text-p">
+                    Buenos Aires, Argentina
+                  </div>
+                </div>
+                
+                {/* Mobile layout */}
+                <div className="md:hidden">
+                  <div className="flex flex-col">
+                    <div className="font-medium text-p mb-1">Location</div>
+                    <div className="text-sm">
+                      Buenos Aires, Argentina
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
               <div 
                   className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0.25 relative"
                 >
@@ -87,24 +109,7 @@ const Contact = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="archive-section">
-            <h3 className="text-p font-medium mb-8 section-title section-title-delay-5">FOLLOW</h3>
-            
-            {/* Header for desktop */}
-            <div className="hidden md:grid md:grid-cols-12 mb-3 text-xs opacity-60">
-              <div className="col-span-6">PLATFORM</div>
-              <div className="col-start-7 col-span-6 text-left">LINK</div>
-            </div>
-            
-            {/* Header for mobile */}
-            <div className="md:hidden mb-3 text-xs opacity-60">
-              <div>SOCIAL MEDIA</div>
-            </div>
-            
-            <div className="space-y-0">
               <div 
                   className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0.25 relative"
                 >
@@ -140,43 +145,19 @@ const Contact = () => {
                   </div>
                 </div>
               </div>
-              
-              <div 
-                  className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0.25 relative"
-                >
-                {/* Desktop layout */}
-                <div className="hidden md:grid md:grid-cols-12 items-start">
-                  <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p">Vimeo</div>
-                  <div className="col-start-7 col-span-6 text-left whitespace-nowrap overflow-visible text-p">
-                    <a 
-                      href="https://vimeo.com/ursulabenavidez" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-foreground hover:opacity-70 transition-opacity"
-                    >
-                      vimeo.com/ursulabenavidez
-                    </a>
-                  </div>
-                </div>
-                
-                {/* Mobile layout */}
-                <div className="md:hidden">
-                  <div className="flex flex-col">
-                    <div className="font-medium text-p mb-1">Vimeo</div>
-                    <div className="text-sm">
-                      <a 
-                        href="https://vimeo.com/ursulabenavidez" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-foreground hover:opacity-70 transition-opacity"
-                      >
-                        vimeo.com/ursulabenavidez
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
+          </div>
+        </div>
+
+        {/* Logo */}
+        <div className="absolute bottom-0 right-0 w-24 h-24 md:w-32 md:h-32 pr-2.5 md:pr-[15px] pb-6 md:pb-8">
+          <div className="relative w-full h-full">
+            <Image
+              src="/images/logo/logo.svg"
+              alt="Ursula Benavidez Logo"
+              fill
+              className="object-contain"
+            />
           </div>
         </div>
       </section>

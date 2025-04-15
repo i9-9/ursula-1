@@ -1,0 +1,209 @@
+'use client'
+
+import { useState, useRef, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { PortfolioItem } from '@/lib/contentful'
+
+interface FeaturedProjectProps {
+  works: PortfolioItem[]
+}
+
+const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const isScrollingRef = useRef(false)
+
+  const projects = works.length > 0 ? works : [
+    {
+      id: 'grid-1',
+      title: 'Tres Pecados Después',
+      artist: 'Milo J',
+      year: '2024',
+      thumbnail: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
+      fullImage: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
+      contentType: 'video',
+      description: 'Videoclip para Milo J - Tres Pecados Después.',
+    },
+    {
+      id: 'grid-2',
+      title: 'Ali Oli',
+      artist: 'Milo J',
+      year: '2024',
+      thumbnail: '/videos_grid/2 Milo J - Ali Oli.mp4',
+      fullImage: '/videos_grid/2 Milo J - Ali Oli.mp4',
+      contentType: 'video',
+      description: 'Videoclip para Milo J - Ali Oli.',
+    },
+    {
+      id: 'grid-3',
+      title: 'Sola',
+      artist: 'Chita',
+      year: '2024',
+      thumbnail: '/videos_grid/3 - Chita - Sola.mp4',
+      fullImage: '/videos_grid/3 - Chita - Sola.mp4',
+      contentType: 'video',
+      description: 'Videoclip para Chita - Sola.',
+    },
+    {
+      id: 'grid-4',
+      title: 'S.O.S',
+      artist: 'Taichu ft Lali',
+      year: '2024',
+      thumbnail: '/videos_grid/4 - Taichu ft Lali - S.O.S.mp4',
+      fullImage: '/videos_grid/4 - Taichu ft Lali - S.O.S.mp4',
+      contentType: 'video',
+      description: 'Videoclip para Taichu ft Lali - S.O.S.',
+    },
+    {
+      id: 'grid-5',
+      title: 'Cirugía',
+      artist: 'Dillom',
+      year: '2024',
+      thumbnail: '/videos_grid/5 - Dillom - Cirugia.mp4',
+      fullImage: '/videos_grid/5 - Dillom - Cirugia.mp4',
+      contentType: 'video',
+      description: 'Videoclip para Dillom - Cirugía.',
+    },
+    {
+      id: 'grid-6',
+      title: 'Bonafont MX',
+      artist: 'Dir. Carmen Rivoira - Prod. Mamahungara',
+      year: '2024',
+      thumbnail: '/videos_grid/6 - Dir. Carmen Rivoira - Prod. Mamahungara - Bonafont MX.mp4',
+      fullImage: '/videos_grid/6 - Dir. Carmen Rivoira - Prod. Mamahungara - Bonafont MX.mp4',
+      contentType: 'video',
+      description: 'Commercial para Bonafont MX. Dirección: Carmen Rivoira. Producción: Mamahungara.',
+    }
+  ]
+
+  const handleScroll = () => {
+    if (!scrollContainerRef.current || isScrollingRef.current) return
+    
+    const container = scrollContainerRef.current
+    const scrollLeft = container.scrollLeft
+    const containerWidth = container.clientWidth
+    const videoWidth = containerWidth * 0.9
+    const totalWidth = videoWidth * projects.length
+    
+    // Calculate current index
+    const newIndex = Math.floor(scrollLeft / videoWidth) % projects.length
+    if (newIndex !== currentIndex) {
+      setCurrentIndex(newIndex)
+    }
+
+    // Check if we need to reset position
+    if (scrollLeft >= totalWidth * 2) {
+      isScrollingRef.current = true
+      container.scrollLeft = totalWidth
+      isScrollingRef.current = false
+    } else if (scrollLeft <= 0) {
+      isScrollingRef.current = true
+      container.scrollLeft = totalWidth
+      isScrollingRef.current = false
+    }
+  }
+
+  const startAutoAdvance = () => {
+    intervalRef.current = setInterval(() => {
+      if (!scrollContainerRef.current || isScrollingRef.current) return
+      
+      const container = scrollContainerRef.current
+      const containerWidth = container.clientWidth
+      const videoWidth = containerWidth * 0.9
+      const nextPosition = container.scrollLeft + videoWidth
+      
+      container.scrollTo({
+        left: nextPosition,
+        behavior: 'smooth'
+      })
+    }, 15000)
+  }
+
+  useEffect(() => {
+    // Set initial scroll position to show first slide complete
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current
+      const containerWidth = container.clientWidth
+      const videoWidth = containerWidth * 0.9
+      // Start at the beginning of the first set
+      container.scrollLeft = 0
+    }
+    
+    startAutoAdvance()
+    
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [])
+
+  // Separate useEffect for handling auto-advance when currentIndex changes
+  useEffect(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+    }
+    startAutoAdvance()
+  }, [currentIndex])
+
+  return (
+    <section 
+      className="relative px-2.5 md:px-[15px] bg-background text-foreground hidden md:block"
+      style={{ height: '100vh' }}
+    >
+      {/* Scroll Container */}
+      <div 
+        ref={scrollContainerRef}
+        className="h-full overflow-x-auto overflow-y-hidden"
+        onScroll={handleScroll}
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
+      >
+        <div className="flex h-full items-center" style={{ 
+          width: `${projects.length * 300}%`,
+          gap: '15px',
+        }}>
+          {[...projects, ...projects, ...projects].map((project, index) => (
+            <div
+              key={`${project.id}-${index}`}
+              className="relative flex flex-col justify-center"
+              style={{ 
+                width: '90%',
+                flexShrink: 0,
+                maxWidth: '1200px'
+              }}
+            >
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="relative w-full"
+                style={{ paddingBottom: '56.25%' }}
+              >
+                <video
+                  src={project.fullImage}
+                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                />
+              </motion.div>
+              
+              {/* Project Info */}
+              <div className="mt-4">
+                <h2 className="h2 font-neue-haas-grotesk-display">{project.title}</h2>
+                <p className="text-small opacity-70">{project.artist}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default FeaturedProject 
