@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PortfolioItem } from '@/lib/contentful';
 import { createPortal } from 'react-dom';
@@ -14,6 +14,27 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   const [selectedProject, setSelectedProject] = useState<PortfolioItem | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredProject, setHoveredProject] = useState<PortfolioItem | null>(null);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  // Detectar el tema actual
+  useEffect(() => {
+    // Verificar inicialmente
+    setIsDarkMode(document.documentElement.classList.contains('dark'));
+    
+    // Escuchar cambios en el tema
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          setIsDarkMode(document.documentElement.classList.contains('dark'));
+        }
+      });
+    });
+    
+    observer.observe(document.documentElement, { attributes: true });
+    
+    return () => observer.disconnect();
+  }, []);
   
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, project: PortfolioItem) => {
     setMousePosition({
@@ -21,10 +42,12 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
       y: e.clientY
     });
     setHoveredProject(project);
+    setTooltipVisible(true);
   };
 
   const handleMouseLeave = () => {
     setHoveredProject(null);
+    setTooltipVisible(false);
   };
 
   const projects: PortfolioItem[] = works.length > 0 ? works : [
@@ -146,24 +169,45 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         ))}
       </div>
 
-      {/* Floating overlay that follows the mouse (desktop only) */}
-      {hoveredProject && (
+      {/* Tooltip completamente independiente */}
+      {typeof window !== 'undefined' && hoveredProject && tooltipVisible && createPortal(
         <div 
-          className="hidden md:block fixed pointer-events-none z-50 fade-in"
           style={{
-            left: mousePosition.x,
-            top: mousePosition.y,
+            position: 'fixed',
+            left: `${mousePosition.x}px`,
+            top: `${mousePosition.y}px`,
             transform: 'translate(-50%, -100%)',
-            marginTop: '-10px'
+            marginTop: '-10px',
+            zIndex: 9999,
+            pointerEvents: 'none',
+            backgroundColor: 'var(--background)',
+            color: 'var(--foreground)',
+            borderRadius: '8px',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
+            padding: '8px 12px',
+            border: '1px solid rgba(0, 0, 0, 0.1)',
+            whiteSpace: 'nowrap',
           }}
+          className="hidden md:block"
           role="tooltip"
           aria-hidden="true"
         >
-          <div className="fixed z-[999999] bg-white dark:bg-black border border-black/10 dark:border-white/10 px-3 py-2 rounded-lg shadow-lg whitespace-nowrap">
-            <h3 className="h5 font-medium italic text-black dark:text-white">{hoveredProject.title}</h3>
-            <p className="text-small text-black/80 dark:text-white/80 -mt-0.5">{hoveredProject.artist}</p>
-          </div>
-        </div>
+          <h3 style={{ 
+            margin: 0, 
+            fontStyle: 'italic', 
+            fontWeight: 500, 
+            fontSize: 'var(--font-size-h5)',
+            color: 'var(--foreground)'
+          }}>{hoveredProject.title}</h3>
+          <p style={{ 
+            margin: 0, 
+            marginTop: '-2px', 
+            fontSize: 'var(--font-size-small)',
+            color: 'var(--foreground)',
+            opacity: 0.8
+          }}>{hoveredProject.artist}</p>
+        </div>,
+        document.body
       )}
       
       {/* Modal for mobile view */}
@@ -174,7 +218,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
           aria-modal="true"
           aria-labelledby="modal-title"
         >
-          <div className="bg-white dark:bg-black rounded-lg w-full max-w-md">
+          <div className="bg-background text-foreground rounded-lg w-full max-w-md">
             <div className="relative w-full aspect-video">
               <video
                 src={selectedProject.thumbnail}
@@ -187,13 +231,13 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               />
             </div>
             <div className="p-4">
-              <h3 id="modal-title" className="h5 font-medium italic text-gray-900 dark:text-white">{selectedProject.title}</h3>
-              <p className="text-small text-gray-600 dark:text-gray-400 -mt-0.5">{selectedProject.artist}</p>
+              <h3 id="modal-title" className="h5 font-medium italic text-foreground">{selectedProject.title}</h3>
+              <p className="text-small text-foreground/80 -mt-0.5">{selectedProject.artist}</p>
             </div>
-            <div className="p-4 border-t border-gray-100 dark:border-gray-800 flex justify-end">
+            <div className="p-4 border-t border-foreground/10 flex justify-end">
               <button 
                 onClick={() => setSelectedProject(null)}
-                className="text-small px-4 py-2 bg-black dark:bg-white text-white dark:text-black rounded"
+                className="text-small px-4 py-2 bg-foreground text-background rounded"
                 aria-label="Close modal"
               >
                 Close
@@ -209,28 +253,49 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[99999999] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[99999999] flex items-center justify-center p-4"
             onClick={() => setSelectedProject(null)}
             role="dialog"
             aria-modal="true"
             aria-labelledby="desktop-modal-title"
           >
+            {/* Fondo semitransparente */}
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedProject(null)}></div>
+            
+            {/* Contenedor del modal - Responde al tema detectado */}
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="relative max-w-4xl w-full max-h-[90vh] overflow-hidden bg-white dark:bg-black shadow-lg rounded-lg"
+              className="relative z-10 max-w-4xl w-full max-h-[90vh] overflow-hidden rounded-lg"
+              style={{ 
+                backgroundColor: isDarkMode ? 'black' : 'white', 
+                color: isDarkMode ? 'white' : 'black',
+                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+              }}
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Botón de cierre */}
               <button 
-                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center bg-white dark:bg-black hover:bg-gray-100 dark:hover:bg-gray-900 touchable rounded-lg border border-gray-200 dark:border-gray-800"
+                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-lg border"
+                style={{ 
+                  backgroundColor: isDarkMode ? 'black' : 'white', 
+                  borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+                  color: isDarkMode ? 'white' : 'black'
+                }}
                 onClick={() => setSelectedProject(null)}
                 aria-label="Close modal"
               >
-                <span className="text-gray-900 dark:text-white">✕</span>
+                <span>✕</span>
               </button>
               
-              <div className="relative w-full aspect-video bg-gray-100 dark:bg-gray-900 modal-content active">
+              {/* Video container - Sin clase modal-content */}
+              <div 
+                className="relative w-full aspect-video" 
+                style={{ 
+                  backgroundColor: isDarkMode ? '#1f2937' : '#f3f4f6' 
+                }}
+              >
                 <video
                   src={selectedProject.fullImage}
                   className="w-full h-full object-cover"
@@ -242,10 +307,32 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 />
               </div>
               
-              <div className="p-6 modal-content active bg-white dark:bg-black">
-                <h3 id="desktop-modal-title" className="h4 font-medium leading-tight mb-0 text-gray-900 dark:text-white">{selectedProject.title}</h3>
-                <p className="text-small text-gray-600 dark:text-gray-400 mb-3">{selectedProject.artist}</p>
-                <p className="text-p text-gray-700 dark:text-gray-300">{selectedProject.description}</p>
+              {/* Información del proyecto - Sin clase modal-content */}
+              <div 
+                className="p-6" 
+                style={{ 
+                  backgroundColor: isDarkMode ? 'black' : 'white' 
+                }}
+              >
+                <h3 
+                  id="desktop-modal-title" 
+                  className="h4 font-medium leading-tight mb-0"
+                  style={{ 
+                    color: isDarkMode ? 'white' : 'black' 
+                  }}
+                >{selectedProject.title}</h3>
+                <p 
+                  className="text-small mb-3"
+                  style={{ 
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)' 
+                  }}
+                >{selectedProject.artist}</p>
+                <p 
+                  className="text-p"
+                  style={{ 
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)' 
+                  }}
+                >{selectedProject.description}</p>
               </div>
             </motion.div>
           </motion.div>
