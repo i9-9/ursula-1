@@ -13,9 +13,23 @@ const Navbar = () => {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
-    setTheme(initialTheme);
-    document.documentElement.classList.toggle('dark', initialTheme === 'dark');
+    console.log('Theme Debug:', {
+      savedTheme,
+      prefersDark,
+      currentTheme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+    });
+    
+    // If no theme is saved, use system preference
+    if (!savedTheme) {
+      const systemTheme = prefersDark ? 'dark' : 'light';
+      setTheme(systemTheme);
+      document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+      localStorage.setItem('theme', systemTheme);
+    } else {
+      // If theme is saved, use it but ensure it matches system preference
+      setTheme(savedTheme);
+      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+    }
   }, []);
 
   const toggleTheme = (newTheme: 'light' | 'dark') => {
@@ -84,9 +98,16 @@ const Navbar = () => {
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 h-[var(--navbar-height)] flex items-center ${
         scrolled ? 'bg-background/90 backdrop-blur-md' : 'bg-transparent'
       }`}
+      role="navigation"
+      aria-label="Main navigation"
     >
       <div className="w-full grid grid-cols-12 items-center px-2.5 md:px-[15px] h-full">
-        <Link href="/" className="text-[11px] col-span-6 md:col-span-6 flex items-center h-full font-neue-haas-grotesk-display uppercase" style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}>
+        <Link 
+          href="/" 
+          className="text-[11px] col-span-6 md:col-span-6 flex items-center h-full font-neue-haas-grotesk-display uppercase" 
+          style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
+          aria-label="Home"
+        >
           URSULA BENAVIDEZ
         </Link>
         
@@ -95,20 +116,24 @@ const Navbar = () => {
             href="#selected-works" 
             className={`relative flex items-center h-full font-neue-haas-grotesk-display uppercase`}
             style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
+            aria-label="Selected works section"
+            aria-current={activeSection === 'selected-works' ? 'page' : undefined}
           >
             work
             {activeSection === 'selected-works' && (
-              <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground"></span>
+              <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
             )}
           </Link>
           <Link 
             href="#archive" 
             className={`relative flex items-center h-full font-neue-haas-grotesk-display uppercase`}
             style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
+            aria-label="Archive section"
+            aria-current={activeSection === 'archive' ? 'page' : undefined}
           >
             archive
             {activeSection === 'archive' && (
-              <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground"></span>
+              <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
             )}
           </Link>
           <div className="flex items-center gap-4">
@@ -116,21 +141,24 @@ const Navbar = () => {
               href="#contact" 
               className={`relative flex items-center h-full font-neue-haas-grotesk-display uppercase`}
               style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
+              aria-label="Contact section"
+              aria-current={activeSection === 'contact' ? 'page' : undefined}
             >
               contact
               {activeSection === 'contact' && (
-                <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground"></span>
+                <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
               )}
             </Link>
             
             {/* Theme Toggle */}
-            <div className="flex items-center gap-2 ml-4">
+            <div className="flex items-center gap-2 ml-4" role="group" aria-label="Theme toggle">
               <button
                 onClick={() => toggleTheme('light')}
                 className={`w-3 h-3 rounded-full bg-[#f5f5f5] border border-[#0a0a0a] transition-opacity duration-200 ${
                   theme === 'dark' ? 'opacity-50' : 'opacity-100'
                 }`}
                 aria-label="Light mode"
+                aria-pressed={theme === 'light'}
               />
               <button
                 onClick={() => toggleTheme('dark')}
@@ -138,12 +166,16 @@ const Navbar = () => {
                   theme === 'light' ? 'opacity-50' : 'opacity-100'
                 }`}
                 aria-label="Dark mode"
+                aria-pressed={theme === 'dark'}
               />
             </div>
           </div>
         </div>
 
-        <div className="col-start-10 col-span-3 text-[11px] text-foreground hidden md:flex items-center h-full uppercase justify-end">
+        <div 
+          className="col-start-10 col-span-3 text-[11px] text-foreground hidden md:flex items-center h-full uppercase justify-end"
+          aria-label="Professional role"
+        >
           art direction & set design
         </div>
       </div>

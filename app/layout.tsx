@@ -54,7 +54,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="es" className="scroll-smooth">
       <head>
         <link rel="preconnect" href="https://use.typekit.net" />
         <link rel="stylesheet" href="https://use.typekit.net/dfc2nqo.css" />
@@ -62,6 +62,25 @@ export default function RootLayout({
         <link rel="icon" type="image/x-icon" href="/favicon/favicon32x32.ico" sizes="32x32" />
         <link rel="icon" type="image/x-icon" href="/favicon/favicon48x48.ico" sizes="48x48" />
         <link rel="apple-touch-icon" sizes="180x180" href="/seo/apple-touch-icon.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "name": "Ursula Benavidez",
+              "jobTitle": "Art Director & Set Designer",
+              "url": "https://ursulabenavidez.com",
+              "sameAs": [
+                "https://instagram.com/ursulabenavidez"
+              ],
+              "worksFor": {
+                "@type": "Organization",
+                "name": "Freelance"
+              }
+            })
+          }}
+        />
       </head>
       <body className={`${neueHaasGroteskDisplay.variable} ${neueHaasGroteskText.variable} font-sans antialiased`}>
         <div className="min-h-screen bg-background text-foreground">

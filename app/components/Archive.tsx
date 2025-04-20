@@ -218,6 +218,7 @@ const Archive = () => {
     year: null
   });
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isAccordionHovered, setIsAccordionHovered] = useState(false);
 
   // Get unique years from all items
   const years = useMemo(() => {
@@ -291,23 +292,44 @@ const Archive = () => {
 
   return (
     <section id="archive" className="py-6 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
-      <div className="mb-4">
-        <h2 className="h2 section-title section-title-delay-2 font-neue-haas-grotesk-display">ARCHIVE</h2>
-      </div>
-      
       <div 
-        className="cursor-pointer py-4 flex items-center justify-between border-t border-foreground/10"
+        className="mb-4 flex items-center justify-between cursor-pointer hover:bg-foreground/5 transition-colors duration-200 py-2 rounded-lg relative"
         onClick={() => setIsExpanded(!isExpanded)}
+        onMouseEnter={() => setIsAccordionHovered(true)}
+        onMouseLeave={() => setIsAccordionHovered(false)}
+        aria-label={isExpanded ? "Close archive" : "Open archive"}
       >
-        <h3 className="h4 font-medium section-title section-title-delay-1">
-          {isExpanded ? 'Close' : 'Open'}
-        </h3>
-        <div className={`text-xs opacity-60 transition-transform duration-300 ${
+        <h2 className="h2 section-title section-title-delay-2 font-neue-haas-grotesk-display">ARCHIVE</h2>
+        
+        <div className={`text-xs transition-transform duration-300 ${
           isExpanded ? 'rotate-180' : ''
         }`}>
           ▼
         </div>
+        
+        {/* Tooltip mejorado que sigue al cursor */}
+        {isAccordionHovered && (
+          <div 
+            className="fixed pointer-events-none z-50"
+            style={{
+              left: `${mousePosition.x}px`,
+              top: `${mousePosition.y - 30}px`, // Posicionado justo encima del cursor
+              transform: 'translateX(-50%)',
+              backgroundColor: 'var(--background)',
+              color: 'var(--foreground)', 
+              borderRadius: '4px',
+              padding: '4px 8px',
+              fontSize: '12px',
+              border: '1px solid rgba(0, 0, 0, 0.1)',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)'
+            }}
+          >
+            {isExpanded ? 'Close' : 'Open'}
+          </div>
+        )}
       </div>
+      
+      <div className="border-t border-gray-300/20 dark:border-gray-700/20"></div>
       
       <AnimatePresence>
         {isExpanded && (
@@ -315,21 +337,39 @@ const Archive = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden"
+            transition={{ 
+              duration: 0.4, 
+              ease: [0.25, 0.1, 0.25, 1.0],
+              opacity: { duration: 0.3 }
+            }}
+            className="overflow-hidden pt-6"
           >
-            {/* Componente de filtros */}
-            <ArchiveFilters 
-              categories={archiveData.sections.map(section => section.title)} 
-              years={years} 
-              selectedCategory={filters.category}
-              selectedYear={filters.year}
-              onCategoryChange={(category) => setFilters(prev => ({ ...prev, category }))}
-              onYearChange={(year) => setFilters(prev => ({ ...prev, year }))}
-              onReset={resetFilters}
-            />
+            {/* Componente de filtros con animación secuencial */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ 
+                delay: 0.2,
+                duration: 0.3
+              }}
+            >
+              <ArchiveFilters 
+                categories={archiveData.sections.map(section => section.title)} 
+                years={years} 
+                selectedCategory={filters.category}
+                selectedYear={filters.year}
+                onCategoryChange={(category) => setFilters(prev => ({ ...prev, category }))}
+                onYearChange={(year) => setFilters(prev => ({ ...prev, year }))}
+                onReset={resetFilters}
+              />
+            </motion.div>
             
-            <div className="space-y-0">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.3 }}
+              className="space-y-0"
+            >
               {filteredSections.length > 0 ? (
                 filteredSections.map((section, index) => (
                   <div key={index} className="archive-section">
@@ -395,7 +435,7 @@ const Archive = () => {
                   </button>
                 </div>
               )}
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

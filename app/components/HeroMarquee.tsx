@@ -23,6 +23,9 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [leftArrowColor, setLeftArrowColor] = useState('#FFFFFF');
   const [rightArrowColor, setRightArrowColor] = useState('#FFFFFF');
+  const [dragStart, setDragStart] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const leftAreaRef = useRef<HTMLDivElement>(null);
@@ -174,14 +177,14 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
 
   // Auto-advance slides every 7 seconds if not paused
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying || isDragging) return;
     
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
     }, 7000);
 
     return () => clearInterval(timer);
-  }, [isPlaying, items.length]);
+  }, [isPlaying, items.length, isDragging]);
 
   // Manejar el desplazamiento horizontal con rueda del ratón
   useEffect(() => {
@@ -287,6 +290,114 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   
   const rightCursorSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewport='0 0 100 100'><rect width='100%' height='100%' fill='transparent'/><text y='50%' x='50%' dy='.35em' text-anchor='middle' style='font-size:24px;fill:${escapeColor(rightArrowColor)}'>→</text></svg>`;
 
+  // IMPLEMENTACIÓN DEL ARRASTRE MANUAL
+  const handleDragStart = useCallback((clientX: number) => {
+    setIsDragging(true);
+    setDragStart(clientX);
+    setIsPlaying(false);
+    document.body.style.cursor = 'grabbing';
+  }, []);
+
+  const handleDragMove = useCallback((clientX: number) => {
+    if (!isDragging) return;
+    
+    const offset = clientX - dragStart;
+    setDragOffset(offset);
+  }, [isDragging, dragStart]);
+
+  const handleDragEnd = useCallback(() => {
+    if (!isDragging) return;
+    
+    document.body.style.cursor = '';
+    
+    // Determinar la dirección del deslizamiento
+    const threshold = window.innerWidth * 0.1; // 10% del ancho de la ventana
+    
+    if (Math.abs(dragOffset) > threshold) {
+      if (dragOffset > 0) {
+        // Deslizar hacia la derecha (anterior)
+        setCurrentIndex(prev => (prev - 1 + items.length) % items.length);
+      } else {
+        // Deslizar hacia la izquierda (siguiente)
+        setCurrentIndex(prev => (prev + 1) % items.length);
+      }
+    }
+    
+    setIsDragging(false);
+    setDragOffset(0);
+  }, [isDragging, dragOffset, items.length]);
+
+  // Mouse Events
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+    
+    const onMouseDown = (e: MouseEvent) => {
+      // No iniciar arrastre si el clic fue en un botón
+      if ((e.target as Element).closest('button')) return;
+      e.preventDefault();
+      handleDragStart(e.clientX);
+    };
+    
+    const onMouseMove = (e: MouseEvent) => {
+      handleDragMove(e.clientX);
+    };
+    
+    const onMouseUp = () => {
+      handleDragEnd();
+    };
+    
+    const onMouseLeave = () => {
+      if (isDragging) {
+        handleDragEnd();
+      }
+    };
+    
+    slider.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('mouseleave', onMouseLeave);
+    
+    return () => {
+      slider.removeEventListener('mousedown', onMouseDown);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      document.removeEventListener('mouseleave', onMouseLeave);
+    };
+  }, [handleDragStart, handleDragMove, handleDragEnd, isDragging]);
+
+  // Touch Events for mobile
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+    
+    const onTouchStart = (e: TouchEvent) => {
+      handleDragStart(e.touches[0].clientX);
+    };
+    
+    const onTouchMove = (e: TouchEvent) => {
+      handleDragMove(e.touches[0].clientX);
+      // Prevent scrolling when swiping horizontally
+      if (isDragging && Math.abs(dragOffset) > 10) {
+        e.preventDefault();
+      }
+    };
+    
+    const onTouchEnd = () => {
+      handleDragEnd();
+    };
+    
+    slider.addEventListener('touchstart', onTouchStart);
+    slider.addEventListener('touchmove', onTouchMove, { passive: false });
+    slider.addEventListener('touchend', onTouchEnd);
+    
+    return () => {
+      slider.removeEventListener('touchstart', onTouchStart);
+      slider.removeEventListener('touchmove', onTouchMove);
+      slider.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [handleDragStart, handleDragMove, handleDragEnd, isDragging, dragOffset]);
+
   return (
     <section 
       id="hero"
@@ -295,7 +406,8 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
       {/* Contenedor principal del slider */}
       <div 
         ref={sliderRef}
-        className="relative w-full h-full overflow-hidden rounded-lg"
+        className="relative w-full h-full overflow-hidden rounded-lg cursor-grab select-none"
+        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
         {/* Área de navegación izquierda */}
         <div 
@@ -317,16 +429,17 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
           onClick={() => setCurrentIndex(prev => (prev + 1) % items.length)}
         />
 
-        {/* Contenedor de slides */}
+        {/* Contenedor de slides con soporte para arrastre */}
         <div className="absolute inset-0 flex">
           {items.map((item, index) => (
             <div
               key={index}
               className={`slide-${index} absolute inset-0 transition-transform duration-500 ease-in-out`}
               style={{
-                transform: `translateX(${(index - currentIndex) * 100}%)`,
-                opacity: index === currentIndex ? 1 : 0,
-                pointerEvents: index === currentIndex ? 'auto' : 'none'
+                transform: `translateX(${(index - currentIndex) * 100}% ${isDragging ? `+ ${dragOffset}px` : ''})`,
+                opacity: index === currentIndex || (isDragging && (index === ((currentIndex - 1 + items.length) % items.length) || index === ((currentIndex + 1) % items.length))) ? 1 : 0,
+                pointerEvents: index === currentIndex ? 'auto' : 'none',
+                transition: isDragging ? 'none' : 'transform 500ms ease-in-out, opacity 500ms ease-in-out'
               }}
             >
               {item.type === 'video' ? (
