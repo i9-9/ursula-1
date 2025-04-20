@@ -267,7 +267,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="relative z-10 max-w-4xl w-full max-h-[90vh] overflow-hidden rounded-lg"
+              className="relative z-10 max-w-[90vw] w-full max-h-[95vh] overflow-hidden rounded-lg"
               style={{ 
                 backgroundColor: isDarkMode ? 'black' : 'white', 
                 color: isDarkMode ? 'white' : 'black',
@@ -277,7 +277,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             >
               {/* Botón de cierre */}
               <button 
-                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-lg border"
+                className="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center rounded-lg border"
                 style={{ 
                   backgroundColor: isDarkMode ? 'black' : 'white', 
                   borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
@@ -286,19 +286,19 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 onClick={() => setSelectedProject(null)}
                 aria-label="Close modal"
               >
-                <span>✕</span>
+                <span className="text-xl">✕</span>
               </button>
               
               {/* Video container - Sin clase modal-content */}
               <div 
-                className="relative w-full aspect-video" 
+                className="relative w-full aspect-video max-h-[80vh]" 
                 style={{ 
                   backgroundColor: isDarkMode ? '#1f2937' : '#f3f4f6' 
                 }}
               >
                 <video
                   src={selectedProject.fullImage}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                   controls
                   playsInline
                   autoPlay
@@ -309,26 +309,26 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               
               {/* Información del proyecto - Sin clase modal-content */}
               <div 
-                className="p-6" 
+                className="p-8" 
                 style={{ 
                   backgroundColor: isDarkMode ? 'black' : 'white' 
                 }}
               >
                 <h3 
                   id="desktop-modal-title" 
-                  className="h4 font-medium leading-tight mb-0"
+                  className="h3 font-medium leading-tight mb-1"
                   style={{ 
                     color: isDarkMode ? 'white' : 'black' 
                   }}
                 >{selectedProject.title}</h3>
                 <p 
-                  className="text-small mb-3"
+                  className="text-p mb-4"
                   style={{ 
                     color: isDarkMode ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)' 
                   }}
                 >{selectedProject.artist}</p>
                 <p 
-                  className="text-p"
+                  className="text-p max-w-4xl"
                   style={{ 
                     color: isDarkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)' 
                   }}
