@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { PortfolioItem } from '@/lib/contentful'
 
@@ -13,6 +13,10 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const isScrollingRef = useRef(false)
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState(0)
+  const [dragOffset, setDragOffset] = useState(0)
+  const [isAutoplaying, setIsAutoplaying] = useState(true)
 
   const projects = works.length > 0 ? works : [
     {
@@ -105,8 +109,10 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
   }
 
   const startAutoAdvance = () => {
+    if (!isAutoplaying) return
+    
     intervalRef.current = setInterval(() => {
-      if (!scrollContainerRef.current || isScrollingRef.current) return
+      if (!scrollContainerRef.current || isScrollingRef.current || isDragging) return
       
       const container = scrollContainerRef.current
       const containerWidth = container.clientWidth
@@ -143,7 +149,140 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       clearInterval(intervalRef.current)
     }
     startAutoAdvance()
-  }, [currentIndex])
+  }, [currentIndex, isAutoplaying])
+
+  // DRAG IMPLEMENTATION
+  const handleDragStart = useCallback((clientX: number) => {
+    setIsDragging(true)
+    setDragStart(clientX)
+    setIsAutoplaying(false)
+    document.body.style.cursor = 'grabbing'
+    
+    // Pause the auto-advance
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+    }
+  }, [])
+
+  const handleDragMove = useCallback((clientX: number) => {
+    if (!isDragging) return
+    
+    const offset = clientX - dragStart
+    setDragOffset(offset)
+    
+    // Directly manipulate scroll position for immediate feedback
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollLeft -= offset * 0.1
+    }
+  }, [isDragging, dragStart])
+
+  const handleDragEnd = useCallback(() => {
+    if (!isDragging) return
+    
+    document.body.style.cursor = ''
+    
+    // Determine the direction of the swipe
+    const container = scrollContainerRef.current
+    if (container) {
+      const containerWidth = container.clientWidth
+      const videoWidth = containerWidth * 0.9
+      const threshold = videoWidth * 0.2 // 20% of slide width
+      
+      if (Math.abs(dragOffset) > threshold) {
+        if (dragOffset > 0) {
+          // Swipe right (previous)
+          container.scrollTo({
+            left: container.scrollLeft - videoWidth,
+            behavior: 'smooth'
+          })
+        } else {
+          // Swipe left (next)
+          container.scrollTo({
+            left: container.scrollLeft + videoWidth,
+            behavior: 'smooth'
+          })
+        }
+      }
+    }
+    
+    setIsDragging(false)
+    setDragOffset(0)
+    setIsAutoplaying(true)
+    startAutoAdvance()
+  }, [isDragging, dragOffset, startAutoAdvance])
+
+  // Mouse Events
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+    
+    const onMouseDown = (e: MouseEvent) => {
+      // No iniciar arrastre si el clic fue en un botón
+      if ((e.target as Element).closest('button')) return
+      e.preventDefault()
+      handleDragStart(e.clientX)
+    }
+    
+    const onMouseMove = (e: MouseEvent) => {
+      handleDragMove(e.clientX)
+    }
+    
+    const onMouseUp = () => {
+      handleDragEnd()
+    }
+    
+    const onMouseLeave = () => {
+      if (isDragging) {
+        handleDragEnd()
+      }
+    }
+    
+    container.addEventListener('mousedown', onMouseDown)
+    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mouseup', onMouseUp)
+    container.addEventListener('mouseleave', onMouseLeave)
+    
+    return () => {
+      container.removeEventListener('mousedown', onMouseDown)
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('mouseup', onMouseUp)
+      container.removeEventListener('mouseleave', onMouseLeave)
+    }
+  }, [handleDragStart, handleDragMove, handleDragEnd, isDragging])
+
+  // Touch Events
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+    
+    const onTouchStart = (e: TouchEvent) => {
+      handleDragStart(e.touches[0].clientX)
+      // Prevent scrolling the page
+      e.preventDefault()
+    }
+    
+    const onTouchMove = (e: TouchEvent) => {
+      handleDragMove(e.touches[0].clientX)
+      // Prevent scrolling when swiping horizontally
+      if (isDragging && Math.abs(dragOffset) > 10) {
+        e.preventDefault()
+      }
+    }
+    
+    const onTouchEnd = () => {
+      handleDragEnd()
+    }
+    
+    container.addEventListener('touchstart', onTouchStart, { passive: false })
+    container.addEventListener('touchmove', onTouchMove, { passive: false })
+    container.addEventListener('touchend', onTouchEnd)
+    
+    return () => {
+      container.removeEventListener('touchstart', onTouchStart)
+      container.removeEventListener('touchmove', onTouchMove)
+      container.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [handleDragStart, handleDragMove, handleDragEnd, isDragging, dragOffset])
 
   return (
     <section 
@@ -153,12 +292,13 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       {/* Scroll Container */}
       <div 
         ref={scrollContainerRef}
-        className="h-full overflow-x-auto overflow-y-hidden"
-        onScroll={handleScroll}
+        className="h-full overflow-x-auto overflow-y-hidden cursor-grab"
         style={{
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
+          cursor: isDragging ? 'grabbing' : 'grab'
         }}
+        onScroll={handleScroll}
       >
         <div className="flex h-full items-center" style={{ 
           width: `${projects.length * 300}%`,
@@ -199,6 +339,34 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
             </div>
           ))}
         </div>
+      </div>
+      
+      {/* Navigation controls */}
+      <div className="absolute bottom-6 right-6 flex items-center gap-4">
+        <button 
+          className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
+          onClick={() => {
+            const isCurrentlyPlaying = !isAutoplaying
+            setIsAutoplaying(isCurrentlyPlaying)
+            if (!isCurrentlyPlaying && intervalRef.current) {
+              clearInterval(intervalRef.current)
+            } else {
+              startAutoAdvance()
+            }
+          }}
+          aria-label={isAutoplaying ? "Pause autoplay" : "Start autoplay"}
+        >
+          {isAutoplaying ? (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="2" width="4" height="12" fill="currentColor" />
+              <rect x="9" y="2" width="4" height="12" fill="currentColor" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 2L14 8L4 14V2Z" fill="currentColor" />
+            </svg>
+          )}
+        </button>
       </div>
     </section>
   )
