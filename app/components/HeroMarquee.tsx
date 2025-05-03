@@ -401,12 +401,12 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   return (
     <section 
       id="hero"
-      className="pt-[var(--navbar-height)] pb-3 px-2.5 md:px-[15px] flex flex-col justify-between min-h-[calc(100vh-var(--navbar-height)+2rem)] h-[calc(100vh-var(--navbar-height)+2rem)] max-h-[calc(100vh-var(--navbar-height)+2rem)] overflow-hidden rounded-lg"
+      className="pt-[var(--navbar-height)] pb-3 px-2.5 md:px-[15px] flex flex-col justify-between h-auto overflow-hidden rounded-lg"
     >
       {/* Contenedor principal del slider */}
       <div 
         ref={sliderRef}
-        className="relative w-full h-full overflow-hidden rounded-lg cursor-grab select-none"
+        className="relative w-[200px] h-[112.5px] mx-auto overflow-hidden rounded-lg cursor-grab select-none"
         style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
       >
         {/* Área de navegación izquierda */}
@@ -430,20 +430,20 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
         />
 
         {/* Contenedor de slides con soporte para arrastre */}
-        <div className="absolute inset-0 flex">
+        <div className="relative w-full h-full">
           {items.map((item, index) => (
             <div
               key={index}
               className={`slide-${index} absolute inset-0 transition-transform duration-500 ease-in-out`}
               style={{
-                transform: `translateX(${(index - currentIndex) * 100}% ${isDragging ? `+ ${dragOffset}px` : ''})`,
+                transform: `translateX(${(index - currentIndex) * 200}px)`,
                 opacity: index === currentIndex || (isDragging && (index === ((currentIndex - 1 + items.length) % items.length) || index === ((currentIndex + 1) % items.length))) ? 1 : 0,
                 pointerEvents: index === currentIndex ? 'auto' : 'none',
                 transition: isDragging ? 'none' : 'transform 500ms ease-in-out, opacity 500ms ease-in-out'
               }}
             >
               {item.type === 'video' ? (
-                <div className="w-full h-full flex items-center justify-center rounded-lg overflow-hidden">
+                <div className="w-full h-full rounded-lg overflow-hidden">
                   <LazyVideo 
                     src={item.videoUrl} 
                     poster={item.src}
@@ -452,17 +452,16 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
                   />
                 </div>
               ) : (
-                <div className="w-full h-full flex items-center justify-center rounded-lg overflow-hidden">
+                <div className="w-full h-full rounded-lg overflow-hidden relative">
                   <Image
                     src={item.src}
                     alt={item.alt || item.title}
-                    className="object-cover w-full h-full"
+                    className="object-cover"
                     fill
-                    sizes="(max-width: 768px) 100vw, 1200px"
+                    sizes="200px"
                     priority={index === currentIndex}
                     onLoad={() => {
                       if (index === currentIndex) {
-                        // Actualizar colores cuando la imagen está cargada
                         setTimeout(analyzeArrowBackgrounds, 100);
                       }
                     }}

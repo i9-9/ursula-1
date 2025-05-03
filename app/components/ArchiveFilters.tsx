@@ -4,21 +4,15 @@ import { useState, useEffect } from 'react';
 
 interface ArchiveFiltersProps {
   categories: string[];
-  years: string[];
   selectedCategory: string | null;
-  selectedYear: string | null;
   onCategoryChange: (category: string | null) => void;
-  onYearChange: (year: string | null) => void;
   onReset: () => void;
 }
 
 const ArchiveFilters = ({ 
   categories, 
-  years, 
   selectedCategory,
-  selectedYear,
   onCategoryChange,
-  onYearChange,
   onReset
 }: ArchiveFiltersProps) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -38,11 +32,6 @@ const ArchiveFilters = ({
     onCategoryChange(newCategory);
   };
   
-  const handleYearChange = (year: string | null) => {
-    const newYear = year === selectedYear ? null : year;
-    onYearChange(newYear);
-  };
-  
   return (
     <div 
       className={`grid grid-cols-12 items-center mb-6 transition-opacity duration-500 ${
@@ -57,7 +46,7 @@ const ArchiveFilters = ({
           {categories.map(category => (
             <button 
               key={category}
-              className={`text-xs px-2 py-0.5 rounded-lg border border-foreground/10 transition-colors ${
+              className={`text-xs px-6 h-7 rounded-lg border border-foreground/10 transition-colors flex items-center justify-center leading-none ${
                 selectedCategory === category ? 'bg-black/20 text-black' : 'hover:bg-black/5'
               }`}
               onClick={() => handleCategoryChange(category)}
@@ -66,29 +55,11 @@ const ArchiveFilters = ({
             </button>
           ))}
         </div>
-
-        {/* Separador */}
-        <div className="h-3 w-px bg-foreground/20 mx-1"></div>
-        
-        {/* Year filters */}
-        <div className="flex flex-wrap gap-1.5">
-          {years.slice(0, 6).map(year => (
-            <button 
-              key={year}
-              className={`text-xs px-2 py-0.5 rounded-lg border border-foreground/10 transition-colors ${
-                selectedYear === year ? 'bg-black/20 text-black' : 'hover:bg-black/5'
-              }`}
-              onClick={() => handleYearChange(year)}
-            >
-              {year}
-            </button>
-          ))}
-        </div>
       </div>
       
       {/* Reset button - only visible if there are active filters */}
       <div className="col-start-10 col-span-3 flex justify-start">
-        {(selectedCategory || selectedYear) && (
+        {selectedCategory && (
           <button 
             className="text-xs px-2 py-0.5 rounded-lg bg-black/10 hover:bg-black/20 transition-colors"
             onClick={onReset}

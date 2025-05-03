@@ -213,50 +213,22 @@ const Archive = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<ArchiveItem | null>(null);
-  const [filters, setFilters] = useState<{ category: string | null, year: string | null }>({
-    category: null,
-    year: null
+  const [filters, setFilters] = useState<{ category: string | null }>({
+    category: null
   });
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAccordionHovered, setIsAccordionHovered] = useState(false);
-
-  // Get unique years from all items
-  const years = useMemo(() => {
-    const yearSet = new Set<string>();
-    archiveData.sections.forEach(section => {
-      section.items.forEach(item => {
-        if (item.year && item.year.trim() !== '') {
-          yearSet.add(item.year);
-        }
-      });
-    });
-    return Array.from(yearSet).sort((a, b) => parseInt(b) - parseInt(a));
-  }, []);
 
   // Filter sections based on selected filters
   const filteredSections = useMemo(() => {
     return archiveData.sections.filter(section => {
       // If no filters are selected, show all sections
-      if (!filters.category && !filters.year) return true;
+      if (!filters.category) return true;
       
       // Filter by category
       if (filters.category && section.title !== filters.category) return false;
       
-      // Filter by year
-      if (filters.year) {
-        return section.items.some(item => item.year === filters.year);
-      }
-      
       return true;
-    }).map(section => {
-      // If year filter is active, filter the items within the section
-      if (filters.year) {
-        return {
-          ...section,
-          items: section.items.filter(item => item.year === filters.year)
-        };
-      }
-      return section;
     });
   }, [filters]);
 
@@ -285,8 +257,7 @@ const Archive = () => {
 
   const resetFilters = useCallback(() => {
     setFilters({
-      category: null,
-      year: null
+      category: null
     });
   }, []);
 
@@ -355,11 +326,8 @@ const Archive = () => {
             >
               <ArchiveFilters 
                 categories={archiveData.sections.map(section => section.title)} 
-                years={years} 
                 selectedCategory={filters.category}
-                selectedYear={filters.year}
                 onCategoryChange={(category) => setFilters(prev => ({ ...prev, category }))}
-                onYearChange={(year) => setFilters(prev => ({ ...prev, year }))}
                 onReset={resetFilters}
               />
             </motion.div>

@@ -15,12 +15,6 @@ const Contact = () => {
         
         <div className="space-y-6 md:space-y-4">
           <div className="archive-section">
-            {/* Header for desktop */}
-            <div className="hidden md:grid md:grid-cols-12 mb-3 text-xs opacity-60">
-              <div className="col-span-6">TYPE</div>
-              <div className="col-start-7 col-span-6 text-left">DETAILS</div>
-            </div>
-            
             {/* Header for mobile */}
             <div className="md:hidden mb-3 text-xs opacity-60">
               <div>CONTACT DETAILS</div>

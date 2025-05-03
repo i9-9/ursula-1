@@ -3,10 +3,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Suisse BP INTL Font Family */
 @font-face {
-  font-family: 'neue-haas-grotesk-display';
-  src: url('https://use.typekit.net/dfc2nqo.css');
+  font-family: 'Suisse BP INTL';
+  src: url('/fonts/Suisse BP Intl Regular.woff2') format('woff2');
   font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Suisse BP INTL';
+  src: url('/fonts/Suisse BP Intl Regular Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Suisse BP INTL';
+  src: url('/fonts/Suisse BP Intl Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Suisse BP INTL';
+  src: url('/fonts/Suisse BP Intl Bold.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -60,7 +82,7 @@
 
 /* Base Typography */
 body {
-  font-family: 'neue-haas-grotesk-text', sans-serif;
+  font-family: 'Suisse BP INTL', sans-serif;
   font-weight: 400; /* Roman weight */
   line-height: 1.5;
   color: var(--foreground);
@@ -76,7 +98,7 @@ body {
 
 /* Headings */
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
-  font-family: 'neue-haas-grotesk-display', sans-serif;
+  font-family: 'Suisse BP INTL', sans-serif;
   font-weight: 500;
   line-height: 1.2;
   margin-bottom: 0.125em;
@@ -110,7 +132,7 @@ h6, .h6 {
 /* Paragraphs and Text */
 p, .text-p {
   font-size: var(--font-size-p);
-  font-family: 'neue-haas-grotesk-text', sans-serif;
+  font-family: 'Suisse BP INTL', sans-serif;
   font-weight: 400; /* Roman weight */
 }
 

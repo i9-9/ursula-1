@@ -51,7 +51,7 @@ const Navbar = () => {
       }
       
       // Detectar sección activa
-      const sections = ['hero', 'selected-works', 'archive', 'contact'];
+      const sections = ['hero', 'selected-works', 'archive', 'about'];
       let currentSection = '';
       
       // Obtenemos la altura de la ventana para calcular mejor la visibilidad
@@ -104,8 +104,8 @@ const Navbar = () => {
       <div className="w-full grid grid-cols-12 items-center px-2.5 md:px-[15px] h-full">
         <Link 
           href="/" 
-          className="text-[11px] col-span-6 md:col-span-6 flex items-center h-full font-neue-haas-grotesk-display uppercase" 
-          style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
+          className="text-[11px] col-span-6 md:col-span-6 flex items-center h-full font-['Suisse_BP_INTL'] uppercase" 
+          style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
           aria-label="Home"
         >
           URSULA BENAVIDEZ
@@ -114,8 +114,8 @@ const Navbar = () => {
         <div className="flex gap-4 md:gap-6 text-[11px] col-span-6 md:col-start-7 md:col-span-3 items-center h-full justify-end md:justify-start">
           <Link 
             href="#selected-works" 
-            className={`relative flex items-center h-full font-neue-haas-grotesk-display uppercase`}
-            style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
+            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase`}
+            style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
             aria-label="Selected works section"
             aria-current={activeSection === 'selected-works' ? 'page' : undefined}
           >
@@ -126,8 +126,8 @@ const Navbar = () => {
           </Link>
           <Link 
             href="#archive" 
-            className={`relative flex items-center h-full font-neue-haas-grotesk-display uppercase`}
-            style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
+            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase`}
+            style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
             aria-label="Archive section"
             aria-current={activeSection === 'archive' ? 'page' : undefined}
           >
@@ -139,12 +139,12 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             <Link 
               href="#contact" 
-              className={`relative flex items-center h-full font-neue-haas-grotesk-display uppercase`}
-              style={{ fontFamily: 'neue-haas-grotesk-display', fontWeight: 500, fontStyle: 'normal' }}
-              aria-label="Contact section"
+              className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase`}
+              style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
+              aria-label="About section"
               aria-current={activeSection === 'contact' ? 'page' : undefined}
             >
-              contact
+              about
               {activeSection === 'contact' && (
                 <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
               )}
@@ -176,7 +176,7 @@ const Navbar = () => {
           className="col-start-10 col-span-3 text-[11px] text-foreground hidden md:flex items-center h-full uppercase justify-end"
           aria-label="Professional role"
         >
-          art direction & set design
+          production designer ~ art director
         </div>
       </div>
     </nav>
