@@ -93,6 +93,34 @@ const Navbar = () => {
     };
   }, []);
 
+  // NeumorphicButton component for theme toggle
+  type NeumorphicButtonProps = {
+    active: boolean;
+    type: 'light' | 'dark';
+    onClick: () => void;
+    ariaLabel: string;
+  };
+
+  const NeumorphicButton = ({ active, type, onClick, ariaLabel }: NeumorphicButtonProps) => {
+    const isLight = type === 'light';
+    const bg = isLight ? '#fff' : '#292930';
+    const insetShadow = isLight
+      ? 'inset -2px -2px 4px rgba(255,255,255,0.8), inset 2px 2px 4px rgba(0,0,0,0.2)'
+      : 'inset -2px -2px 4px rgba(255,255,255,0.1), inset 2px 2px 4px rgba(0,0,0,0.4)';
+    return (
+      <button
+        aria-label={ariaLabel}
+        tabIndex={0}
+        onClick={onClick}
+        className="w-6 h-6 rounded-full transition-all duration-300 border-0 focus:outline-none"
+        style={{
+          background: bg,
+          boxShadow: active ? insetShadow : 'none',
+        }}
+      />
+    );
+  };
+
   return (
     <nav 
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 h-[var(--navbar-height)] flex items-center ${
@@ -111,7 +139,7 @@ const Navbar = () => {
           URSULA BENAVIDEZ
         </Link>
         
-        <div className="flex gap-4 md:gap-6 text-[11px] col-span-6 md:col-start-7 md:col-span-3 items-center h-full justify-end md:justify-start">
+        <div className="flex gap-4 md:gap-6 text-[11px] col-span-6 md:col-span-2 items-center h-full justify-end md:justify-start">
           <Link 
             href="#selected-works" 
             className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase`}
@@ -136,44 +164,40 @@ const Navbar = () => {
               <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
             )}
           </Link>
-          <div className="flex items-center gap-4">
-            <Link 
-              href="#contact" 
-              className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase`}
-              style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
-              aria-label="About section"
-              aria-current={activeSection === 'contact' ? 'page' : undefined}
-            >
-              about
-              {activeSection === 'contact' && (
-                <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
-              )}
-            </Link>
-            
-            {/* Theme Toggle */}
-            <div className="flex items-center gap-2 ml-4" role="group" aria-label="Theme toggle">
-              <button
-                onClick={() => toggleTheme('light')}
-                className={`w-3 h-3 rounded-full bg-[#f5f5f5] border border-[#0a0a0a] transition-opacity duration-200 ${
-                  theme === 'dark' ? 'opacity-50' : 'opacity-100'
-                }`}
-                aria-label="Light mode"
-                aria-pressed={theme === 'light'}
-              />
-              <button
-                onClick={() => toggleTheme('dark')}
-                className={`w-3 h-3 rounded-full bg-[#0a0a0a] border ${theme === 'dark' ? 'border-[#f5f5f5]' : 'border-transparent'} transition-opacity duration-200 ${
-                  theme === 'light' ? 'opacity-50' : 'opacity-100'
-                }`}
-                aria-label="Dark mode"
-                aria-pressed={theme === 'dark'}
-              />
-            </div>
+          <Link 
+            href="#contact" 
+            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase`}
+            style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
+            aria-label="About section"
+            aria-current={activeSection === 'contact' ? 'page' : undefined}
+          >
+            about
+            {activeSection === 'contact' && (
+              <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
+            )}
+          </Link>
+        </div>
+
+        {/* Theme Toggle - Centered */}
+        <div className="hidden md:flex col-span-2 items-center justify-center" role="group" aria-label="Theme toggle">
+          <div className="flex items-center gap-2">
+            <NeumorphicButton
+              active={theme === 'light'}
+              type="light"
+              onClick={() => toggleTheme('light')}
+              ariaLabel="Light mode"
+            />
+            <NeumorphicButton
+              active={theme === 'dark'}
+              type="dark"
+              onClick={() => toggleTheme('dark')}
+              ariaLabel="Dark mode"
+            />
           </div>
         </div>
 
         <div 
-          className="col-start-10 col-span-3 text-[11px] text-foreground hidden md:flex items-center h-full uppercase justify-end"
+          className="col-span-2 text-[11px] text-foreground hidden md:flex items-center h-full uppercase justify-end"
           aria-label="Professional role"
         >
           production designer ~ art director

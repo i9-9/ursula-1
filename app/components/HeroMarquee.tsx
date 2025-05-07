@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import LazyVideo from './LazyVideo';
 import Image from 'next/image';
+import styles from './HeroMarquee.module.css';
 
 interface HeroSlide {
   id: string;
@@ -401,20 +402,48 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   return (
     <section 
       id="hero"
-      className="pt-[var(--navbar-height)] pb-3 px-2.5 md:px-[15px] flex flex-col justify-between h-auto overflow-hidden rounded-lg"
+      style={{
+        paddingTop: 'var(--navbar-height)',
+        paddingBottom: '0.75rem',
+        paddingLeft: '0.625rem',
+        paddingRight: '0.625rem',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        height: 'auto',
+        overflow: 'hidden',
+        borderRadius: '0.5rem'
+      }}
     >
       {/* Contenedor principal del slider */}
       <div 
         ref={sliderRef}
-        className="relative w-[200px] h-[112.5px] mx-auto overflow-hidden rounded-lg cursor-grab select-none"
-        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+        style={{ 
+          position: 'relative',
+          width: '60px',
+          height: '33.75px',
+          margin: '0 auto',
+          overflow: 'hidden',
+          borderRadius: '0.5rem',
+          cursor: isDragging ? 'grabbing' : 'grab',
+          transform: 'none !important',
+          maxWidth: '60px !important',
+          maxHeight: '33.75px !important',
+          minWidth: '60px !important',
+          minHeight: '33.75px !important'
+        }}
       >
         {/* Área de navegación izquierda */}
         <div 
           ref={leftAreaRef}
-          className="absolute left-0 top-0 bottom-0 w-1/4 z-20"
           style={{ 
-            cursor: `url("${leftCursorSvg}") 16 0, auto` 
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: '25%',
+            zIndex: 20,
+            cursor: `url("${leftCursorSvg}") 16 0, auto`
           }}
           onClick={() => setCurrentIndex(prev => (prev - 1 + items.length) % items.length)}
         />
@@ -422,43 +451,49 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
         {/* Área de navegación derecha */}
         <div 
           ref={rightAreaRef}
-          className="absolute right-0 top-0 bottom-0 w-1/4 z-20"
           style={{ 
-            cursor: `url("${rightCursorSvg}") 16 0, auto` 
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: '25%',
+            zIndex: 20,
+            cursor: `url("${rightCursorSvg}") 16 0, auto`
           }}
           onClick={() => setCurrentIndex(prev => (prev + 1) % items.length)}
         />
 
         {/* Contenedor de slides con soporte para arrastre */}
-        <div className="relative w-full h-full">
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           {items.map((item, index) => (
             <div
               key={index}
-              className={`slide-${index} absolute inset-0 transition-transform duration-500 ease-in-out`}
               style={{
-                transform: `translateX(${(index - currentIndex) * 200}px)`,
+                position: 'absolute',
+                inset: 0,
+                transform: `translateX(${(index - currentIndex) * 60}px)`,
                 opacity: index === currentIndex || (isDragging && (index === ((currentIndex - 1 + items.length) % items.length) || index === ((currentIndex + 1) % items.length))) ? 1 : 0,
                 pointerEvents: index === currentIndex ? 'auto' : 'none',
                 transition: isDragging ? 'none' : 'transform 500ms ease-in-out, opacity 500ms ease-in-out'
               }}
             >
               {item.type === 'video' ? (
-                <div className="w-full h-full rounded-lg overflow-hidden">
+                <div style={{ width: '100%', height: '100%', borderRadius: '0.5rem', overflow: 'hidden' }}>
                   <LazyVideo 
                     src={item.videoUrl} 
                     poster={item.src}
                     alt={item.alt || item.title}
-                    className="w-full h-full"
+                    style={{ width: '100%', height: '100%' }}
                   />
                 </div>
               ) : (
-                <div className="w-full h-full rounded-lg overflow-hidden relative">
+                <div style={{ width: '100%', height: '100%', borderRadius: '0.5rem', overflow: 'hidden', position: 'relative' }}>
                   <Image
                     src={item.src}
                     alt={item.alt || item.title}
-                    className="object-cover"
+                    style={{ objectFit: 'cover' }}
                     fill
-                    sizes="200px"
+                    sizes="60px"
                     priority={index === currentIndex}
                     onLoad={() => {
                       if (index === currentIndex) {

@@ -286,7 +286,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
 
   return (
     <section 
-      className="relative px-2.5 md:px-[15px] bg-background text-foreground hidden md:block"
+      className="relative pt-24 px-2.5 md:px-[15px] bg-background text-foreground hidden md:block"
       style={{ height: '100vh' }}
     >
       {/* Scroll Container */}
@@ -309,7 +309,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
               key={`${project.id}-${index}`}
               className="relative flex flex-col justify-center"
               style={{ 
-                width: '90%',
+                width: '75%',
                 flexShrink: 0,
                 maxWidth: '1200px'
               }}
