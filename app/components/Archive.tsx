@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import ArchiveFilters from './ArchiveFilters';
@@ -261,6 +261,13 @@ const Archive = () => {
     });
   }, []);
 
+  // Listen for global event to close archive
+  useEffect(() => {
+    const closeArchive = () => setIsExpanded(false);
+    window.addEventListener('close-archive', closeArchive);
+    return () => window.removeEventListener('close-archive', closeArchive);
+  }, []);
+
   return (
     <section id="archive" className="py-6 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
       <div 
@@ -342,9 +349,9 @@ const Archive = () => {
                 filteredSections.map((section, index) => (
                   <div key={index} className="archive-section">
                     <div className={`py-4`}>
-                      <h3 className={`h4 font-medium section-title section-title-delay-${index + 1}`}>
+                      <div className="text-sm md:text-lg font-medium uppercase tracking-wide opacity-80">
                         {section.title}
-                      </h3>
+                      </div>
                       
                       {/* Header for desktop */}
                       <div className="hidden md:grid md:grid-cols-12 mb-2 text-xs opacity-60">

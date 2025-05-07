@@ -170,6 +170,7 @@ const Navbar = () => {
             style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
             aria-label="About section"
             aria-current={activeSection === 'contact' ? 'page' : undefined}
+            onClick={() => { window.dispatchEvent(new Event('close-archive')); }}
           >
             about
             {activeSection === 'contact' && (
