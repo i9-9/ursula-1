@@ -478,8 +478,8 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
             >
               {item.type === 'video' ? (
                 <div style={{ width: '100%', height: '100%', borderRadius: '0.5rem', overflow: 'hidden' }}>
-                  <LazyVideo
-                    src={item.videoUrl}
+                  <LazyVideo 
+                    src={item.videoUrl} 
                     poster={item.src}
                     alt={item.alt || ''}
                     className="w-full h-full"

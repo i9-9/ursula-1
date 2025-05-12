@@ -10,7 +10,7 @@ const Contact = () => {
     <>
       <section id="contact" className="py-6 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }}>
         <div className="mb-4">
-          <h2 className="h2 section-title section-title-delay-2 font-neue-haas-grotesk-display">ABOUT</h2>
+          <h2 className="h2 section-title section-title-delay-2 font-neue-haas-grotesk-display text-xs md:text-sm">ABOUT</h2>
         </div>
         
         <div className="space-y-6 md:space-y-4">

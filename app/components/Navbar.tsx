@@ -13,12 +13,6 @@ const Navbar = () => {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    console.log('Theme Debug:', {
-      savedTheme,
-      prefersDark,
-      currentTheme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
-    });
-    
     // If no theme is saved, use system preference
     if (!savedTheme) {
       const systemTheme = prefersDark ? 'dark' : 'light';
@@ -32,10 +26,8 @@ const Navbar = () => {
     }
   }, []);
 
-  const toggleTheme = (newTheme: 'light' | 'dark') => {
-    const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-    if (currentTheme === newTheme) return;
-
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     document.documentElement.classList.toggle('dark');
@@ -93,34 +85,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // NeumorphicButton component for theme toggle
-  type NeumorphicButtonProps = {
-    active: boolean;
-    type: 'light' | 'dark';
-    onClick: () => void;
-    ariaLabel: string;
-  };
-
-  const NeumorphicButton = ({ active, type, onClick, ariaLabel }: NeumorphicButtonProps) => {
-    const isLight = type === 'light';
-    const bg = isLight ? '#fff' : '#292930';
-    const insetShadow = isLight
-      ? 'inset -2px -2px 4px rgba(255,255,255,0.8), inset 2px 2px 4px rgba(0,0,0,0.2)'
-      : 'inset -2px -2px 4px rgba(255,255,255,0.1), inset 2px 2px 4px rgba(0,0,0,0.4)';
-    return (
-      <button
-        aria-label={ariaLabel}
-        tabIndex={0}
-        onClick={onClick}
-        className="w-6 h-6 rounded-full transition-all duration-300 border-0 focus:outline-none"
-        style={{
-          background: bg,
-          boxShadow: active ? insetShadow : 'none',
-        }}
-      />
-    );
-  };
-
   return (
     <nav 
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 h-[var(--navbar-height)] flex items-center ${
@@ -139,10 +103,10 @@ const Navbar = () => {
           URSULA BENAVIDEZ
         </Link>
         
-        <div className="flex gap-4 md:gap-6 text-[11px] col-span-6 md:col-span-2 items-center h-full justify-end md:justify-start">
+        <div className="flex gap-4 md:gap-6 col-span-6 md:col-span-2 items-center h-full justify-end md:justify-start">
           <Link 
             href="#selected-works" 
-            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase`}
+            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase text-[11px]`}
             style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
             aria-label="Selected works section"
             aria-current={activeSection === 'selected-works' ? 'page' : undefined}
@@ -152,9 +116,10 @@ const Navbar = () => {
               <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
             )}
           </Link>
+
           <Link 
             href="#archive" 
-            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase`}
+            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase text-[11px]`}
             style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
             aria-label="Archive section"
             aria-current={activeSection === 'archive' ? 'page' : undefined}
@@ -164,13 +129,13 @@ const Navbar = () => {
               <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
             )}
           </Link>
+
           <Link 
             href="#contact" 
-            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase`}
+            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase text-[11px]`}
             style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
             aria-label="About section"
             aria-current={activeSection === 'contact' ? 'page' : undefined}
-            onClick={() => { window.dispatchEvent(new Event('close-archive')); }}
           >
             about
             {activeSection === 'contact' && (
@@ -181,20 +146,20 @@ const Navbar = () => {
 
         {/* Theme Toggle - Centered */}
         <div className="hidden md:flex col-span-2 items-center justify-center" role="group" aria-label="Theme toggle">
-          <div className="flex items-center gap-2">
-            <NeumorphicButton
-              active={theme === 'light'}
-              type="light"
-              onClick={() => toggleTheme('light')}
-              ariaLabel="Light mode"
+          <button
+            onClick={toggleTheme}
+            className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors"
+            style={{
+              backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+            }}
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          >
+            <span
+              className={`inline-block h-3 w-3 transform rounded-full transition-transform ${
+                theme === 'dark' ? 'translate-x-5 bg-white' : 'translate-x-1 bg-black'
+              }`}
             />
-            <NeumorphicButton
-              active={theme === 'dark'}
-              type="dark"
-              onClick={() => toggleTheme('dark')}
-              ariaLabel="Dark mode"
-            />
-          </div>
+          </button>
         </div>
 
         <div 

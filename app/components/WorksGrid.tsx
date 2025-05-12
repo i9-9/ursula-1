@@ -122,7 +122,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
       aria-label="Selected works section"
     >
       <div className="mb-10">
-        <h2 className="h2 section-title section-title-delay-1 font-neue-haas-grotesk-display">SELECTED WORK</h2>
+        <h2 className="h2 section-title section-title-delay-1 font-neue-haas-grotesk-display text-xs md:text-sm">SELECTED WORK</h2>
       </div>
       
       <div 
