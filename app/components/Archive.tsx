@@ -349,7 +349,7 @@ const Archive = () => {
                 filteredSections.map((section, index) => (
                   <div key={index} className="archive-section">
                     <div className={`py-4`}>
-                      <div className="text-xs md:text-sm font-medium uppercase tracking-wide opacity-80">
+                      <div className="text-sm md:text-base font-medium uppercase tracking-wide opacity-80">
                         {section.title}
                       </div>
                       
