@@ -41,7 +41,7 @@
   
   /* Typography Scale - Mobile First */
   --font-size-h1: 1.25rem;
-  --font-size-h2: 1.125rem;
+  --font-size-h2: 1rem;
   --font-size-h3: 1rem;
   --font-size-h4: 0.95rem;
   --font-size-h5: 0.875rem;
@@ -69,7 +69,7 @@
 @media (min-width: 768px) {
   :root {
     --font-size-h1: 1.636rem;  /* 18px */
-    --font-size-h2: 1.364rem;  /* 15px */
+    --font-size-h2: 1.182rem;  /* 13px */
     --font-size-h3: 1.182rem;  /* 13px */
     --font-size-h4: 1.091rem;  /* 12px */
     --font-size-h5: 1rem;      /* 11px */

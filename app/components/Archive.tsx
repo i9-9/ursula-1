@@ -376,19 +376,19 @@ const Archive = () => {
                           >
                             {/* Desktop layout (3 columns) */}
                             <div className="hidden md:grid md:grid-cols-12 items-start">
-                              <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p">{item.project}</div>
+                              <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p uppercase">{item.project}</div>
                               <div className="col-start-7 col-span-3 text-left whitespace-nowrap text-p">{item.year}</div>
-                              <div className="col-start-10 col-span-3 text-left whitespace-nowrap overflow-visible text-p">{item.company}</div>
+                              <div className="col-start-10 col-span-3 text-left whitespace-nowrap overflow-visible text-p uppercase">{item.company}</div>
                             </div>
                             
                             {/* Mobile layout */}
                             <div className="md:hidden">
                               <div className="flex flex-col">
-                                <div className="font-medium text-p mb-1">{item.project}</div>
+                                <div className="font-medium text-p mb-1 uppercase">{item.project}</div>
                                 {(item.year || item.company) && (
                                   <div className="text-sm opacity-70 flex items-center flex-wrap">
                                     {item.year && <span className="mr-2">{item.year}</span>}
-                                    {item.company && <span>{item.company}</span>}
+                                    {item.company && <span className="uppercase">{item.company}</span>}
                                   </div>
                                 )}
                               </div>
@@ -468,10 +468,10 @@ const Archive = () => {
               </div>
               
               <div className="p-6">
-                <h4 className="text-lg font-medium">{selectedItem.project}</h4>
+                <h4 className="text-lg font-medium uppercase">{selectedItem.project}</h4>
                 <div className="mt-1 flex flex-wrap gap-x-2 text-sm opacity-70">
                   {selectedItem.year && <span>{selectedItem.year}</span>}
-                  {selectedItem.company && <span>{selectedItem.company}</span>}
+                  {selectedItem.company && <span className="uppercase">{selectedItem.company}</span>}
                 </div>
               </div>
               

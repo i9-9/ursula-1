@@ -286,7 +286,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
 
   return (
     <section 
-      className="relative pt-24 px-2.5 md:px-[15px] bg-background text-foreground hidden md:block"
+      className="relative pt-8 px-2.5 md:px-[15px] bg-background text-foreground hidden md:block"
       style={{ height: '100vh' }}
     >
       {/* Scroll Container */}

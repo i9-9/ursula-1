@@ -132,7 +132,7 @@ const Navbar = () => {
       <div className="w-full grid grid-cols-12 items-center px-2.5 md:px-[15px] h-full">
         <Link 
           href="/" 
-          className="text-[11px] col-span-6 md:col-span-6 flex items-center h-full font-['Suisse_BP_INTL'] uppercase" 
+          className="text-[13px] col-span-6 md:col-span-6 flex items-center h-full font-['Suisse_BP_INTL'] uppercase" 
           style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
           aria-label="Home"
         >
