@@ -108,7 +108,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
     }
   }
 
-  const startAutoAdvance = () => {
+  const startAutoAdvance = useCallback(() => {
     if (!isAutoplaying) return
     
     intervalRef.current = setInterval(() => {
@@ -124,7 +124,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
         behavior: 'smooth'
       })
     }, 15000)
-  }
+  }, [isAutoplaying, isDragging])
 
   useEffect(() => {
     // Set initial scroll position to show first slide complete
@@ -141,7 +141,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
         clearInterval(intervalRef.current);
       }
     }
-  }, []);
+  }, [startAutoAdvance]);
 
   // Separate useEffect for handling auto-advance when currentIndex changes
   useEffect(() => {
@@ -149,7 +149,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       clearInterval(intervalRef.current)
     }
     startAutoAdvance()
-  }, [currentIndex, isAutoplaying])
+  }, [currentIndex, isAutoplaying, startAutoAdvance])
 
   // DRAG IMPLEMENTATION
   const handleDragStart = useCallback((clientX: number) => {

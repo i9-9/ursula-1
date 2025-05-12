@@ -153,7 +153,7 @@ Algunas mejoras planificadas para futuras versiones:
 ## Guía de Contribución
 
 Para contribuir al proyecto:
-1. Hacer fork del repositorio
+1. Hacer fork del repositorio       
 2. Crear una rama para tu feature (`git checkout -b feature/amazing-feature`)
 3. Hacer commit de tus cambios (`git commit -m 'Add: amazing feature'`)
 4. Push a la rama (`git push origin feature/amazing-feature`)

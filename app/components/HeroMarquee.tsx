@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import LazyVideo from './LazyVideo';
 import Image from 'next/image';
-import styles from './HeroMarquee.module.css';
 
 interface HeroSlide {
   id: string;
@@ -479,11 +478,11 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
             >
               {item.type === 'video' ? (
                 <div style={{ width: '100%', height: '100%', borderRadius: '0.5rem', overflow: 'hidden' }}>
-                  <LazyVideo 
-                    src={item.videoUrl} 
+                  <LazyVideo
+                    src={item.videoUrl}
                     poster={item.src}
-                    alt={item.alt || item.title}
-                    style={{ width: '100%', height: '100%' }}
+                    alt={item.alt || ''}
+                    className="w-full h-full"
                   />
                 </div>
               ) : (
