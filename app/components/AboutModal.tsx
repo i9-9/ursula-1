@@ -42,7 +42,7 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h2 className="!text-2xl md:text-2xl uppercase">Ursula Benavidez</h2>
-                  <h3 className="text-xl md:text-md uppercase">production designer ~ art director</h3>
+                  <h3 className="text-xl md:text-md uppercase">Production Designer ~ Art Director</h3>
                 </div>
                 <button
                   onClick={onClose}

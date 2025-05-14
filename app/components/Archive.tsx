@@ -269,7 +269,7 @@ const Archive = () => {
   }, []);
 
   return (
-    <section id="archive" className="py-6 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
+    <section id="archive" className="py-6 pb-0 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
       <div 
         className="mb-4 flex items-center justify-between cursor-pointer hover:bg-foreground/5 transition-colors duration-200 py-2 rounded-lg relative"
         onClick={() => setIsExpanded(!isExpanded)}

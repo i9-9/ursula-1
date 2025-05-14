@@ -290,7 +290,9 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   
   const rightCursorSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewport='0 0 100 100'><rect width='100%' height='100%' fill='transparent'/><text y='50%' x='50%' dy='.35em' text-anchor='middle' style='font-size:24px;fill:${escapeColor(rightArrowColor)}'>→</text></svg>`;
 
-  // IMPLEMENTACIÓN DEL ARRASTRE MANUAL
+  // --- DRAG LOGIC ---
+  const minDragDistance = 40; // px
+
   const handleDragStart = useCallback((clientX: number) => {
     setIsDragging(true);
     setDragStart(clientX);
@@ -300,31 +302,21 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
 
   const handleDragMove = useCallback((clientX: number) => {
     if (!isDragging) return;
-    
     const offset = clientX - dragStart;
     setDragOffset(offset);
   }, [isDragging, dragStart]);
 
   const handleDragEnd = useCallback(() => {
     if (!isDragging) return;
-    
-    document.body.style.cursor = '';
-    
-    // Determinar la dirección del deslizamiento
-    const threshold = window.innerWidth * 0.1; // 10% del ancho de la ventana
-    
-    if (Math.abs(dragOffset) > threshold) {
+    setIsDragging(false);
+    if (Math.abs(dragOffset) > minDragDistance) {
       if (dragOffset > 0) {
-        // Deslizar hacia la derecha (anterior)
-        setCurrentIndex(prev => (prev - 1 + items.length) % items.length);
+        setCurrentIndex((prev) => Math.max(prev - 1, 0));
       } else {
-        // Deslizar hacia la izquierda (siguiente)
-        setCurrentIndex(prev => (prev + 1) % items.length);
+        setCurrentIndex((prev) => Math.min(prev + 1, items.length - 1));
       }
     }
-    
-    setIsDragging(false);
-    setDragOffset(0);
+    setDragOffset(0); // Always reset dragOffset, but no snap-back animation
   }, [isDragging, dragOffset, items.length]);
 
   // Mouse Events
@@ -470,10 +462,10 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
               style={{
                 position: 'absolute',
                 inset: 0,
-                transform: `translateX(${(index - currentIndex) * 60}px)`,
+                transform: `translateX(${(index - currentIndex) * 60 + (isDragging && index === currentIndex ? dragOffset : 0)}px)`,
                 opacity: index === currentIndex || (isDragging && (index === ((currentIndex - 1 + items.length) % items.length) || index === ((currentIndex + 1) % items.length))) ? 1 : 0,
                 pointerEvents: index === currentIndex ? 'auto' : 'none',
-                transition: isDragging ? 'none' : 'transform 500ms ease-in-out, opacity 500ms ease-in-out'
+                transition: isDragging ? 'none' : 'transform 500ms cubic-bezier(0.22, 1, 0.36, 1), opacity 500ms ease-in-out'
               }}
             >
               {item.type === 'video' ? (
