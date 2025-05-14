@@ -10,7 +10,6 @@ const Navbar = () => {
   const [activeSection, setActiveSection] = useState('');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
-  const pathname = usePathname();
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
