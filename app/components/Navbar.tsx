@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
 import AboutModal from './AboutModal';
 
 const Navbar = () => {
