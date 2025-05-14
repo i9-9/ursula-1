@@ -10,7 +10,7 @@ const Contact = () => {
     <>
       <section id="contact" className="py-6 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }}>
         <div className="mb-4">
-          <h2 className="h2 section-title section-title-delay-2 font-neue-haas-grotesk-display text-xs md:text-sm">ABOUT</h2>
+          <h2 className="h2 section-title section-title-delay-2 font-neue-haas-grotesk-display text-xs md:text-sm">CONTACT</h2>
         </div>
         
         <div className="space-y-6 md:space-y-4">
@@ -147,7 +147,7 @@ const Contact = () => {
         </div>
 
         {/* Logo */}
-        <div className="absolute bottom-0 right-0 w-24 h-24 md:w-32 md:h-32 pr-2.5 md:pr-[15px] pb-6 md:pb-8">
+        <div className="absolute bottom-0 right-0 w-24 h-24 md:w-38 md:h-38 pr-2.5 md:pr-[15px] pb-6 md:pb-8">
           <div className="relative w-full h-full">
             <Image
               src="/images/logo/logo.svg"

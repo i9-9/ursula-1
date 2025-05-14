@@ -2,11 +2,15 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import AboutModal from './AboutModal';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const pathname = usePathname();
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
@@ -86,90 +90,110 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav 
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 h-[var(--navbar-height)] flex items-center ${
-        scrolled ? 'bg-background/90 backdrop-blur-md' : 'bg-transparent'
-      }`}
-      role="navigation"
-      aria-label="Main navigation"
-    >
-      <div className="w-full grid grid-cols-12 items-center px-2.5 md:px-[15px] h-full">
-        <Link 
-          href="/" 
-          className="text-[13px] col-span-6 md:col-span-6 flex items-center h-full font-['Suisse_BP_INTL'] uppercase" 
-          style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
-          aria-label="Home"
-        >
-          URSULA BENAVIDEZ
-        </Link>
-        
-        <div className="flex gap-4 md:gap-6 col-span-6 md:col-span-2 items-center h-full justify-end md:justify-start">
+    <>
+      <nav 
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 h-[var(--navbar-height)] flex items-center ${
+          scrolled ? 'bg-background/90 backdrop-blur-md' : 'bg-transparent'
+        }`}
+        role="navigation"
+        aria-label="Main navigation"
+      >
+        <div className="w-full grid grid-cols-12 items-center px-2.5 md:px-[15px] h-full">
           <Link 
-            href="#selected-works" 
-            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase text-[11px]`}
+            href="/" 
+            className="text-[13px] col-span-6 md:col-span-6 flex items-center h-full font-['Suisse_BP_INTL'] uppercase" 
             style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
-            aria-label="Selected works section"
-            aria-current={activeSection === 'selected-works' ? 'page' : undefined}
+            aria-label="Home"
           >
-            work
-            {activeSection === 'selected-works' && (
-              <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
-            )}
+            URSULA BENAVIDEZ
           </Link>
+          
+          <div className="flex gap-4 md:gap-6 col-span-5 md:col-span-3 items-center h-full justify-end md:justify-start">
+            <Link 
+              href="#selected-works" 
+              className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase text-[11px]`}
+              style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
+              aria-label="Selected works section"
+              aria-current={activeSection === 'selected-works' ? 'page' : undefined}
+            >
+              work
+              {activeSection === 'selected-works' && (
+                <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
+              )}
+            </Link>
 
-          <Link 
-            href="#archive" 
-            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase text-[11px]`}
-            style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
-            aria-label="Archive section"
-            aria-current={activeSection === 'archive' ? 'page' : undefined}
+            <Link 
+              href="#archive" 
+              className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase text-[11px]`}
+              style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
+              aria-label="Archive section"
+              aria-current={activeSection === 'archive' ? 'page' : undefined}
+            >
+              archive
+              {activeSection === 'archive' && (
+                <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
+              )}
+            </Link>
+
+            <button
+              onClick={() => setIsAboutModalOpen(true)}
+              className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase text-[11px] cursor-pointer`}
+              style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
+              aria-label="About section"
+              aria-current={activeSection === 'contact' ? 'page' : undefined}
+            >
+              about
+              {activeSection === 'contact' && (
+                <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
+              )}
+            </button>
+
+            <Link 
+              href="#contact" 
+              className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase text-[11px]`}
+              style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
+              aria-label="Contact section"
+              aria-current={activeSection === 'contact' ? 'page' : undefined}
+            >
+              contact
+              {activeSection === 'contact' && (
+                <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
+              )}
+            </Link>
+          </div>
+
+          {/* Theme Toggle - Alineado por col-span */}
+          <div className="hidden md:flex col-span-1 items-center" role="group" aria-label="Theme toggle">
+            <button
+              onClick={toggleTheme}
+              className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors"
+              style={{
+                backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+              }}
+              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            >
+              <span
+                className={`inline-block h-3 w-3 transform rounded-full transition-transform ${
+                  theme === 'dark' ? 'translate-x-5 bg-white' : 'translate-x-1 bg-black'
+                }`}
+              />
+            </button>
+          </div>
+
+          <div 
+            className="col-span-2 text-[11px] text-foreground hidden md:flex items-center h-full uppercase justify-end"
+            aria-label="Professional role"
           >
-            archive
-            {activeSection === 'archive' && (
-              <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
-            )}
-          </Link>
-
-          <Link 
-            href="#contact" 
-            className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase text-[11px]`}
-            style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
-            aria-label="About section"
-            aria-current={activeSection === 'contact' ? 'page' : undefined}
-          >
-            about
-            {activeSection === 'contact' && (
-              <span className="absolute -bottom-0 left-0 w-full h-0.5 bg-foreground" aria-hidden="true"></span>
-            )}
-          </Link>
+            production designer ~ art director
+          </div>
         </div>
+      </nav>
 
-        {/* Theme Toggle - Centered */}
-        <div className="hidden md:flex col-span-2 items-center justify-center" role="group" aria-label="Theme toggle">
-          <button
-            onClick={toggleTheme}
-            className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors"
-            style={{
-              backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
-            }}
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          >
-            <span
-              className={`inline-block h-3 w-3 transform rounded-full transition-transform ${
-                theme === 'dark' ? 'translate-x-5 bg-white' : 'translate-x-1 bg-black'
-              }`}
-            />
-          </button>
-        </div>
-
-        <div 
-          className="col-span-2 text-[11px] text-foreground hidden md:flex items-center h-full uppercase justify-end"
-          aria-label="Professional role"
-        >
-          production designer ~ art director
-        </div>
-      </div>
-    </nav>
+      <AboutModal 
+        isOpen={isAboutModalOpen} 
+        onClose={() => setIsAboutModalOpen(false)} 
+      />
+    </>
   );
 };
 
