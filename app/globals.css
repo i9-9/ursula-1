@@ -34,9 +34,8 @@
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
-  --font-neue-montreal: 'PP Neue Montreal Mono', monospace;
+  --background: #FAFAFA;
+  --foreground: #252525;
   --navbar-height: 36px; /* Altura del navbar */
   
   /* Typography Scale - Mobile First */
@@ -61,8 +60,8 @@
 
 /* Dark mode variables */
 .dark {
-  --background: #000000;
-  --foreground: #ffffff;
+  --background: #252525;
+  --foreground: #FAFAFA;
 }
 
 /* Desktop Typography Scale */
