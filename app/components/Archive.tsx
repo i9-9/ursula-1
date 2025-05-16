@@ -264,8 +264,15 @@ const Archive = () => {
   // Listen for global event to close archive
   useEffect(() => {
     const closeArchive = () => setIsExpanded(false);
+    const openArchive = () => setIsExpanded(true);
+    
     window.addEventListener('close-archive', closeArchive);
-    return () => window.removeEventListener('close-archive', closeArchive);
+    window.addEventListener('open-archive', openArchive);
+    
+    return () => {
+      window.removeEventListener('close-archive', closeArchive);
+      window.removeEventListener('open-archive', openArchive);
+    };
   }, []);
 
   return (

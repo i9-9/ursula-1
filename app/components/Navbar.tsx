@@ -113,6 +113,21 @@ const Navbar = () => {
               style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
               aria-label="Selected works section"
               aria-current={activeSection === 'selected-works' ? 'page' : undefined}
+              onClick={(e) => {
+                e.preventDefault();
+                // First show the section
+                window.dispatchEvent(new CustomEvent('show-section', { detail: 'works' }));
+                
+                // Wait for the section to be mounted and then scroll
+                setTimeout(() => {
+                  const worksSection = document.getElementById('selected-works');
+                  if (worksSection) {
+                    const yOffset = -100;
+                    const y = worksSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                  }
+                }, 100);
+              }}
             >
               work
               {activeSection === 'selected-works' && (
@@ -126,6 +141,26 @@ const Navbar = () => {
               style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
               aria-label="Archive section"
               aria-current={activeSection === 'archive' ? 'page' : undefined}
+              onClick={(e) => {
+                e.preventDefault();
+                // First show the section
+                window.dispatchEvent(new CustomEvent('show-section', { detail: 'archive' }));
+                
+                // Wait for the section to be mounted and then scroll
+                setTimeout(() => {
+                  const archiveSection = document.getElementById('archive');
+                  if (archiveSection) {
+                    const yOffset = -100;
+                    const y = archiveSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                    
+                    // Wait for scroll to start before opening accordion
+                    setTimeout(() => {
+                      window.dispatchEvent(new CustomEvent('open-archive'));
+                    }, 300);
+                  }
+                }, 100);
+              }}
             >
               archive
               {activeSection === 'archive' && (
@@ -152,6 +187,21 @@ const Navbar = () => {
               style={{ fontFamily: 'Suisse BP INTL', fontWeight: 500, fontStyle: 'normal' }}
               aria-label="Contact section"
               aria-current={activeSection === 'contact' ? 'page' : undefined}
+              onClick={(e) => {
+                e.preventDefault();
+                // First show the section
+                window.dispatchEvent(new CustomEvent('show-section', { detail: 'contact' }));
+                
+                // Wait for the section to be mounted and then scroll
+                setTimeout(() => {
+                  const contactSection = document.getElementById('contact');
+                  if (contactSection) {
+                    const yOffset = -100;
+                    const y = contactSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                  }
+                }, 100);
+              }}
             >
               contact
               {activeSection === 'contact' && (

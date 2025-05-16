@@ -23,9 +23,6 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [leftArrowColor, setLeftArrowColor] = useState('#FFFFFF');
   const [rightArrowColor, setRightArrowColor] = useState('#FFFFFF');
-  const [dragStart, setDragStart] = useState(0);
-  const [dragOffset, setDragOffset] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const leftAreaRef = useRef<HTMLDivElement>(null);
@@ -177,14 +174,14 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
 
   // Auto-advance slides every 7 seconds if not paused
   useEffect(() => {
-    if (!isPlaying || isDragging) return;
+    if (!isPlaying) return;
     
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
     }, 7000);
 
     return () => clearInterval(timer);
-  }, [isPlaying, items.length, isDragging]);
+  }, [isPlaying, items.length]);
 
   // Manejar el desplazamiento horizontal con rueda del ratón
   useEffect(() => {
@@ -215,35 +212,35 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
     };
   }, [items.length]);
 
-  // Manejar eventos touch para deslizar en móviles
+  // Touch Events for mobile
   useEffect(() => {
     const slider = sliderRef.current;
     if (!slider) return;
-
-    const handleTouchStart = (e: TouchEvent) => {
+    
+    const onTouchStart = (e: TouchEvent) => {
       startXRef.current = e.touches[0].clientX;
       isDraggingRef.current = true;
     };
-
-    const handleTouchMove = (e: TouchEvent) => {
+    
+    const onTouchMove = (e: TouchEvent) => {
       if (!isDraggingRef.current) return;
       
       const currentX = e.touches[0].clientX;
       const diff = startXRef.current - currentX;
       
-      // Prevenir scroll vertical durante swipe horizontal significativo
+      // Prevent scroll vertical during swipe horizontal
       if (Math.abs(diff) > 10) {
         e.preventDefault();
       }
     };
-
-    const handleTouchEnd = (e: TouchEvent) => {
+    
+    const onTouchEnd = (e: TouchEvent) => {
       if (!isDraggingRef.current) return;
       
       const currentX = e.changedTouches[0].clientX;
       const diff = startXRef.current - currentX;
       
-      // Cambiar slide si el swipe fue significativo
+      // Change slide if swipe was significant
       if (diff > 50) {
         setCurrentIndex(prev => (prev + 1) % items.length);
       } else if (diff < -50) {
@@ -252,15 +249,15 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
       
       isDraggingRef.current = false;
     };
-
-    slider.addEventListener('touchstart', handleTouchStart);
-    slider.addEventListener('touchmove', handleTouchMove, { passive: false });
-    slider.addEventListener('touchend', handleTouchEnd);
-
+    
+    slider.addEventListener('touchstart', onTouchStart);
+    slider.addEventListener('touchmove', onTouchMove, { passive: false });
+    slider.addEventListener('touchend', onTouchEnd);
+    
     return () => {
-      slider.removeEventListener('touchstart', handleTouchStart);
-      slider.removeEventListener('touchmove', handleTouchMove);
-      slider.removeEventListener('touchend', handleTouchEnd);
+      slider.removeEventListener('touchstart', onTouchStart);
+      slider.removeEventListener('touchmove', onTouchMove);
+      slider.removeEventListener('touchend', onTouchEnd);
     };
   }, [items.length]);
 
@@ -280,116 +277,6 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
     };
   }, [items.length]);
 
-  // Función para escapar el color para uso en URL
-  const escapeColor = (color: string) => {
-    return color.replace(/#/g, '%23');
-  };
-  
-  // Generar los SVG para los cursores con color dinámico
-  const leftCursorSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewport='0 0 100 100'><rect width='100%' height='100%' fill='transparent'/><text y='50%' x='50%' dy='.35em' text-anchor='middle' style='font-size:24px;fill:${escapeColor(leftArrowColor)}'>←</text></svg>`;
-  
-  const rightCursorSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewport='0 0 100 100'><rect width='100%' height='100%' fill='transparent'/><text y='50%' x='50%' dy='.35em' text-anchor='middle' style='font-size:24px;fill:${escapeColor(rightArrowColor)}'>→</text></svg>`;
-
-  // --- DRAG LOGIC ---
-  const minDragDistance = 40; // px
-
-  const handleDragStart = useCallback((clientX: number) => {
-    setIsDragging(true);
-    setDragStart(clientX);
-    setIsPlaying(false);
-    document.body.style.cursor = 'grabbing';
-  }, []);
-
-  const handleDragMove = useCallback((clientX: number) => {
-    if (!isDragging) return;
-    const offset = clientX - dragStart;
-    setDragOffset(offset);
-  }, [isDragging, dragStart]);
-
-  const handleDragEnd = useCallback(() => {
-    if (!isDragging) return;
-    setIsDragging(false);
-    if (Math.abs(dragOffset) > minDragDistance) {
-      if (dragOffset > 0) {
-        setCurrentIndex((prev) => Math.max(prev - 1, 0));
-      } else {
-        setCurrentIndex((prev) => Math.min(prev + 1, items.length - 1));
-      }
-    }
-    setDragOffset(0); // Always reset dragOffset, but no snap-back animation
-  }, [isDragging, dragOffset, items.length]);
-
-  // Mouse Events
-  useEffect(() => {
-    const slider = sliderRef.current;
-    if (!slider) return;
-    
-    const onMouseDown = (e: MouseEvent) => {
-      // No iniciar arrastre si el clic fue en un botón
-      if ((e.target as Element).closest('button')) return;
-      e.preventDefault();
-      handleDragStart(e.clientX);
-    };
-    
-    const onMouseMove = (e: MouseEvent) => {
-      handleDragMove(e.clientX);
-    };
-    
-    const onMouseUp = () => {
-      handleDragEnd();
-    };
-    
-    const onMouseLeave = () => {
-      if (isDragging) {
-        handleDragEnd();
-      }
-    };
-    
-    slider.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
-    document.addEventListener('mouseleave', onMouseLeave);
-    
-    return () => {
-      slider.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onMouseUp);
-      document.removeEventListener('mouseleave', onMouseLeave);
-    };
-  }, [handleDragStart, handleDragMove, handleDragEnd, isDragging]);
-
-  // Touch Events for mobile
-  useEffect(() => {
-    const slider = sliderRef.current;
-    if (!slider) return;
-    
-    const onTouchStart = (e: TouchEvent) => {
-      handleDragStart(e.touches[0].clientX);
-    };
-    
-    const onTouchMove = (e: TouchEvent) => {
-      handleDragMove(e.touches[0].clientX);
-      // Prevent scrolling when swiping horizontally
-      if (isDragging && Math.abs(dragOffset) > 10) {
-        e.preventDefault();
-      }
-    };
-    
-    const onTouchEnd = () => {
-      handleDragEnd();
-    };
-    
-    slider.addEventListener('touchstart', onTouchStart);
-    slider.addEventListener('touchmove', onTouchMove, { passive: false });
-    slider.addEventListener('touchend', onTouchEnd);
-    
-    return () => {
-      slider.removeEventListener('touchstart', onTouchStart);
-      slider.removeEventListener('touchmove', onTouchMove);
-      slider.removeEventListener('touchend', onTouchEnd);
-    };
-  }, [handleDragStart, handleDragMove, handleDragEnd, isDragging, dragOffset]);
-
   return (
     <section 
       id="hero"
@@ -406,7 +293,7 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
         borderRadius: '0.5rem'
       }}
     >
-      {/* Contenedor principal del slider */}
+      {/* Main slider container */}
       <div 
         ref={sliderRef}
         style={{ 
@@ -416,7 +303,6 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
           margin: '0 auto',
           overflow: 'hidden',
           borderRadius: '0.5rem',
-          cursor: isDragging ? 'grabbing' : 'grab',
           transform: 'none !important',
           maxWidth: '60px !important',
           maxHeight: '33.75px !important',
@@ -424,7 +310,7 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
           minHeight: '33.75px !important'
         }}
       >
-        {/* Área de navegación izquierda */}
+        {/* Left navigation area */}
         <div 
           ref={leftAreaRef}
           style={{ 
@@ -434,12 +320,12 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
             bottom: 0,
             width: '25%',
             zIndex: 20,
-            cursor: `url("${leftCursorSvg}") 16 0, auto`
+            cursor: 'pointer'
           }}
           onClick={() => setCurrentIndex(prev => (prev - 1 + items.length) % items.length)}
         />
 
-        {/* Área de navegación derecha */}
+        {/* Right navigation area */}
         <div 
           ref={rightAreaRef}
           style={{ 
@@ -449,12 +335,12 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
             bottom: 0,
             width: '25%',
             zIndex: 20,
-            cursor: `url("${rightCursorSvg}") 16 0, auto`
+            cursor: 'pointer'
           }}
           onClick={() => setCurrentIndex(prev => (prev + 1) % items.length)}
         />
 
-        {/* Contenedor de slides con soporte para arrastre */}
+        {/* Slides container */}
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           {items.map((item, index) => (
             <div
@@ -462,10 +348,11 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
               style={{
                 position: 'absolute',
                 inset: 0,
-                transform: `translateX(${(index - currentIndex) * 60 + (isDragging && index === currentIndex ? dragOffset : 0)}px)`,
-                opacity: index === currentIndex || (isDragging && (index === ((currentIndex - 1 + items.length) % items.length) || index === ((currentIndex + 1) % items.length))) ? 1 : 0,
+                transform: `translateX(${(index - currentIndex) * 60}px)`,
+                opacity: index === currentIndex ? 1 : 0,
                 pointerEvents: index === currentIndex ? 'auto' : 'none',
-                transition: isDragging ? 'none' : 'transform 500ms cubic-bezier(0.22, 1, 0.36, 1), opacity 500ms ease-in-out'
+                transition: 'transform 500ms cubic-bezier(0.22, 1, 0.36, 1), opacity 500ms ease-in-out',
+                willChange: 'transform, opacity'
               }}
             >
               {item.type === 'video' ? (
@@ -498,11 +385,11 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
           ))}
         </div>
         
-        {/* Flechas de navegación overlay */}
+        {/* Navigation arrows overlay */}
         <button 
           onClick={() => setCurrentIndex(prev => (prev - 1 + items.length) % items.length)}
-          className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/30 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 hidden md:flex"
-          aria-label="Slide anterior"
+          className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/30 rounded-full flex items-center justify-center z-10 md:flex"
+          aria-label="Previous slide"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={leftArrowColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 18l-6-6 6-6" />
@@ -511,8 +398,8 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
         
         <button 
           onClick={() => setCurrentIndex(prev => (prev + 1) % items.length)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/30 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 hidden md:flex"
-          aria-label="Siguiente slide"
+          className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/30 rounded-full flex items-center justify-center z-10 md:flex"
+          aria-label="Next slide"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={rightArrowColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 18l6-6-6-6" />
