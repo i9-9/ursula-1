@@ -8,7 +8,7 @@ import Contact from './components/Contact'
 
 export default function Home() {
   const [visibleSections, setVisibleSections] = useState({
-    works: false,
+    works: typeof window !== 'undefined' ? window.innerWidth < 768 : false,
     archive: false,
     contact: false
   });
@@ -22,9 +22,19 @@ export default function Home() {
       }));
     };
 
+    const handleResize = () => {
+      setVisibleSections(prev => ({
+        ...prev,
+        works: window.innerWidth < 768
+      }));
+    };
+
     window.addEventListener('show-section', handleShowSection as EventListener);
+    window.addEventListener('resize', handleResize);
+    
     return () => {
       window.removeEventListener('show-section', handleShowSection as EventListener);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 

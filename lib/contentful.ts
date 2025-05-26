@@ -21,6 +21,7 @@ export interface PortfolioItem {
   contentType: 'image' | 'video';
   videoUrl?: string;
   description: string;
+  vimeoId?: string;
 }
 
 export interface ArchiveItem {
@@ -135,6 +136,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
         contentType: fields.videoUrl ? 'video' : 'image',
         videoUrl: fields.videoUrl,
         description: fields.description || '',
+        vimeoId: fields['Vimeo ID'] ? String(fields['Vimeo ID']) : (fields.vimeoId ? String(fields.vimeoId) : ''),
       };
     });
   } catch (error) {

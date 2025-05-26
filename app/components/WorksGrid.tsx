@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PortfolioItem } from '@/lib/contentful';
 import { createPortal } from 'react-dom';
@@ -15,26 +15,6 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredProject, setHoveredProject] = useState<PortfolioItem | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  
-  // Detectar el tema actual
-  useEffect(() => {
-    // Verificar inicialmente
-    setIsDarkMode(document.documentElement.classList.contains('dark'));
-    
-    // Escuchar cambios en el tema
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class') {
-          setIsDarkMode(document.documentElement.classList.contains('dark'));
-        }
-      });
-    });
-    
-    observer.observe(document.documentElement, { attributes: true });
-    
-    return () => observer.disconnect();
-  }, []);
   
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, project: PortfolioItem) => {
     setMousePosition({
@@ -220,15 +200,27 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         >
           <div className="bg-background text-foreground rounded-lg w-full max-w-md">
             <div className="relative w-full aspect-video">
-              <video
-                src={selectedProject.thumbnail}
-                className="w-full h-full object-cover rounded-t-lg"
-                controls
-                playsInline
-                autoPlay
-                muted
-                aria-label={`${selectedProject.title} video`}
-              />
+              {selectedProject.vimeoId ? (
+                <iframe
+                  src={`https://player.vimeo.com/video/${selectedProject.vimeoId}?autoplay=1&muted=1`}
+                  className="w-full h-full rounded-t-lg"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  title={selectedProject.title}
+                  aria-label={`${selectedProject.title} Vimeo video`}
+                />
+              ) : (
+                <video
+                  src={selectedProject.thumbnail}
+                  className="w-full h-full object-cover rounded-t-lg"
+                  controls
+                  playsInline
+                  autoPlay
+                  muted
+                  aria-label={`${selectedProject.title} video`}
+                />
+              )}
             </div>
             <div className="p-4">
               <h3 id="modal-title" className="h5 font-medium italic text-foreground">{selectedProject.title}</h3>
@@ -262,76 +254,74 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             {/* Fondo semitransparente */}
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedProject(null)}></div>
             
-            {/* Contenedor del modal - Responde al tema detectado */}
+            {/* Contenedor del modal */}
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="relative z-10 max-w-[90vw] w-full max-h-[95vh] overflow-hidden rounded-lg"
-              style={{ 
-                backgroundColor: isDarkMode ? 'black' : 'white', 
-                color: isDarkMode ? 'white' : 'black',
-                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
-              }}
+              className="relative z-10 max-w-[90vw] w-full max-h-[95vh] overflow-hidden rounded-lg bg-background text-foreground shadow-2xl"
+              style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)' }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Botón de cierre */}
               <button 
-                className="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center rounded-lg border"
-                style={{ 
-                  backgroundColor: isDarkMode ? 'black' : 'white', 
-                  borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-                  color: isDarkMode ? 'white' : 'black'
-                }}
+                className="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center rounded-lg border border-foreground/10 bg-background/95 backdrop-blur-sm text-foreground hover:bg-foreground/5 transition-colors"
                 onClick={() => setSelectedProject(null)}
                 aria-label="Close modal"
               >
-                <span className="text-xl">✕</span>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-6 h-6 mx-auto my-auto flex items-center justify-center"
+                  aria-hidden="true"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
               
-              {/* Video container - Sin clase modal-content */}
-              <div 
-                className="relative w-full aspect-video max-h-[80vh]" 
-                style={{ 
-                  backgroundColor: isDarkMode ? '#1f2937' : '#f3f4f6' 
-                }}
-              >
-                <video
-                  src={selectedProject.fullImage}
-                  className="w-full h-full object-contain"
-                  controls
-                  playsInline
-                  autoPlay
-                  muted
-                  aria-label={`${selectedProject.title} video`}
-                />
+              {/* Video container */}
+              <div className="relative w-full aspect-video max-h-[80vh] bg-foreground/5">
+                {selectedProject.vimeoId ? (
+                  <iframe
+                    src={`https://player.vimeo.com/video/${selectedProject.vimeoId}?autoplay=1&muted=1`}
+                    className="w-full h-full rounded-t-lg"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    title={selectedProject.title}
+                    aria-label={`${selectedProject.title} Vimeo video`}
+                  />
+                ) : (
+                  <video
+                    src={selectedProject.fullImage}
+                    className="w-full h-full object-contain"
+                    controls
+                    playsInline
+                    autoPlay
+                    muted
+                    aria-label={`${selectedProject.title} video`}
+                  />
+                )}
               </div>
               
-              {/* Información del proyecto - Sin clase modal-content */}
-              <div 
-                className="p-8" 
-                style={{ 
-                  backgroundColor: isDarkMode ? 'black' : 'white' 
-                }}
-              >
+              {/* Información del proyecto */}
+              <div className="p-8 bg-background">
                 <h3 
                   id="desktop-modal-title" 
-                  className="h3 font-medium leading-tight mb-1"
-                  style={{ 
-                    color: isDarkMode ? 'white' : 'black' 
-                  }}
+                  className="h3 font-medium leading-tight mb-1 text-foreground"
                 >{selectedProject.title}</h3>
                 <p 
-                  className="text-p mb-4"
-                  style={{ 
-                    color: isDarkMode ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)' 
-                  }}
+                  className="text-p mb-4 text-foreground/60"
                 >{selectedProject.artist}</p>
                 <p 
-                  className="text-p max-w-4xl"
-                  style={{ 
-                    color: isDarkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)' 
-                  }}
+                  className="text-p max-w-4xl text-foreground/80"
                 >{selectedProject.description}</p>
               </div>
             </motion.div>

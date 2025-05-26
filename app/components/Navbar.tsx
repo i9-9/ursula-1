@@ -96,7 +96,7 @@ const Navbar = () => {
         role="navigation"
         aria-label="Main navigation"
       >
-        <div className="w-full grid grid-cols-12 items-center px-2.5 md:px-[15px] h-full">
+        <div className="w-full grid grid-cols-12 items-center px-2.5 md:px-[15px] h-full ">
           <Link 
             href="/" 
             className="text-[13px] col-span-6 md:col-span-6 flex items-center h-full font-['Suisse_BP_INTL'] uppercase" 
@@ -106,7 +106,7 @@ const Navbar = () => {
             URSULA BENAVIDEZ
           </Link>
           
-          <div className="flex gap-4 md:gap-6 col-span-5 md:col-span-3 items-center h-full justify-end md:justify-start">
+          <div className="flex gap-4 md:gap-6 col-span-6 md:col-span-3 items-center h-full justify-end md:justify-start">
             <Link 
               href="#selected-works" 
               className={`relative flex items-center h-full font-['Suisse_BP_INTL'] uppercase text-[11px]`}
