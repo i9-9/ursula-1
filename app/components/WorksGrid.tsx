@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PortfolioItem } from '@/lib/contentful';
 import { createPortal } from 'react-dom';
@@ -9,6 +9,51 @@ import { useScrollReveal } from '@/app/hooks/useScrollReveal';
 interface WorksGridProps {
   works: PortfolioItem[];
 }
+
+interface LazyAutoplayVideoProps {
+  src: string;
+  poster: string;
+  alt: string;
+  className?: string;
+}
+
+const LazyAutoplayVideo = ({ src, poster, alt, className = '' }: LazyAutoplayVideoProps) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new window.IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.5 }
+    );
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={containerRef} className={className}>
+      {isInView ? (
+        <video
+          src={src}
+          poster={poster}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <img
+          src={poster}
+          alt={alt}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+      )}
+    </div>
+  );
+};
 
 const WorksGrid = ({ works = [] }: WorksGridProps) => {
   const [selectedProject, setSelectedProject] = useState<PortfolioItem | null>(null);
@@ -130,18 +175,11 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             aria-label={`${project.title} by ${project.artist}`}
           >
             <div className="relative w-full aspect-video overflow-hidden bg-gray-100 rounded-lg">
-              <video
+              <LazyAutoplayVideo
                 src={project.thumbnail}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                autoPlay
-                onError={(e) => console.error('Error loading video:', e)}
-                onLoadStart={() => console.log('Video loading started')}
-                onLoadedData={() => console.log('Video loaded')}
-                aria-hidden="true"
+                poster={project.thumbnail}
+                alt={project.title}
+                className="w-full h-full"
               />
               <div className="absolute inset-0 bg-black/5 animate-pulse" aria-hidden="true" />
             </div>

@@ -5,6 +5,7 @@ import "./animations.css";
 import "./spacing.css";
 import Navbar from './components/Navbar';
 import ScrollbarStyles from './components/ScrollbarStyles';
+import PasswordProtection from './components/PasswordProtection';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://ursulabenavidez.com'),
@@ -83,10 +84,12 @@ export default function RootLayout({
         />
       </head>
       <body className={`${neueHaasGroteskDisplay.variable} ${neueHaasGroteskText.variable} font-sans antialiased`}>
-        <div className="min-h-screen bg-background text-foreground">
-          <Navbar />
-          {children}
-        </div>
+        <PasswordProtection>
+          <div className="min-h-screen bg-background text-foreground">
+            <Navbar />
+            {children}
+          </div>
+        </PasswordProtection>
         <ScrollbarStyles />
       </body>
     </html>
