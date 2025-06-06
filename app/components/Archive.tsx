@@ -14,14 +14,14 @@ interface ArchiveProps {
 const Archive = ({ sections = [] }: ArchiveProps) => {
   useScrollReveal();
 
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [hoveredItem, setHoveredItem] = useState<ArchiveItem | null>(null);
   const [selectedItem, setSelectedItem] = useState<ArchiveItem | null>(null);
   const [filters, setFilters] = useState<{ category: string | null }>({
     category: null
   });
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAccordionHovered, setIsAccordionHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   // Filter sections based on selected filters
   const filteredSections = useMemo(() => {
@@ -37,6 +37,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
   }, [filters, sections]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
+    // Solo para el tooltip del accordion
     const tooltipWidth = 210;
     const tooltipHeight = 150;
     
@@ -146,7 +147,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
               ease: [0.25, 0.1, 0.25, 1.0],
               opacity: { duration: 0.3 }
             }}
-            className="overflow-hidden pt-6"
+            className="overflow-hidden pt-6 relative"
           >
             {/* Componente de filtros con animación secuencial */}
             <motion.div
@@ -196,7 +197,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                           <div 
                             key={idx} 
                             className="group cursor-pointer hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0 relative"
-                            onMouseEnter={() => setHoveredItem(item.project)}
+                            onMouseEnter={() => setHoveredItem(item)}
                             onMouseLeave={() => setHoveredItem(null)}
                             onClick={() => handleItemClick(item)}
                           >
@@ -237,35 +238,41 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                 </div>
               )}
             </motion.div>
+
+            {/* Imagen de hover centrada en el componente (solo en desktop) */}
+            <AnimatePresence>
+              {hoveredItem && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="hidden md:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[100]"
+                >
+                  <div className="w-[600px] h-[450px] relative shadow-2xl rounded-lg overflow-hidden border border-white/20">
+                    {hoveredItem.thumbnail ? (
+                      <Image
+                        src={hoveredItem.thumbnail}
+                        alt={hoveredItem.project}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-gray-500 text-sm">Sin imagen</span>
+                      </div>
+                    )}
+                    {/* Título del proyecto en el tooltip */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white text-sm p-4">
+                      <div className="font-medium truncate">{hoveredItem.project}</div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Tooltip de imagen que sigue al cursor (solo en desktop) */}
-      {hoveredItem && (
-        <div 
-          className="fixed hidden md:block pointer-events-none transition-opacity duration-150 opacity-100 z-[100]"
-          style={{
-            left: `${mousePosition.x}px`,
-            top: `${mousePosition.y}px`,
-            transform: mousePosition.x + 210 > window.innerWidth ? 'translate(-100%, 10px)' : 'translate(10px, 10px)',
-            animation: 'fadeIn 0.2s ease-in-out'
-          }}
-        >
-          <div className="w-[400px] h-[300px] relative shadow-xl rounded overflow-hidden">
-            <Image
-              src="/images/archive/1.jpg"
-              alt={hoveredItem}
-              fill
-              className="object-cover"
-            />
-            {/* Opcional: Título del proyecto en el tooltip */}
-            <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs p-1 truncate">
-              {hoveredItem}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Modal para visualización móvil */}
       <AnimatePresence>
@@ -285,12 +292,18 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative w-full aspect-[4/3]">
-                <Image 
-                  src="/images/archive/1.jpg"
-                  alt={selectedItem.project}
-                  fill
-                  className="object-cover"
-                />
+                {selectedItem.thumbnail ? (
+                  <Image 
+                    src={selectedItem.thumbnail}
+                    alt={selectedItem.project}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-500 text-sm">Sin imagen</span>
+                  </div>
+                )}
               </div>
               
               <div className="p-6">

@@ -30,6 +30,7 @@ export interface ArchiveItem {
   project: string;
   year: string;
   company: string;
+  thumbnail?: string; // URL de la imagen thumbnail desde Contentful
 }
 
 export interface ArchiveSection {
@@ -201,6 +202,9 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
               project: item.fields.project || '',
               year: item.fields.year || '',
               company: item.fields.company || '',
+              thumbnail: item.fields.thumbnail?.fields?.file?.url 
+                ? `https:${item.fields.thumbnail.fields.file.url}` 
+                : undefined,
             };
           })
           .filter(item => item !== null) // Filtrar referencias rotas
