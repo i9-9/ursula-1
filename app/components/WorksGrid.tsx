@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PortfolioItem } from '@/lib/contentful';
 import { createPortal } from 'react-dom';
 import { useScrollReveal } from '@/app/hooks/useScrollReveal';
+import Image from 'next/image';
 
 interface WorksGridProps {
   works: PortfolioItem[];
@@ -18,25 +19,36 @@ interface LazyAutoplayVideoProps {
 }
 
 const LazyAutoplayVideo = ({ src, poster, alt, className = '' }: LazyAutoplayVideoProps) => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isInView, setIsInView] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasIntersected, setHasIntersected] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    const observer = new window.IntersectionObserver(
-      ([entry]) => setIsInView(entry.isIntersecting),
-      { threshold: 0.5 }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasIntersected(true);
+          setIsPlaying(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
     );
-    observer.observe(containerRef.current);
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div ref={containerRef} className={className}>
-      {isInView ? (
+    <div ref={containerRef} className={`relative ${className}`}>
+      {hasIntersected && isPlaying ? (
         <video
+          ref={videoRef}
           src={src}
-          poster={poster}
           autoPlay
           muted
           loop
@@ -44,9 +56,11 @@ const LazyAutoplayVideo = ({ src, poster, alt, className = '' }: LazyAutoplayVid
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       ) : (
-        <img
+        <Image
           src={poster}
           alt={alt}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           loading="lazy"
         />

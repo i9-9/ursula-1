@@ -74,6 +74,7 @@ const fallbackPortfolioItems: PortfolioItem[] = [
 ];
 
 // Cliente de Contentful
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let client: any = null;
 
 try {
@@ -103,6 +104,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
       order: ['fields.order'],
     });
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return entries.items.map((item: any) => {
       const fields = item.fields;
       return {
@@ -142,6 +144,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
       return fallbackPortfolioItems;
     }
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return entries.items.map((item: any) => {
       const fields = item.fields;
       return {
@@ -187,10 +190,12 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
       return [];
     }
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return entries.items.map((section: any) => {
       const fields = section.fields;
       const items = fields.items ? 
         fields.items
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .map((item: any) => {
             // Verificar si item tiene fields (referencia cargada correctamente)
             if (!item.fields) {
@@ -207,8 +212,8 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
                 : undefined,
             };
           })
-          .filter(item => item !== null) // Filtrar referencias rotas
-          .sort((a, b) => {
+          .filter((item: ArchiveItem | null): item is ArchiveItem => item !== null) // Filtrar referencias rotas
+          .sort((a: ArchiveItem, b: ArchiveItem) => {
             // Ordenar por año descendente (más reciente primero)
             const yearA = parseInt(a.year) || 0;
             const yearB = parseInt(b.year) || 0;
