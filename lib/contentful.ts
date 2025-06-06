@@ -9,6 +9,7 @@ export interface HeroSlide {
   alt: string;
   type: 'image' | 'video';
   videoUrl?: string;
+  order?: number;
 }
 
 export interface PortfolioItem {
@@ -22,6 +23,7 @@ export interface PortfolioItem {
   videoUrl?: string;
   description: string;
   vimeoId?: string;
+  order?: number;
 }
 
 export interface ArchiveItem {
@@ -33,66 +35,75 @@ export interface ArchiveItem {
 export interface ArchiveSection {
   title: string;
   items: ArchiveItem[];
+  order?: number;
 }
 
-// Cliente de Contentful
-const client = createClient({
-  space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID!,
-  accessToken: process.env.CONTENTFUL_ACCESS_TOKEN!,
-  environment: process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'master'
-});
+// Datos de respaldo
+const fallbackPortfolioItems: PortfolioItem[] = [
+  {
+    id: 'fallback-1',
+    title: 'Tres Pecados Después',
+    artist: 'Milo J',
+    year: '2024',
+    thumbnail: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
+    fullImage: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
+    contentType: 'video',
+    description: 'Videoclip para Milo J - Tres Pecados Después.',
+  },
+  {
+    id: 'fallback-2',
+    title: 'Ali Oli',
+    artist: 'Milo J',
+    year: '2024',
+    thumbnail: '/videos_grid/2 Milo J - Ali Oli.mp4',
+    fullImage: '/videos_grid/2 Milo J - Ali Oli.mp4',
+    contentType: 'video',
+    description: 'Videoclip para Milo J - Ali Oli.',
+  },
+  {
+    id: 'fallback-3',
+    title: 'Sola',
+    artist: 'Chita',
+    year: '2024',
+    thumbnail: '/videos_grid/3 - Chita - Sola.mp4',
+    fullImage: '/videos_grid/3 - Chita - Sola.mp4',
+    contentType: 'video',
+    description: 'Videoclip para Chita - Sola.',
+  }
+];
 
-// Tipos para los campos de Contentful
-interface ContentfulFields {
-  [key: string]: unknown;
-  title?: string;
-  client?: string;
-  artist?: string;
-  year?: string;
-  company?: string;
-  project?: string;
-  videoUrl?: string;
-  description?: string;
-  image?: {
-    fields: {
-      file: {
-        url: string;
-      };
-      description?: string;
-    };
-  };
-  thumbnail?: {
-    fields: {
-      file: {
-        url: string;
-      };
-    };
-  };
-  fullImage?: {
-    fields: {
-      file: {
-        url: string;
-      };
-    };
-  };
-  items?: Array<{
-    fields: ContentfulFields;
-  }>;
+// Cliente de Contentful
+let client: any = null;
+
+try {
+  if (process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID && process.env.CONTENTFUL_ACCESS_TOKEN) {
+    client = createClient({
+      space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID,
+      accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
+      environment: process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'master'
+    });
+  }
+} catch (error) {
+  console.warn('Contentful client initialization failed, using fallback data:', error);
 }
 
 // Funciones para obtener datos
 
 // Obtener slides del hero
 export async function getHeroSlides(): Promise<HeroSlide[]> {
+  if (!client) {
+    console.log('Using fallback data for hero slides');
+    return [];
+  }
+
   try {
     const entries = await client.getEntries({
       content_type: 'heroSlide',
-      // @ts-expect-error - El tipo de contentful no reconoce correctamente 'fields.order'
-      order: 'fields.order',
+      order: ['fields.order'],
     });
     
-    return entries.items.map(item => {
-      const fields = item.fields as ContentfulFields;
+    return entries.items.map((item: any) => {
+      const fields = item.fields;
       return {
         id: item.sys.id,
         title: fields.title || '',
@@ -101,8 +112,9 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
           ? `https:${fields.image.fields.file.url}` 
           : '',
         alt: fields.image?.fields?.description || fields.title || '',
-        type: fields.videoUrl ? 'video' : 'image',
+        type: fields.videoUrl ? 'video' as const : 'image' as const,
         videoUrl: fields.videoUrl,
+        order: fields.order,
       };
     });
   } catch (error) {
@@ -113,15 +125,24 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
 
 // Obtener items de trabajos seleccionados
 export async function getPortfolioItems(): Promise<PortfolioItem[]> {
+  if (!client) {
+    console.log('Using fallback data for portfolio items');
+    return fallbackPortfolioItems;
+  }
+
   try {
     const entries = await client.getEntries({
       content_type: 'portfolioItem',
-      // @ts-expect-error - El tipo de contentful no reconoce correctamente 'fields.order'
-      order: 'fields.order',
+      order: ['fields.order'],
     });
     
-    return entries.items.map(item => {
-      const fields = item.fields as ContentfulFields;
+    if (entries.items.length === 0) {
+      console.log('No portfolio items found in Contentful, using fallback data');
+      return fallbackPortfolioItems;
+    }
+    
+    return entries.items.map((item: any) => {
+      const fields = item.fields;
       return {
         id: item.sys.id,
         title: fields.title || '',
@@ -133,40 +154,67 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
         fullImage: fields.fullImage?.fields?.file?.url 
           ? `https:${fields.fullImage.fields.file.url}` 
           : '',
-        contentType: fields.videoUrl ? 'video' : 'image',
+        contentType: fields.videoUrl ? 'video' as const : 'image' as const,
         videoUrl: fields.videoUrl,
         description: fields.description || '',
         vimeoId: fields['Vimeo ID'] ? String(fields['Vimeo ID']) : (fields.vimeoId ? String(fields.vimeoId) : ''),
+        order: fields.order,
       };
     });
   } catch (error) {
     console.error('Error fetching portfolio items from Contentful:', error);
-    return [];
+    return fallbackPortfolioItems;
   }
 }
 
 // Obtener datos de archivo
 export async function getArchiveData(): Promise<ArchiveSection[]> {
+  if (!client) {
+    console.log('Using fallback data for archive');
+    return [];
+  }
+
   try {
     const entries = await client.getEntries({
       content_type: 'archiveSection',
-      // @ts-expect-error - El tipo de contentful no reconoce correctamente 'fields.order'
-      order: 'fields.order',
+      order: ['fields.order'],
       include: 2, // Para obtener referencias anidadas
     });
     
-    return entries.items.map(section => {
-      const fields = section.fields as ContentfulFields;
+    if (entries.items.length === 0) {
+      console.log('No archive sections found in Contentful');
+      return [];
+    }
+    
+    return entries.items.map((section: any) => {
+      const fields = section.fields;
       const items = fields.items ? 
-        fields.items.map(item => ({
-          project: item.fields.project || '',
-          year: item.fields.year || '',
-          company: item.fields.company || '',
-        })) : [];
+        fields.items
+          .map((item: any) => {
+            // Verificar si item tiene fields (referencia cargada correctamente)
+            if (!item.fields) {
+              console.warn(`Archive item reference not loaded properly, skipping: ${item.sys?.id}`);
+              return null; // Marcar para filtrar
+            }
+            
+            return {
+              project: item.fields.project || '',
+              year: item.fields.year || '',
+              company: item.fields.company || '',
+            };
+          })
+          .filter(item => item !== null) // Filtrar referencias rotas
+          .sort((a, b) => {
+            // Ordenar por año descendente (más reciente primero)
+            const yearA = parseInt(a.year) || 0;
+            const yearB = parseInt(b.year) || 0;
+            return yearB - yearA;
+          }) : [];
         
       return {
         title: fields.title || '',
         items,
+        order: parseInt(fields.order) || 0,
       };
     });
   } catch (error) {

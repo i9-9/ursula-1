@@ -5,209 +5,13 @@ import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import ArchiveFilters from './ArchiveFilters';
 import { useScrollReveal } from '@/app/hooks/useScrollReveal';
+import { ArchiveSection, ArchiveItem } from '@/lib/contentful';
 
-interface ArchiveItem {
-  project: string;
-  year: string;
-  company: string;
-}
-
-interface ArchiveSection {
-  title: string;
-  items: ArchiveItem[];
-}
-
-interface ArchiveDataProps {
+interface ArchiveProps {
   sections: ArchiveSection[];
 }
 
-// Datos de archivo
-const archiveData: ArchiveDataProps = {
-  sections: [
-    {
-      title: "MUSIC VIDEO",
-      items: [
-        {
-          project: "yatra - pelirroja",
-          year: "2025",
-          company: "the movement / landia"
-        },
-        {
-          project: "swaggerboys & dillom - el morocho, el rubio y el colo",
-          year: "2024",
-          company: "arena collective"
-        },
-        {
-          project: "milo j - tres pecados despues",
-          year: "2024",
-          company: "arena collective"
-        },
-        {
-          project: "milo j - ali oli",
-          year: "2024",
-          company: "poster"
-        },
-        {
-          project: "dillom - cirugia",
-          year: "2024",
-          company: "poster"
-        },
-        {
-          project: "dillom - buenos tiempos",
-          year: "2024",
-          company: "bunker"
-        },
-        {
-          project: "taichu ft. lali - s.o.s",
-          year: "2024",
-          company: "castadiva"
-        },
-        {
-          project: "saramalacara - mas feliz",
-          year: "2024",
-          company: "the movement / landia"
-        },
-        {
-          project: "chita - sola",
-          year: "2023",
-          company: "mamahungara"
-        },
-        {
-          project: "conociendo rusia & natalia lafourcade - cinco horas",
-          year: "2024",
-          company: "the movement / landia"
-        },
-        {
-          project: "conociendo rusia - te lo voy a decir",
-          year: "2024",
-          company: "lacasadealado / oruga"
-        },
-        {
-          project: "julieta venegas - mismo amor",
-          year: "2022",
-          company: "asalto"
-        },
-        {
-          project: "julieta venegas - en tu orilla",
-          year: "2023",
-          company: "asalto"
-        },
-        {
-          project: "maria becerra - iman",
-          year: "2024",
-          company: "asalto"
-        },
-        {
-          project: "maria becerra - primer aviso",
-          year: "2024",
-          company: "asalto"
-        },
-        {
-          project: "maria becerra - corazon vacio",
-          year: "2023",
-          company: "anestesia audiovisual"
-        },
-        {
-          project: "maria becerra - automatico",
-          year: "2023",
-          company: ""
-        },
-        {
-          project: "duki - antes de perderte",
-          year: "2022",
-          company: ""
-        },
-        {
-          project: "duki & de la ghetto & quevedo - si quieren frontear",
-          year: "2021",
-          company: ""
-        }
-      ]
-    },
-    {
-      title: "COMMERCIAL",
-      items: [
-        {
-          project: "spotify argentina",
-          year: "",
-          company: "poster"
-        },
-        {
-          project: "bonafont mexico",
-          year: "2024",
-          company: "mamahungara"
-        },
-        {
-          project: "spotify argentina x maria becerra",
-          year: "2024",
-          company: "the movement / landia"
-        },
-        {
-          project: "betwarrior",
-          year: "2024",
-          company: "mamahungara"
-        },
-        {
-          project: "personal",
-          year: "2024",
-          company: "poster"
-        },
-        {
-          project: "cerveza quilmes",
-          year: "2023",
-          company: "the movement / landia"
-        },
-        {
-          project: "mercadolibre argentina x bizarrap",
-          year: "2023",
-          company: "the movement / landia"
-        }
-      ]
-    },
-    {
-      title: "LIVE",
-      items: [
-        {
-          project: "maria becerra / lollapalooza",
-          year: "2024",
-          company: "asalto"
-        }
-      ]
-    },
-    {
-      title: "SET DESIGN",
-      items: [
-        {
-          project: "ries",
-          year: "",
-          company: ""
-        },
-        {
-          project: "puma",
-          year: "",
-          company: ""
-        },
-        {
-          project: "ay not dead",
-          year: "",
-          company: ""
-        },
-        {
-          project: "luna alvarez castillo",
-          year: "",
-          company: ""
-        },
-        {
-          project: "jazmin chebar",
-          year: "",
-          company: ""
-        }
-      ]
-    }
-  ]
-};
-
-const Archive = () => {
+const Archive = ({ sections = [] }: ArchiveProps) => {
   useScrollReveal();
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -221,7 +25,7 @@ const Archive = () => {
 
   // Filter sections based on selected filters
   const filteredSections = useMemo(() => {
-    return archiveData.sections.filter(section => {
+    return sections.filter(section => {
       // If no filters are selected, show all sections
       if (!filters.category) return true;
       
@@ -230,7 +34,7 @@ const Archive = () => {
       
       return true;
     });
-  }, [filters]);
+  }, [filters, sections]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const tooltipWidth = 210;
@@ -274,6 +78,21 @@ const Archive = () => {
       window.removeEventListener('open-archive', openArchive);
     };
   }, []);
+
+  // Show loading state if no sections
+  if (!sections || sections.length === 0) {
+    return (
+      <section id="archive" className="py-6 pb-0 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }}>
+        <div className="mb-4 flex items-center justify-between py-2 rounded-lg">
+          <h2 className="h2 section-title section-title-delay-2 font-neue-haas-grotesk-display">ARCHIVE</h2>
+        </div>
+        <div className="border-t border-gray-300/20 dark:border-gray-700/20"></div>
+        <div className="py-10 text-center opacity-60">
+          <p>Loading archive data...</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="archive" className="py-6 pb-0 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
@@ -339,7 +158,7 @@ const Archive = () => {
               }}
             >
               <ArchiveFilters 
-                categories={archiveData.sections.map(section => section.title)} 
+                categories={sections.map(section => section.title)} 
                 selectedCategory={filters.category}
                 onCategoryChange={(category) => setFilters(prev => ({ ...prev, category }))}
                 onReset={resetFilters}

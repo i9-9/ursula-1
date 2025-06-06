@@ -1,49 +1,30 @@
-'use client';
+import { Suspense } from 'react';
+import ClientHome from './components/ClientHome';
+import { getPortfolioItems, getHeroSlides, getArchiveData } from '@/lib/contentful';
 
-import { useState, useEffect } from 'react';
-import FeaturedProject from './components/FeaturedProject'
-import WorksGrid from './components/WorksGrid'
-import Archive from './components/Archive'
-import Contact from './components/Contact'
+export default async function Home() {
+  // Fetch data on the server
+  const [portfolioItems, heroSlides, archiveSections] = await Promise.all([
+    getPortfolioItems(),
+    getHeroSlides(),
+    getArchiveData()
+  ]);
 
-export default function Home() {
-  const [visibleSections, setVisibleSections] = useState({
-    works: typeof window !== 'undefined' ? window.innerWidth < 768 : false,
-    archive: false,
-    contact: false
-  });
-
-  useEffect(() => {
-    const handleShowSection = (event: CustomEvent) => {
-      const section = event.detail as keyof typeof visibleSections;
-      setVisibleSections(prev => ({
-        ...prev,
-        [section]: true
-      }));
-    };
-
-    const handleResize = () => {
-      setVisibleSections(prev => ({
-        ...prev,
-        works: window.innerWidth < 768
-      }));
-    };
-
-    window.addEventListener('show-section', handleShowSection as EventListener);
-    window.addEventListener('resize', handleResize);
-    
-    return () => {
-      window.removeEventListener('show-section', handleShowSection as EventListener);
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  console.log('Portfolio items count:', portfolioItems.length);
+  console.log('Hero slides count:', heroSlides.length);
+  console.log('Archive sections count:', archiveSections.length);
 
   return (
-    <main className="min-h-screen">
-      <FeaturedProject works={[]} />
-      {visibleSections.works && <WorksGrid works={[]} />}
-      {visibleSections.archive && <Archive />}
-      {visibleSections.contact && <Contact />}
-    </main>
-  )
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-white text-xl">Cargando...</div>
+      </main>
+    }>
+      <ClientHome 
+        initialPortfolioItems={portfolioItems} 
+        initialHeroSlides={heroSlides} 
+        archiveSections={archiveSections}
+      />
+    </Suspense>
+  );
 }
