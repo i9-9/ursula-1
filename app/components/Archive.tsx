@@ -52,6 +52,13 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
     setMousePosition({ x, y });
   };
 
+  // Función para extraer ID de YouTube
+  const extractYouTubeId = (url: string): string | null => {
+    if (!url || !url.includes('youtu')) return null;
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+    return match ? match[1] : null;
+  };
+
   const handleItemClick = (item: ArchiveItem) => {
     setSelectedItem(item);
   };
@@ -255,7 +262,10 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                         src={hoveredItem.thumbnail}
                         alt={hoveredItem.project}
                         fill
+                        sizes="600px"
                         className="object-cover"
+                        priority={false}
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -274,53 +284,111 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
         )}
       </AnimatePresence>
 
-      {/* Modal para visualización móvil */}
+      {/* Modal para visualización móvil y desktop */}
       <AnimatePresence>
         {selectedItem && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[999] bg-black/70 flex items-center justify-center p-4 md:hidden"
+            className="fixed inset-0 z-[999] bg-black/80 flex items-center justify-center p-4"
             onClick={handleCloseModal}
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-white max-w-[90vw] w-full rounded-lg overflow-hidden"
+              className="bg-white max-w-[90vw] md:max-w-4xl w-full rounded-lg overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative w-full aspect-[4/3]">
-                {selectedItem.thumbnail ? (
+              {/* Video container */}
+              <div className="relative w-full aspect-video bg-black">
+                {selectedItem.vimeoId ? (
+                  // Video de Vimeo con autoplay y sin controles
+                  <iframe
+                    src={`https://player.vimeo.com/video/${selectedItem.vimeoId}?autoplay=1&loop=1&title=0&byline=0&portrait=0&controls=0`}
+                    className="w-full h-full"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    title={selectedItem.project}
+                  />
+                ) : selectedItem.videoUrl && extractYouTubeId(selectedItem.videoUrl) ? (
+                  // Video de YouTube con autoplay y sin controles
+                  <iframe
+                    src={`https://www.youtube.com/embed/${extractYouTubeId(selectedItem.videoUrl)}?autoplay=1&loop=1&controls=0&showinfo=0&rel=0&mute=1&playlist=${extractYouTubeId(selectedItem.videoUrl)}`}
+                    className="w-full h-full"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    title={selectedItem.project}
+                  />
+                ) : selectedItem.videoUrl ? (
+                  // Fallback para otros tipos de video
+                  <div className="w-full h-full flex items-center justify-center text-white">
+                    <div className="text-center">
+                      <div className="mb-4">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" className="mx-auto">
+                          <path d="M8 5v14l11-7z"/>
+                        </svg>
+                      </div>
+                      <p className="text-sm">Video disponible</p>
+                      <a 
+                        href={selectedItem.videoUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-400 underline text-sm mt-2 inline-block"
+                      >
+                        Ver en fuente externa
+                      </a>
+                    </div>
+                  </div>
+                ) : selectedItem.thumbnail ? (
+                  // Mostrar imagen si no hay video
                   <Image 
                     src={selectedItem.thumbnail}
                     alt={selectedItem.project}
                     fill
+                    sizes="(max-width: 768px) 90vw, 800px"
                     className="object-cover"
+                    priority={true}
                   />
                 ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-500 text-sm">Sin imagen</span>
+                  // Placeholder si no hay contenido
+                  <div className="w-full h-full bg-gray-900 flex items-center justify-center text-white">
+                    <span className="text-sm">Sin contenido disponible</span>
                   </div>
                 )}
+                
+                {/* Botón de cerrar */}
+                <button 
+                  className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-lg bg-black/50 text-white hover:bg-black/70 transition-colors"
+                  onClick={handleCloseModal}
+                  aria-label="Cerrar modal"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
               </div>
               
-              <div className="p-6">
-                <h4 className="text-lg font-medium uppercase">{selectedItem.project}</h4>
-                <div className="mt-1 flex flex-wrap gap-x-2 text-sm opacity-70">
+              {/* Información del proyecto */}
+              <div className="p-6 bg-white">
+                <h4 className="text-lg md:text-xl font-medium uppercase text-black">{selectedItem.project}</h4>
+                <div className="mt-2 flex flex-wrap gap-x-4 text-sm text-gray-600">
                   {selectedItem.year && <span>{selectedItem.year}</span>}
                   {selectedItem.company && <span className="uppercase">{selectedItem.company}</span>}
                 </div>
-              </div>
-              
-              <div className="px-6 pb-6 flex justify-end">
-                <button 
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded"
-                  onClick={handleCloseModal}
-                >
-                  Close
-                </button>
               </div>
             </motion.div>
           </motion.div>

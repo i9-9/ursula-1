@@ -37,7 +37,7 @@ const LazyAutoplayVideo = ({ src, poster, alt, className = '' }: LazyAutoplayVid
     );
 
     if (containerRef.current) {
-      observer.observe(containerRef.current);
+    observer.observe(containerRef.current);
     }
 
     return () => observer.disconnect();

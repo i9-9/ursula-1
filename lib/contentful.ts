@@ -31,6 +31,8 @@ export interface ArchiveItem {
   year: string;
   company: string;
   thumbnail?: string; // URL de la imagen thumbnail desde Contentful
+  vimeoId?: string; // ID de Vimeo para reproducir el video
+  videoUrl?: string; // URL del video (Google Drive u otro)
 }
 
 export interface ArchiveSection {
@@ -89,6 +91,22 @@ try {
   console.warn('Contentful client initialization failed, using fallback data:', error);
 }
 
+// Función helper para optimizar URLs de imágenes de Contentful
+function optimizeContentfulImage(url: string, width?: number, height?: number, format: string = 'webp'): string {
+  if (!url) return url;
+  
+  const params = new URLSearchParams();
+  if (width) params.append('w', width.toString());
+  if (height) params.append('h', height.toString());
+  params.append('fm', format); // webp para mejor compresión
+  params.append('q', '80'); // calidad 80% (buen balance calidad/tamaño)
+  params.append('fit', 'fill'); // mantener aspecto
+  
+  return url.includes('?') 
+    ? `${url}&${params.toString()}` 
+    : `${url}?${params.toString()}`;
+}
+
 // Funciones para obtener datos
 
 // Obtener slides del hero
@@ -107,13 +125,15 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return entries.items.map((item: any) => {
       const fields = item.fields;
+      const imageUrl = fields.image?.fields?.file?.url 
+        ? `https:${fields.image.fields.file.url}` 
+        : '';
+      
       return {
         id: item.sys.id,
         title: fields.title || '',
         client: fields.client || '',
-        src: fields.image?.fields?.file?.url 
-          ? `https:${fields.image.fields.file.url}` 
-          : '',
+        src: imageUrl ? optimizeContentfulImage(imageUrl, 1920, 1080) : '',
         alt: fields.image?.fields?.description || fields.title || '',
         type: fields.videoUrl ? 'video' as const : 'image' as const,
         videoUrl: fields.videoUrl,
@@ -147,17 +167,20 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return entries.items.map((item: any) => {
       const fields = item.fields;
+      const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
+        ? `https:${fields.thumbnail.fields.file.url}` 
+        : '';
+      const fullImageUrl = fields.fullImage?.fields?.file?.url 
+        ? `https:${fields.fullImage.fields.file.url}` 
+        : '';
+      
       return {
         id: item.sys.id,
         title: fields.title || '',
         artist: fields.artist || '',
         year: fields.year || '',
-        thumbnail: fields.thumbnail?.fields?.file?.url 
-          ? `https:${fields.thumbnail.fields.file.url}` 
-          : '',
-        fullImage: fields.fullImage?.fields?.file?.url 
-          ? `https:${fields.fullImage.fields.file.url}` 
-          : '',
+        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 450) : '',
+        fullImage: fullImageUrl ? optimizeContentfulImage(fullImageUrl, 1920, 1080) : '',
         contentType: fields.videoUrl ? 'video' as const : 'image' as const,
         videoUrl: fields.videoUrl,
         description: fields.description || '',
@@ -203,13 +226,17 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
               return null; // Marcar para filtrar
             }
             
+            const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
+              ? `https:${item.fields.thumbnail.fields.file.url}` 
+              : undefined;
+            
             return {
               project: item.fields.project || '',
               year: item.fields.year || '',
               company: item.fields.company || '',
-              thumbnail: item.fields.thumbnail?.fields?.file?.url 
-                ? `https:${item.fields.thumbnail.fields.file.url}` 
-                : undefined,
+              thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 600, 450) : undefined,
+              vimeoId: item.fields['Vimeo ID'] ? String(item.fields['Vimeo ID']) : (item.fields.vimeoId ? String(item.fields.vimeoId) : ''),
+              videoUrl: item.fields.videoUrl,
             };
           })
           .filter((item: ArchiveItem | null): item is ArchiveItem => item !== null) // Filtrar referencias rotas

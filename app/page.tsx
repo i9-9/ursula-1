@@ -18,7 +18,7 @@ export default async function Home() {
     <Suspense fallback={
       <main className="min-h-screen flex items-center justify-center">
         <div className="text-white text-xl">Cargando...</div>
-      </main>
+    </main>
     }>
       <ClientHome 
         initialPortfolioItems={portfolioItems} 
