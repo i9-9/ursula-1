@@ -226,22 +226,30 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
           .map((item: any) => {
             // Verificar si item tiene fields (referencia cargada correctamente)
             if (!item.fields) {
-              console.warn(`Archive item reference not loaded properly, skipping: ${item.sys?.id}`);
+              // Log warning but don't fail the build
+              if (typeof window === 'undefined') {
+                console.warn(`Archive item reference not loaded properly, skipping: ${item.sys?.id}`);
+              }
               return null; // Marcar para filtrar
             }
             
-            const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
-              ? `https:${item.fields.thumbnail.fields.file.url}` 
-              : undefined;
-            
-            return {
-              project: item.fields.project || '',
-              year: item.fields.year || '',
-              company: item.fields.company || '',
-              thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
-              vimeoId: item.fields['Vimeo ID'] ? String(item.fields['Vimeo ID']) : (item.fields.vimeoId ? String(item.fields.vimeoId) : ''),
-              videoUrl: item.fields.videoUrl,
-            };
+            try {
+              const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
+                ? `https:${item.fields.thumbnail.fields.file.url}` 
+                : undefined;
+              
+              return {
+                project: item.fields.project || '',
+                year: item.fields.year || '',
+                company: item.fields.company || '',
+                thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
+                vimeoId: item.fields['Vimeo ID'] ? String(item.fields['Vimeo ID']) : (item.fields.vimeoId ? String(item.fields.vimeoId) : ''),
+                videoUrl: item.fields.videoUrl,
+              };
+            } catch (error) {
+              console.warn(`Error processing archive item ${item.sys?.id}:`, error);
+              return null;
+            }
           })
           .filter((item: ArchiveItem | null): item is ArchiveItem => item !== null) // Filtrar referencias rotas
           .sort((a: ArchiveItem, b: ArchiveItem) => {
@@ -259,6 +267,7 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
     });
   } catch (error) {
     console.error('Error fetching archive data from Contentful:', error);
+    // Return empty array instead of throwing to prevent build failure
     return [];
   }
 } 
