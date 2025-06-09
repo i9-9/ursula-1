@@ -256,16 +256,17 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className="hidden md:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[100]"
                 >
-                  <div className="w-[600px] h-[450px] relative shadow-2xl rounded-lg overflow-hidden border border-white/20">
+                  <div className="w-[800px] h-[600px] relative shadow-2xl rounded-lg overflow-hidden border border-white/20">
                     {hoveredItem.thumbnail ? (
                       <Image
                         src={hoveredItem.thumbnail}
                         alt={hoveredItem.project}
                         fill
-                        sizes="600px"
+                        sizes="800px"
                         className="object-cover"
                         priority={false}
                         loading="lazy"
+                        quality={95}
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-200 flex items-center justify-center">

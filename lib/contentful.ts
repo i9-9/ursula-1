@@ -92,14 +92,14 @@ try {
 }
 
 // Función helper para optimizar URLs de imágenes de Contentful
-function optimizeContentfulImage(url: string, width?: number, height?: number, format: string = 'webp'): string {
+function optimizeContentfulImage(url: string, width?: number, height?: number, format: string = 'webp', quality: number = 95): string {
   if (!url) return url;
   
   const params = new URLSearchParams();
   if (width) params.append('w', width.toString());
   if (height) params.append('h', height.toString());
   params.append('fm', format); // webp para mejor compresión
-  params.append('q', '80'); // calidad 80% (buen balance calidad/tamaño)
+  params.append('q', quality.toString()); // calidad configurable
   params.append('fit', 'fill'); // mantener aspecto
   
   return url.includes('?') 
@@ -133,7 +133,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
         id: item.sys.id,
         title: fields.title || '',
         client: fields.client || '',
-        src: imageUrl ? optimizeContentfulImage(imageUrl, 1920, 1080) : '',
+        src: imageUrl ? optimizeContentfulImage(imageUrl, 1920, 1080, 'webp', 85) : '',
         alt: fields.image?.fields?.description || fields.title || '',
         type: fields.videoUrl ? 'video' as const : 'image' as const,
         videoUrl: fields.videoUrl,
@@ -179,8 +179,8 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
         title: fields.title || '',
         artist: fields.artist || '',
         year: fields.year || '',
-        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 450) : '',
-        fullImage: fullImageUrl ? optimizeContentfulImage(fullImageUrl, 1920, 1080) : '',
+        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 450, 'webp', 85) : '',
+        fullImage: fullImageUrl ? optimizeContentfulImage(fullImageUrl, 1920, 1080, 'webp', 85) : '',
         contentType: fields.videoUrl ? 'video' as const : 'image' as const,
         videoUrl: fields.videoUrl,
         description: fields.description || '',
@@ -234,7 +234,7 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
               project: item.fields.project || '',
               year: item.fields.year || '',
               company: item.fields.company || '',
-              thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 600, 450) : undefined,
+              thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
               vimeoId: item.fields['Vimeo ID'] ? String(item.fields['Vimeo ID']) : (item.fields.vimeoId ? String(item.fields.vimeoId) : ''),
               videoUrl: item.fields.videoUrl,
             };
