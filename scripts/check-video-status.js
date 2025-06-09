@@ -44,7 +44,7 @@ async function checkVideoStatus() {
       
       console.log(`\n📂 ${title}`);
       
-      itemRefs.forEach((itemRef, index) => {
+      itemRefs.forEach((itemRef) => {
         const itemId = itemRef.sys.id;
         const item = items.items.find(i => i.sys.id === itemId);
         
