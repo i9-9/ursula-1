@@ -74,38 +74,6 @@ const Contact = () => {
                   </div>
                 </div>
               </div>
-              
-              <div 
-                  className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0.25 relative"
-                >
-                {/* Desktop layout */}
-                <div className="hidden md:grid md:grid-cols-12 items-start">
-                  <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p">Phone</div>
-                  <div className="col-start-7 col-span-6 text-left whitespace-nowrap overflow-visible text-p">
-                    <a 
-                      href="tel:+5491167137800" 
-                      className="text-foreground hover:opacity-70 transition-opacity"
-                    >
-                      +54 9 11 6713-7800
-                    </a>
-                  </div>
-                </div>
-                
-                {/* Mobile layout */}
-                <div className="md:hidden">
-                  <div className="flex flex-col">
-                    <div className="font-medium text-p mb-1">Phone</div>
-                    <div className="text-sm">
-                      <a 
-                        href="tel:+5491167137800" 
-                        className="text-foreground hover:opacity-70 transition-opacity"
-                      >
-                        +54 9 11 6713-7800
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
               <div 
                   className="group hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0.25 relative"
