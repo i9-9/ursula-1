@@ -6,6 +6,21 @@ import { PortfolioItem } from '@/lib/contentful';
 import { createPortal } from 'react-dom';
 import { useScrollReveal } from '@/app/hooks/useScrollReveal';
 import Image from 'next/image';
+import { localWorks } from '@/app/data/localWorks';
+
+// Helper para procesar rich text de Contentful
+const processDescription = (description: string | object | undefined): string => {
+  if (typeof description === 'string') {
+    return description;
+  }
+  
+  if (description && typeof description === 'object' && 'content' in description) {
+    const richText = description as { content?: Array<{ content?: Array<{ value?: string }> }> };
+    return richText.content?.[0]?.content?.[0]?.value || '';
+  }
+  
+  return '';
+};
 
 interface WorksGridProps {
   works: PortfolioItem[];
@@ -74,6 +89,18 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredProject, setHoveredProject] = useState<PortfolioItem | null>(null);
   const [tooltipVisible, setTooltipVisible] = useState(false);
+  
+  // Function to get Vimeo ID for a project
+  const getVimeoId = (project: PortfolioItem): string | undefined => {
+    if (project.vimeoId) return project.vimeoId;
+    
+    const localWork = localWorks.find(work => 
+      work.title.toLowerCase() === project.title.toLowerCase()
+    );
+    return localWork?.vimeoId;
+  };
+
+
   
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, project: PortfolioItem) => {
     setMousePosition({
@@ -252,15 +279,15 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         >
           <div className="bg-background text-foreground rounded-lg w-full max-w-md">
             <div className="relative w-full aspect-video">
-              {selectedProject.vimeoId ? (
+              {getVimeoId(selectedProject) ? (
                 <iframe
-                  src={`https://player.vimeo.com/video/${selectedProject.vimeoId}?autoplay=1&muted=1`}
+                  src={`https://player.vimeo.com/video/${getVimeoId(selectedProject)}?autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0&controls=0&background=1`}
                   className="w-full h-full rounded-t-lg"
                   frameBorder="0"
                   allow="autoplay; fullscreen; picture-in-picture"
                   allowFullScreen
                   title={selectedProject.title}
-                  aria-label={`${selectedProject.title} Vimeo video`}
+                  aria-label={selectedProject.title}
                 />
               ) : (
                 <video
@@ -340,15 +367,15 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               
               {/* Video container */}
               <div className="relative w-full aspect-video max-h-[80vh] bg-foreground/5">
-                {selectedProject.vimeoId ? (
+                {getVimeoId(selectedProject) ? (
                   <iframe
-                    src={`https://player.vimeo.com/video/${selectedProject.vimeoId}?autoplay=1&muted=1`}
+                    src={`https://player.vimeo.com/video/${getVimeoId(selectedProject)}?autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0&controls=0&background=1`}
                     className="w-full h-full rounded-t-lg"
                     frameBorder="0"
                     allow="autoplay; fullscreen; picture-in-picture"
                     allowFullScreen
                     title={selectedProject.title}
-                    aria-label={`${selectedProject.title} Vimeo video`}
+                    aria-label={selectedProject.title}
                   />
                 ) : (
                   <video
@@ -374,7 +401,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 >{selectedProject.artist}</p>
                 <p 
                   className="text-p max-w-4xl text-foreground/80"
-                >{selectedProject.description}</p>
+                >{processDescription(selectedProject.description)}</p>
               </div>
             </motion.div>
           </motion.div>
