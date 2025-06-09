@@ -299,7 +299,8 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
-              className="bg-white max-w-[90vw] md:max-w-4xl w-full rounded-lg overflow-hidden"
+              className="bg-background text-foreground max-w-[90vw] md:max-w-4xl w-full rounded-lg overflow-hidden shadow-2xl"
+              style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Video container */}
@@ -384,9 +385,9 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
               </div>
               
               {/* Información del proyecto */}
-              <div className="p-6 bg-white">
-                <h4 className="text-lg md:text-xl font-medium uppercase text-black">{selectedItem.project}</h4>
-                <div className="mt-2 flex flex-wrap gap-x-4 text-sm text-gray-600">
+              <div className="p-6 bg-background">
+                <h4 className="text-lg md:text-xl font-medium uppercase text-foreground">{selectedItem.project}</h4>
+                <div className="mt-2 flex flex-wrap gap-x-4 text-sm text-foreground/60">
                   {selectedItem.year && <span>{selectedItem.year}</span>}
                   {selectedItem.company && <span className="uppercase">{selectedItem.company}</span>}
                 </div>
