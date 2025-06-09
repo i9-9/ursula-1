@@ -66,13 +66,19 @@ const LazyVideo = ({ src, poster, alt, className = '' }: LazyVideoProps) => {
         </div>
       ) : (
         <div className="relative w-full h-full">
-          <Image
-            src={poster}
-            alt={alt}
-            className="object-cover"
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
+          {poster && poster.trim() !== '' ? (
+            <Image
+              src={poster}
+              alt={alt}
+              className="object-cover"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          ) : (
+            <div className="absolute inset-0 w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
+              <p className="text-gray-500 text-sm">Imagen no disponible</p>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import LazyVideo from './LazyVideo';
 import Image from 'next/image';
+import { PortfolioItem } from '@/lib/contentful';
 
 interface HeroSlide {
   id: string;
@@ -16,9 +17,10 @@ interface HeroSlide {
 
 interface HeroMarqueeProps {
   slides: HeroSlide[];
+  portfolioItems: PortfolioItem[];
 }
 
-const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
+const HeroMarquee = ({ slides = [], portfolioItems = [] }: HeroMarqueeProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [leftArrowColor, setLeftArrowColor] = useState('#FFFFFF');
@@ -29,6 +31,20 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
   const rightAreaRef = useRef<HTMLDivElement>(null);
   const startXRef = useRef(0);
   const isDraggingRef = useRef(false);
+  
+  // Convert portfolio items to hero slides format (take first 6)
+  const portfolioSlides: HeroSlide[] = portfolioItems
+    .filter(item => item.thumbnail && item.thumbnail.trim() !== '') // Only include projects with valid thumbnails
+    .slice(0, 6)
+    .map((item) => ({
+      id: item.id,
+      title: item.title,
+      client: item.artist,
+      type: 'video' as const,
+      src: item.thumbnail, // Use thumbnail as poster for video
+      videoUrl: item.thumbnail, // Use the same video URL for autoplay
+      alt: `${item.title} by ${item.artist}`
+    }));
   
   const defaultSlides: HeroSlide[] = [
     { 
@@ -57,7 +73,8 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
     },
   ];
 
-  const items = slides.length > 0 ? slides : defaultSlides;
+  // Use portfolio slides if available, otherwise use Contentful slides, finally fallback to default
+  const items = portfolioSlides.length >= 3 ? portfolioSlides : (slides.length > 0 ? slides : defaultSlides);
 
   // Función para obtener el color complementario (inverso)
   const getComplementaryColor = useCallback((hex: string): string => {
@@ -357,12 +374,27 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
             >
               {item.type === 'video' ? (
                 <div style={{ width: '100%', height: '100%', borderRadius: '0.5rem', overflow: 'hidden' }}>
-                  <LazyVideo 
-                    src={item.videoUrl} 
-                    poster={item.src}
-                    alt={item.alt || ''}
-                    className="w-full h-full"
-                  />
+                  {item.videoUrl && item.videoUrl.includes('.mp4') ? (
+                    // Native video for MP4 files from Contentful
+                    <video
+                      src={item.videoUrl}
+                      poster={item.src}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover"
+                      style={{ borderRadius: '0.5rem' }}
+                    />
+                  ) : (
+                    // LazyVideo for YouTube URLs
+                    <LazyVideo 
+                      src={item.videoUrl} 
+                      poster={item.src}
+                      alt={item.alt || ''}
+                      className="w-full h-full"
+                    />
+                  )}
                 </div>
               ) : (
                 <div style={{ width: '100%', height: '100%', borderRadius: '0.5rem', overflow: 'hidden', position: 'relative' }}>
@@ -373,10 +405,15 @@ const HeroMarquee = ({ slides = [] }: HeroMarqueeProps) => {
                     fill
                     sizes="60px"
                     priority={index === currentIndex}
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                     onLoad={() => {
                       if (index === currentIndex) {
                         setTimeout(analyzeArrowBackgrounds, 100);
                       }
+                    }}
+                    onError={(e) => {
+                      console.error(`Failed to load hero image: ${item.src}`, e);
                     }}
                   />
                 </div>

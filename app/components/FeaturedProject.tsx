@@ -3,6 +3,46 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { PortfolioItem } from '@/lib/contentful'
+import { localWorks } from '@/app/data/localWorks'
+
+// Helper function to get video source for a project
+const getVideoSource = (project: PortfolioItem): string => {
+  // If project has fullImage, use it
+  if (project.fullImage) {
+    return project.fullImage;
+  }
+  
+  // If project has thumbnail, use it
+  if (project.thumbnail) {
+    return project.thumbnail;
+  }
+  
+  // If project has vimeoId, create Vimeo embed URL
+  if (project.vimeoId) {
+    return `https://player.vimeo.com/video/${project.vimeoId}?controls=0&background=1&autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`;
+  }
+  
+  // Try to find matching video from localWorks
+  const localWork = localWorks.find(work => 
+    work.title.toLowerCase().includes(project.title.toLowerCase()) ||
+    project.title.toLowerCase().includes(work.title.toLowerCase())
+  );
+  
+  if (localWork?.vimeoId) {
+    return `https://player.vimeo.com/video/${localWork.vimeoId}?controls=0&background=1&autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`;
+  }
+  
+  // Handle YouTube URLs from localWorks
+  if (localWork?.youtubeUrl) {
+    // Convert YouTube URL to embed format
+    const youtubeId = localWork.youtubeUrl.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&\n?#]+)/)?.[1];
+    if (youtubeId) {
+      return `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&rel=0`;
+    }
+  }
+  
+  return '';
+};
 
 interface FeaturedProjectProps {
   works: PortfolioItem[]
@@ -26,7 +66,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       year: '2024',
       thumbnail: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
       fullImage: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
-      contentType: 'video',
+      contentType: 'video' as const,
       description: 'Videoclip para Milo J - Tres Pecados Después.',
     },
     {
@@ -36,7 +76,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       year: '2024',
       thumbnail: '/videos_grid/2 Milo J - Ali Oli.mp4',
       fullImage: '/videos_grid/2 Milo J - Ali Oli.mp4',
-      contentType: 'video',
+      contentType: 'video' as const,
       description: 'Videoclip para Milo J - Ali Oli.',
     },
     {
@@ -46,7 +86,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       year: '2024',
       thumbnail: '/videos_grid/3 - Chita - Sola.mp4',
       fullImage: '/videos_grid/3 - Chita - Sola.mp4',
-      contentType: 'video',
+      contentType: 'video' as const,
       description: 'Videoclip para Chita - Sola.',
     },
     {
@@ -56,7 +96,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       year: '2024',
       thumbnail: '/videos_grid/4 - Taichu ft Lali - S.O.S.mp4',
       fullImage: '/videos_grid/4 - Taichu ft Lali - S.O.S.mp4',
-      contentType: 'video',
+      contentType: 'video' as const,
       description: 'Videoclip para Taichu ft Lali - S.O.S.',
     },
     {
@@ -66,7 +106,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       year: '2024',
       thumbnail: '/videos_grid/5 - Dillom - Cirugia.mp4',
       fullImage: '/videos_grid/5 - Dillom - Cirugia.mp4',
-      contentType: 'video',
+      contentType: 'video' as const,
       description: 'Videoclip para Dillom - Cirugía.',
     },
     {
@@ -76,7 +116,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       year: '2024',
       thumbnail: '/videos_grid/6 - Dir. Carmen Rivoira - Prod. Mamahungara - Bonafont MX.mp4',
       fullImage: '/videos_grid/6 - Dir. Carmen Rivoira - Prod. Mamahungara - Bonafont MX.mp4',
-      contentType: 'video',
+      contentType: 'video' as const,
       description: 'Commercial para Bonafont MX. Dirección: Carmen Rivoira. Producción: Mamahungara.',
     }
   ]
@@ -321,14 +361,43 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
                 className="relative w-full"
                 style={{ paddingBottom: '56.25%' }}
               >
-                <video
-                  src={project.fullImage}
-                  className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                />
+                {(() => {
+                  const videoSource = getVideoSource(project);
+                  
+                  if (!videoSource) {
+                    return (
+                      <div className="absolute inset-0 w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
+                        <p className="text-gray-500 text-sm">Video no disponible</p>
+                      </div>
+                    );
+                  }
+                  
+                  // If it's a Vimeo or YouTube URL, render iframe
+                  if (videoSource.includes('player.vimeo.com') || videoSource.includes('youtube.com/embed')) {
+                    return (
+                      <iframe
+                        src={videoSource}
+                        className="absolute inset-0 w-full h-full rounded-lg"
+                        frameBorder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                        title={project.title}
+                      />
+                    );
+                  }
+                  
+                  // Otherwise render regular video
+                  return (
+                    <video
+                      src={videoSource}
+                      className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                    />
+                  );
+                })()}
               </motion.div>
               
               {/* Project Info */}

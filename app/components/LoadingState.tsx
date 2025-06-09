@@ -6,7 +6,7 @@ interface LoadingStateProps {
   message?: string;
 }
 
-const LoadingState = ({ message = 'Loading...' }: LoadingStateProps) => {
+const LoadingState = ({ message }: LoadingStateProps) => {
   const [dots, setDots] = useState('.');
   
   useEffect(() => {
@@ -24,8 +24,8 @@ const LoadingState = ({ message = 'Loading...' }: LoadingStateProps) => {
     <div className="flex items-center justify-center py-8">
       <div className="text-center">
         <div className="inline-block w-8 h-8 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin mb-2"></div>
-        <p className="text-sm opacity-70">
-          {message}
+        <p className="text-sm opacity-70 font-neue-haas-grotesk-display tracking-wider">
+          {message || 'URSULA BENAVIDEZ'}
           <span className="inline-block w-6 text-left">{dots}</span>
         </p>
       </div>

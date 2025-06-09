@@ -174,13 +174,17 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
         ? `https:${fields.fullImage.fields.file.url}` 
         : '';
       
+      // Don't optimize videos - only optimize actual images
+      const isVideoThumbnail = thumbnailUrl.includes('.mp4') || thumbnailUrl.includes('.mov') || thumbnailUrl.includes('.webm');
+      const isVideoFullImage = fullImageUrl.includes('.mp4') || fullImageUrl.includes('.mov') || fullImageUrl.includes('.webm');
+      
       return {
         id: item.sys.id,
         title: fields.title || '',
         artist: fields.artist || '',
         year: fields.year || '',
-        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 450, 'webp', 85) : '',
-        fullImage: fullImageUrl ? optimizeContentfulImage(fullImageUrl, 1920, 1080, 'webp', 85) : '',
+        thumbnail: thumbnailUrl ? (isVideoThumbnail ? thumbnailUrl : optimizeContentfulImage(thumbnailUrl, 800, 450, 'webp', 85)) : '',
+        fullImage: fullImageUrl ? (isVideoFullImage ? fullImageUrl : optimizeContentfulImage(fullImageUrl, 1920, 1080, 'webp', 85)) : '',
         contentType: fields.videoUrl ? 'video' as const : 'image' as const,
         videoUrl: fields.videoUrl,
         description: fields.description || '',

@@ -34,10 +34,10 @@ interface LazyAutoplayVideoProps {
 }
 
 const LazyAutoplayVideo = ({ src, poster, alt, className = '' }: LazyAutoplayVideoProps) => {
-  const [isPlaying, setIsPlaying] = useState(false);
   const [hasIntersected, setHasIntersected] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -45,18 +45,35 @@ const LazyAutoplayVideo = ({ src, poster, alt, className = '' }: LazyAutoplayVid
         if (entry.isIntersecting) {
           setHasIntersected(true);
           setIsPlaying(true);
-          observer.disconnect();
+        } else {
+          setIsPlaying(false);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.3 }
     );
 
-    if (containerRef.current) {
-    observer.observe(containerRef.current);
+    const currentRef = containerRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
   }, []);
+
+  // Don't render if no src or poster
+  if (!src || src.trim() === '' || !poster || poster.trim() === '') {
+    return (
+      <div className={`relative ${className}`}>
+        <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
+          <p className="text-gray-500 text-sm">Video no disponible</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
@@ -92,12 +109,46 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   
   // Function to get Vimeo ID for a project
   const getVimeoId = (project: PortfolioItem): string | undefined => {
+    console.log('🎬 Getting Vimeo ID for:', {
+      title: project.title,
+      hasVimeoId: !!project.vimeoId,
+      vimeoId: project.vimeoId
+    });
+    
+    // First, check if project already has vimeoId from Contentful
     if (project.vimeoId) return project.vimeoId;
     
-    const localWork = localWorks.find(work => 
+    // Try exact title match first
+    const exactMatch = localWorks.find(work => 
       work.title.toLowerCase() === project.title.toLowerCase()
     );
-    return localWork?.vimeoId;
+    if (exactMatch?.vimeoId) {
+      console.log('✅ Found exact match:', exactMatch.title, '->', exactMatch.vimeoId);
+      return exactMatch.vimeoId;
+    }
+    
+    // Try partial matches for more flexible matching
+    const partialMatch = localWorks.find(work => {
+      const workTitle = work.title.toLowerCase();
+      const projectTitle = project.title.toLowerCase();
+      
+      return workTitle.includes(projectTitle) || 
+             projectTitle.includes(workTitle) ||
+             // Handle common variations
+             (projectTitle.includes('ali oli') && workTitle.includes('ali oli')) ||
+             (projectTitle.includes('tres pecados') && workTitle.includes('tres pecados')) ||
+             (projectTitle.includes('sola') && workTitle.includes('sola')) ||
+             (projectTitle.includes('cirugia') && workTitle.includes('cirugia')) ||
+             (projectTitle.includes('corazon vacio') && workTitle.includes('corazon vacio'));
+    });
+    
+    if (partialMatch?.vimeoId) {
+      console.log('✅ Found partial match:', partialMatch.title, '->', partialMatch.vimeoId);
+      return partialMatch.vimeoId;
+    }
+    
+    console.log('❌ No Vimeo ID found for:', project.title);
+    return undefined;
   };
 
 
@@ -217,8 +268,8 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
           >
             <div className="relative w-full aspect-video overflow-hidden bg-gray-100 rounded-lg">
               <LazyAutoplayVideo
-                src={project.thumbnail}
-                poster={project.thumbnail}
+                src={project.thumbnail || project.fullImage || ''}
+                poster={project.thumbnail || project.fullImage || ''}
                 alt={project.title}
                 className="w-full h-full"
               />
@@ -291,7 +342,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 />
               ) : (
                 <video
-                  src={selectedProject.thumbnail}
+                  src={selectedProject.thumbnail || selectedProject.fullImage}
                   className="w-full h-full object-cover rounded-t-lg"
                   controls
                   playsInline
@@ -379,7 +430,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   />
                 ) : (
                   <video
-                    src={selectedProject.fullImage}
+                    src={selectedProject.fullImage || selectedProject.thumbnail}
                     className="w-full h-full object-contain"
                     controls
                     playsInline
