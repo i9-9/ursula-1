@@ -33,6 +33,7 @@ export interface ArchiveItem {
   thumbnail?: string; // URL de la imagen thumbnail desde Contentful
   vimeoId?: string; // ID de Vimeo para reproducir el video
   videoUrl?: string; // URL del video (Google Drive u otro)
+  order?: number;
 }
 
 export interface ArchiveSection {
@@ -245,6 +246,7 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
                 thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
                 vimeoId: item.fields['Vimeo ID'] ? String(item.fields['Vimeo ID']) : (item.fields.vimeoId ? String(item.fields.vimeoId) : ''),
                 videoUrl: item.fields.videoUrl,
+                order: item.fields.order || 0, // Add order field support
               };
             } catch (error) {
               console.warn(`Error processing archive item ${item.sys?.id}:`, error);
@@ -253,7 +255,11 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
           })
           .filter((item: ArchiveItem | null): item is ArchiveItem => item !== null) // Filtrar referencias rotas
           .sort((a: ArchiveItem, b: ArchiveItem) => {
-            // Ordenar por año descendente (más reciente primero)
+            // First sort by order field if available, then by year
+            if (a.order !== undefined && b.order !== undefined) {
+              return a.order - b.order;
+            }
+            // Fallback to year sorting (descending)
             const yearA = parseInt(a.year) || 0;
             const yearB = parseInt(b.year) || 0;
             return yearB - yearA;

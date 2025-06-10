@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import ArchiveFilters from './ArchiveFilters';
 import { useScrollReveal } from '@/app/hooks/useScrollReveal';
 import { ArchiveSection, ArchiveItem } from '@/lib/contentful';
+import { getCategoriesInOrder, getProjectOrder } from '@/app/data/clientOrder';
 
 interface ArchiveProps {
   sections: ArchiveSection[];
@@ -23,9 +24,63 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
   const [isAccordionHovered, setIsAccordionHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
+  // Process and sort sections according to client order
+  const processedSections = useMemo(() => {
+    if (!sections || sections.length === 0) return [];
+    
+    // Get the categories in the order specified by the client
+    const orderedCategories = getCategoriesInOrder();
+    
+    // Create a map of existing sections for quick lookup
+    const sectionMap = new Map(sections.map(section => [section.title, section]));
+    
+    // Create sections in the client-specified order, including empty ones if needed
+    const orderedSections = orderedCategories.map(categoryTitle => {
+      const existingSection = sectionMap.get(categoryTitle);
+      
+      if (existingSection) {
+                 // Sort the items within each section according to client order
+         const sortedItems = existingSection.items
+           .map(item => ({
+             ...item,
+             clientOrder: getProjectOrder(item.company || '', item.project || '')
+           }))
+           .sort((a, b) => {
+             // First sort by client order if available
+             if (a.clientOrder !== 999 && b.clientOrder !== 999) {
+               return a.clientOrder - b.clientOrder;
+             }
+             // Then by existing order field from Contentful
+             if (a.order !== undefined && b.order !== undefined) {
+               return a.order - b.order;
+             }
+             // Finally by year (descending) as fallback
+             const yearA = parseInt(a.year) || 0;
+             const yearB = parseInt(b.year) || 0;
+             return yearB - yearA;
+           });
+        
+        return {
+          ...existingSection,
+          items: sortedItems
+        };
+      } else {
+        // Create an empty section if it doesn't exist in Contentful yet
+        return {
+          title: categoryTitle,
+          items: [],
+          order: orderedCategories.indexOf(categoryTitle)
+        };
+      }
+    });
+    
+    // Filter out empty sections
+    return orderedSections.filter(section => section.items.length > 0);
+  }, [sections]);
+
   // Filter sections based on selected filters
   const filteredSections = useMemo(() => {
-    return sections.filter(section => {
+    return processedSections.filter(section => {
       // If no filters are selected, show all sections
       if (!filters.category) return true;
       
@@ -34,7 +89,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
       
       return true;
     });
-  }, [filters, sections]);
+  }, [filters, processedSections]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     // Solo para el tooltip del accordion
@@ -166,7 +221,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
               }}
             >
               <ArchiveFilters 
-                categories={sections.map(section => section.title)} 
+                categories={processedSections.map(section => section.title)} 
                 selectedCategory={filters.category}
                 onCategoryChange={(category) => setFilters(prev => ({ ...prev, category }))}
                 onReset={resetFilters}
