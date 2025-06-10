@@ -311,14 +311,15 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                   transition={{ duration: 0.2, ease: "easeOut" }}
                   className="hidden md:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[100]"
                 >
-                  <div className="w-[800px] h-[600px] relative shadow-2xl rounded-lg overflow-hidden border border-white/20">
+                  {/* Tooltip: mismo layout y aspect ratio que el modal */}
+                  <div className="relative w-full max-w-2xl aspect-video bg-black rounded-lg overflow-hidden border border-white/20 shadow-2xl">
                     {hoveredItem.thumbnail ? (
                       <Image
                         src={hoveredItem.thumbnail}
                         alt={hoveredItem.project}
                         fill
-                        sizes="800px"
-                        className="object-cover"
+                        sizes="(max-width: 768px) 90vw, 800px"
+                        className="object-contain w-full h-full"
                         priority={false}
                         loading="lazy"
                         quality={95}
@@ -407,7 +408,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                     alt={selectedItem.project}
                     fill
                     sizes="(max-width: 768px) 90vw, 800px"
-                    className="object-cover"
+                    className="object-contain w-full h-full"
                     priority={true}
                   />
                 ) : (
@@ -448,6 +449,42 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                 </div>
               </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Tooltip de imagen de proyecto (hoveredItem) */}
+      <AnimatePresence>
+        {hoveredItem && !selectedItem && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="hidden md:block fixed z-[9999] pointer-events-none top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-[90vw] md:max-w-4xl w-full rounded-lg overflow-hidden shadow-2xl"
+          >
+            <div className="relative w-full aspect-video bg-black">
+              {hoveredItem.thumbnail ? (
+                <Image
+                  src={hoveredItem.thumbnail}
+                  alt={hoveredItem.project}
+                  fill
+                  sizes="(max-width: 768px) 90vw, 800px"
+                  className="object-contain w-full h-full"
+                  priority={false}
+                  loading="lazy"
+                  quality={95}
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-500 text-sm">Sin imagen</span>
+                </div>
+              )}
+              {/* Título del proyecto en el tooltip */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white text-sm p-4">
+                <div className="font-medium truncate">{hoveredItem.project}</div>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
