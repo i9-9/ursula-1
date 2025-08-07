@@ -12,7 +12,6 @@ interface StaticVideoThumbnailProps {
 }
 
 const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: StaticVideoThumbnailProps) => {
-  const [isHovered, setIsHovered] = useState(false);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
