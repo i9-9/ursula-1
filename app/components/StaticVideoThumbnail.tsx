@@ -26,7 +26,6 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
   }
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
     if (videoRef.current) {
       videoRef.current.play().catch(() => {
         // Autoplay failed silently
@@ -35,7 +34,6 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
     if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
