@@ -55,7 +55,7 @@ const PasswordProtection = ({ children }: PasswordProtectionProps) => {
           className="w-full max-w-md"
         >
           <div className="text-center mb-8">
-            <h1 className="text-2xl md:text-3xl font-neue-haas-grotesk-display mb-2">
+            <h1 className="text-2xl md:text-3xl font-suisse-bp-intl mb-2">
               Ursula Benavidez
             </h1>
             <p className="text-foreground/60 text-sm">production designer ~ art director</p>

@@ -1,40 +1,44 @@
-import { Inter, Space_Grotesk } from 'next/font/google';
+import localFont from 'next/font/local';
 
-export const inter = Inter({
-  subsets: ['latin'],
+// Suisse BP INTL - Local fonts only
+export const suisseBpIntl = localFont({
+  src: [
+    {
+      path: '../public/fonts/Suisse BP Intl Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Suisse BP Intl Regular Italic.woff2',
+      weight: '400',
+      style: 'italic',
+    },
+    {
+      path: '../public/fonts/Suisse BP Intl Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Suisse BP Intl Bold.woff2',
+      weight: '700',
+      style: 'normal',
+    }
+  ],
+  variable: '--font-suisse',
   display: 'swap',
+  preload: true,
+  fallback: ['system-ui', 'arial', 'sans-serif']
 });
 
-export const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  display: 'swap',
-});
-
-// Adobe Fonts (Typekit) configuration
+// For compatibility with existing code
 export const neueHaasGroteskDisplay = {
-  className: 'neue-haas-grotesk-display',
-  variable: '--font-display',
-  fontFamily: 'neue-haas-grotesk-display',
-  weights: {
-    light: 300,
-    lightItalic: 300,
-    roman: 400,
-    medium: 500,
-    bold: 700,
-    boldItalic: 700
-  }
+  className: suisseBpIntl.className,
+  variable: suisseBpIntl.variable,
+  fontFamily: 'var(--font-suisse)',
 };
 
 export const neueHaasGroteskText = {
-  className: 'neue-haas-grotesk-text',
-  variable: '--font-text',
-  fontFamily: 'neue-haas-grotesk-text',
-  weights: {
-    light: 300,
-    lightItalic: 300,
-    roman: 400,
-    medium: 500,
-    bold: 700,
-    boldItalic: 700
-  }
+  className: suisseBpIntl.className,
+  variable: suisseBpIntl.variable,
+  fontFamily: 'var(--font-suisse)',
 }; 

@@ -18,8 +18,7 @@ const config: Config = {
       },
       fontFamily: {
         'neue-montreal': ['var(--font-neue-montreal)'],
-        'neue-haas-grotesk-text': ['neue-haas-grotesk-text', 'sans-serif'],
-        'neue-haas-grotesk-display': ['neue-haas-grotesk-display', 'sans-serif'],
+        'suisse-bp-intl': ['var(--font-suisse)', 'system-ui', 'sans-serif'],
       },
     },
     screens: {

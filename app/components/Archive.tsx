@@ -147,7 +147,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
     return (
       <section id="archive" className="py-6 pb-0 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }}>
         <div className="mb-4 flex items-center justify-between py-2 rounded-lg">
-          <h2 className="h2 section-title section-title-delay-2 font-neue-haas-grotesk-display">ARCHIVE</h2>
+          <h2 className="h2 section-title section-title-delay-2 font-suisse-bp-intl">ARCHIVE</h2>
         </div>
         <div className="border-t border-gray-300/20 dark:border-gray-700/20"></div>
         <div className="py-10 text-center opacity-60">
@@ -166,7 +166,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
         onMouseLeave={() => setIsAccordionHovered(false)}
         aria-label={isExpanded ? "Close archive" : "Open archive"}
       >
-        <h2 className="h2 section-title section-title-delay-2 font-neue-haas-grotesk-display">ARCHIVE</h2>
+        <h2 className="h2 section-title section-title-delay-2 font-suisse-bp-intl">ARCHIVE</h2>
         
         <div className={`text-xs transition-transform duration-300 ${
           isExpanded ? 'rotate-180' : ''

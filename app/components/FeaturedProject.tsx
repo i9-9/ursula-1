@@ -402,7 +402,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
               
               {/* Project Info */}
               <div className="mt-4">
-                <h2 className="h2 font-neue-haas-grotesk-display">{project.title}</h2>
+                <h2 className="h2 font-suisse-bp-intl">{project.title}</h2>
                 <p className="text-small opacity-70">{project.artist}</p>
               </div>
             </div>

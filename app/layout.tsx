@@ -1,5 +1,6 @@
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata } from "next";
-import { neueHaasGroteskDisplay, neueHaasGroteskText } from "./fonts";
+import { suisseBpIntl } from "./fonts";
 import "./globals.css";
 import "./animations.css";
 import "./spacing.css";
@@ -57,8 +58,6 @@ export default function RootLayout({
   return (
     <html lang="es" className="scroll-smooth">
       <head>
-        <link rel="preconnect" href="https://use.typekit.net" />
-        <link rel="stylesheet" href="https://use.typekit.net/dfc2nqo.css" />
         <link rel="icon" type="image/x-icon" href="/favicon/favicon16x16.ico" sizes="16x16" />
         <link rel="icon" type="image/x-icon" href="/favicon/favicon32x32.ico" sizes="32x32" />
         <link rel="icon" type="image/x-icon" href="/favicon/favicon48x48.ico" sizes="48x48" />
@@ -83,11 +82,12 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${neueHaasGroteskDisplay.variable} ${neueHaasGroteskText.variable} font-sans antialiased`}>
+      <body className={`${suisseBpIntl.variable} font-sans antialiased`}>
         <PasswordProtection>
           <div className="min-h-screen bg-background text-foreground">
             <Navbar />
             {children}
+            <SpeedInsights />
           </div>
         </PasswordProtection>
         <ScrollbarStyles />
