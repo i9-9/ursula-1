@@ -113,7 +113,6 @@ function optimizeContentfulImage(url: string, width?: number, height?: number, f
 // Obtener slides del hero
 export async function getHeroSlides(): Promise<HeroSlide[]> {
   if (!client) {
-    console.log('Using fallback data for hero slides');
     return [];
   }
 
@@ -141,8 +140,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
         order: fields.order,
       };
     });
-  } catch (error) {
-    console.error('Error fetching hero slides from Contentful:', error);
+  } catch {
     return [];
   }
 }
@@ -150,7 +148,6 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
 // Obtener items de trabajos seleccionados
 export async function getPortfolioItems(): Promise<PortfolioItem[]> {
   if (!client) {
-    console.log('Using fallback data for portfolio items');
     return fallbackPortfolioItems;
   }
 
@@ -161,7 +158,6 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
     });
     
     if (entries.items.length === 0) {
-      console.log('No portfolio items found in Contentful, using fallback data');
       return fallbackPortfolioItems;
     }
     
@@ -193,8 +189,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
         order: fields.order,
       };
     });
-  } catch (error) {
-    console.error('Error fetching portfolio items from Contentful:', error);
+  } catch {
     return fallbackPortfolioItems;
   }
 }
@@ -202,7 +197,6 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
 // Obtener datos de archivo
 export async function getArchiveData(): Promise<ArchiveSection[]> {
   if (!client) {
-    console.log('Using fallback data for archive');
     return [];
   }
 
@@ -214,7 +208,6 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
     });
     
     if (entries.items.length === 0) {
-      console.log('No archive sections found in Contentful');
       return [];
     }
     
@@ -248,8 +241,7 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
                 videoUrl: item.fields.videoUrl,
                 order: item.fields.order || 0, // Add order field support
               };
-            } catch (error) {
-              console.warn(`Error processing archive item ${item.sys?.id}:`, error);
+            } catch {
               return null;
             }
           })
@@ -271,8 +263,7 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
         order: parseInt(fields.order) || 0,
       };
     });
-  } catch (error) {
-    console.error('Error fetching archive data from Contentful:', error);
+  } catch {
     // Return empty array instead of throwing to prevent build failure
     return [];
   }

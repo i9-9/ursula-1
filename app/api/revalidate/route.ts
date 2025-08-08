@@ -6,10 +6,6 @@ export async function POST(request: NextRequest) {
     // Obtener el body del webhook
     const body = await request.json();
     
-    console.log('Revalidation triggered by Contentful:', {
-      contentType: body.sys?.contentType?.sys?.id,
-      action: body.sys?.type,
-    });
     
     // Revalidar páginas específicas según el tipo de contenido
     const contentType = body.sys?.contentType?.sys?.id;
@@ -21,13 +17,11 @@ export async function POST(request: NextRequest) {
       case 'archiveSection':
         // Revalidar la página principal
         revalidatePath('/');
-        console.log('Revalidated homepage for content type:', contentType);
         break;
       
       default:
         // Por defecto, revalidar la página principal
         revalidatePath('/');
-        console.log('Revalidated homepage for unknown content type:', contentType);
     }
     
     return NextResponse.json({ 
@@ -36,8 +30,7 @@ export async function POST(request: NextRequest) {
       contentType: contentType || 'unknown'
     });
     
-  } catch (error) {
-    console.error('Revalidation error:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Error revalidating' }, 
       { status: 500 }

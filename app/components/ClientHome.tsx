@@ -5,26 +5,21 @@ import FeaturedProject from './FeaturedProject'
 import WorksGrid from './WorksGrid'
 import Archive from './Archive'
 import Contact from './Contact'
-import { PortfolioItem, HeroSlide, ArchiveSection } from '@/lib/contentful';
+import { PortfolioItem, ArchiveSection } from '@/lib/contentful';
 
 interface ClientHomeProps {
   initialPortfolioItems: PortfolioItem[];
-  initialHeroSlides: HeroSlide[];
   archiveSections: ArchiveSection[];
 }
 
-export default function ClientHome({ initialPortfolioItems, initialHeroSlides, archiveSections }: ClientHomeProps) {
+export default function ClientHome({ initialPortfolioItems, archiveSections }: ClientHomeProps) {
   const [visibleSections, setVisibleSections] = useState({
     works: typeof window !== 'undefined' ? window.innerWidth < 768 : false,
     archive: false,
     contact: false
   });
 
-  console.log('Client received:', {
-    portfolioItems: initialPortfolioItems.length,
-    heroSlides: initialHeroSlides.length,
-    archiveSections: archiveSections.length
-  });
+  
 
   useEffect(() => {
     const handleShowSection = (event: CustomEvent) => {

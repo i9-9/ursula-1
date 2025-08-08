@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import LazyVideo from './LazyVideo';
 import Image from 'next/image';
 import { PortfolioItem } from '@/lib/contentful';
 
@@ -32,10 +31,10 @@ const HeroMarquee = ({ slides = [], portfolioItems = [] }: HeroMarqueeProps) => 
   const startXRef = useRef(0);
   const isDraggingRef = useRef(false);
   
-  // Convert portfolio items to hero slides format (take first 6)
+  // Convert portfolio items to hero slides format (take first 3)
   const portfolioSlides: HeroSlide[] = portfolioItems
     .filter(item => item.thumbnail && item.thumbnail.trim() !== '') // Only include projects with valid thumbnails
-    .slice(0, 6)
+    .slice(0, 3)
     .map((item) => ({
       id: item.id,
       title: item.title,
@@ -74,7 +73,8 @@ const HeroMarquee = ({ slides = [], portfolioItems = [] }: HeroMarqueeProps) => 
   ];
 
   // Use portfolio slides if available, otherwise use Contentful slides, finally fallback to default
-  const items = portfolioSlides.length >= 3 ? portfolioSlides : (slides.length > 0 ? slides : defaultSlides);
+  const baseItems = portfolioSlides.length >= 3 ? portfolioSlides : (slides.length > 0 ? slides : defaultSlides);
+  const items = baseItems.slice(0, 3);
 
   // Función para obtener el color complementario (inverso)
   const getComplementaryColor = useCallback((hex: string): string => {
@@ -387,12 +387,16 @@ const HeroMarquee = ({ slides = [], portfolioItems = [] }: HeroMarqueeProps) => 
                       style={{ borderRadius: '0.5rem' }}
                     />
                   ) : (
-                    // LazyVideo for YouTube URLs
-                    <LazyVideo 
-                      src={item.videoUrl} 
-                      poster={item.src}
-                      alt={item.alt || ''}
+                    // Iframe for YouTube/Vimeo URLs
+                    <iframe 
+                      src={(item.videoUrl || '').includes('youtube.com/watch')
+                        ? (item.videoUrl || '').replace('watch?v=', 'embed/')
+                        : (item.videoUrl || '')}
                       className="w-full h-full"
+                      style={{ border: 0, borderRadius: '0.5rem' }}
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowFullScreen
+                      title={item.title}
                     />
                   )}
                 </div>

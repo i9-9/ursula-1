@@ -58,7 +58,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
   const [dragOffset, setDragOffset] = useState(0)
   const [isAutoplaying, setIsAutoplaying] = useState(true)
 
-  const projects = works.length > 0 ? works : [
+  const projects = (works.length > 0 ? works : [
     {
       id: 'grid-1',
       title: 'Tres Pecados Después',
@@ -119,7 +119,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       contentType: 'video' as const,
       description: 'Commercial para Bonafont MX. Dirección: Carmen Rivoira. Producción: Mamahungara.',
     }
-  ]
+  ]).slice(0, 3)
 
   const handleScroll = () => {
     if (!scrollContainerRef.current || isScrollingRef.current) return

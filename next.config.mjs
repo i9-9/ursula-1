@@ -13,7 +13,7 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
-    // Don want to optimize video files
+    // Don't want to optimize video files
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
