@@ -1,11 +1,13 @@
 import { getPortfolioItems } from '@/lib/contentful';
-import FeaturedProject from './components/FeaturedProject';
+import WorksGrid from '@/app/components/WorksGrid';
 
-export default async function Home() {
+export default async function WorkPage() {
   const works = await getPortfolioItems();
   return (
     <main className="min-h-screen">
-      <FeaturedProject works={works} />
+      <WorksGrid works={works} />
     </main>
   );
 }
+
+

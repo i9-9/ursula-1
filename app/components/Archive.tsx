@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import ArchiveFilters from './ArchiveFilters';
@@ -20,9 +20,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
   const [filters, setFilters] = useState<{ category: string | null }>({
     category: null
   });
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isAccordionHovered, setIsAccordionHovered] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  // Archive is always expanded in routed layout
 
   // Process and sort sections according to client order
   const processedSections = useMemo(() => {
@@ -91,21 +89,9 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
     });
   }, [filters, processedSections]);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    // Solo para el tooltip del accordion
-    const tooltipWidth = 210;
-    const tooltipHeight = 150;
-    
-    const x = e.clientX + tooltipWidth > window.innerWidth 
-              ? e.clientX - tooltipWidth 
-              : e.clientX;
-              
-    const y = e.clientY + tooltipHeight > window.innerHeight 
-              ? e.clientY - tooltipHeight 
-              : e.clientY;
-    
-    setMousePosition({ x, y });
-  };
+  // No-op; dejamos firma para compatibilidad de props si se necesitara
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleMouseMove = (e: React.MouseEvent) => {};
 
   // Función para extraer ID de YouTube
   const extractYouTubeId = (url: string): string | null => {
@@ -128,19 +114,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
     });
   }, []);
 
-  // Listen for global event to close archive
-  useEffect(() => {
-    const closeArchive = () => setIsExpanded(false);
-    const openArchive = () => setIsExpanded(true);
-    
-    window.addEventListener('close-archive', closeArchive);
-    window.addEventListener('open-archive', openArchive);
-    
-    return () => {
-      window.removeEventListener('close-archive', closeArchive);
-      window.removeEventListener('open-archive', openArchive);
-    };
-  }, []);
+  // Archive stays open in routes layout; no global open/close listeners needed
 
   // Show loading state if no sections
   if (!sections || sections.length === 0) {
@@ -160,57 +134,15 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
   return (
     <section id="archive" className="py-6 pb-0 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
       <div 
-        className="mb-4 flex items-center justify-between cursor-pointer hover:bg-foreground/5 transition-colors duration-200 py-2 rounded-lg relative"
-        onClick={() => setIsExpanded(!isExpanded)}
-        onMouseEnter={() => setIsAccordionHovered(true)}
-        onMouseLeave={() => setIsAccordionHovered(false)}
-        aria-label={isExpanded ? "Close archive" : "Open archive"}
+        className="mb-4 flex items-center justify-between py-2 rounded-lg relative"
+        aria-label="Archive"
       >
         <h2 className="h2 section-title section-title-delay-2 font-suisse-bp-intl">ARCHIVE</h2>
-        
-        <div className={`text-xs transition-transform duration-300 ${
-          isExpanded ? 'rotate-180' : ''
-        }`}>
-          ▼
-        </div>
-        
-        {/* Tooltip mejorado que sigue al cursor */}
-        {isAccordionHovered && (
-          <div 
-            className="fixed pointer-events-none z-50"
-            style={{
-              left: `${mousePosition.x}px`,
-              top: `${mousePosition.y - 30}px`, // Posicionado justo encima del cursor
-              transform: 'translateX(-50%)',
-              backgroundColor: 'var(--background)',
-              color: 'var(--foreground)', 
-              borderRadius: '4px',
-              padding: '4px 8px',
-              fontSize: '12px',
-              border: '1px solid rgba(0, 0, 0, 0.1)',
-              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)'
-            }}
-          >
-            {isExpanded ? 'Close' : 'Open'}
-          </div>
-        )}
       </div>
       
       <div className="border-t border-gray-300/20 dark:border-gray-700/20"></div>
       
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ 
-              duration: 0.4, 
-              ease: [0.25, 0.1, 0.25, 1.0],
-              opacity: { duration: 0.3 }
-            }}
-            className="overflow-hidden pt-6 relative"
-          >
+      <div className="pt-6 relative">
             {/* Componente de filtros con animación secuencial */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -227,13 +159,8 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                 onReset={resetFilters}
               />
             </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.3 }}
-              className="space-y-0"
-            >
+
+            <div className="space-y-0">
               {filteredSections.length > 0 ? (
                 filteredSections.map((section, index) => (
                   <div key={index} className="archive-section">
@@ -299,7 +226,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                   </button>
                 </div>
               )}
-            </motion.div>
+            </div>
 
             {/* Imagen de hover centrada en el componente (solo en desktop) */}
             <AnimatePresence>
@@ -337,9 +264,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                 </motion.div>
               )}
             </AnimatePresence>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
 
       {/* Modal para visualización móvil y desktop */}
       <AnimatePresence>

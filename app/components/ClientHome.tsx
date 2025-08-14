@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import FeaturedProject from './FeaturedProject'
-import WorksGrid from './WorksGrid'
-import Archive from './Archive'
-import Contact from './Contact'
 import { PortfolioItem, ArchiveSection } from '@/lib/contentful';
 
 interface ClientHomeProps {
@@ -12,36 +9,21 @@ interface ClientHomeProps {
   archiveSections: ArchiveSection[];
 }
 
-export default function ClientHome({ initialPortfolioItems, archiveSections }: ClientHomeProps) {
-  const [visibleSections, setVisibleSections] = useState({
-    works: typeof window !== 'undefined' ? window.innerWidth < 768 : false,
-    archive: false,
-    contact: false
-  });
+export default function ClientHome({ initialPortfolioItems }: ClientHomeProps) {
+  const [, setShowWorks] = useState(
+    typeof window !== 'undefined' ? window.innerWidth < 768 : false
+  );
 
   
 
   useEffect(() => {
-    const handleShowSection = (event: CustomEvent) => {
-      const section = event.detail as keyof typeof visibleSections;
-      setVisibleSections(prev => ({
-        ...prev,
-        [section]: true
-      }));
-    };
-
     const handleResize = () => {
-      setVisibleSections(prev => ({
-        ...prev,
-        works: window.innerWidth < 768
-      }));
+      setShowWorks(window.innerWidth < 768);
     };
 
-    window.addEventListener('show-section', handleShowSection as EventListener);
     window.addEventListener('resize', handleResize);
     
     return () => {
-      window.removeEventListener('show-section', handleShowSection as EventListener);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
@@ -49,9 +31,6 @@ export default function ClientHome({ initialPortfolioItems, archiveSections }: C
   return (
     <main className="min-h-screen">
       <FeaturedProject works={initialPortfolioItems} />
-      {visibleSections.works && <WorksGrid works={initialPortfolioItems} />}
-      {visibleSections.archive && <Archive sections={archiveSections} />}
-      {visibleSections.contact && <Contact />}
     </main>
   );
 } 
