@@ -78,20 +78,68 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   return (
     <section className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in">
       <div className="mb-6 md:mb-8">
-        <h2 className="h2 section-title section-title-delay-2 font-suisse-bp-intl uppercase">SELECTED WORK</h2>
       </div>
       
+      {/* Mobile Layout - Vertical Stack */}
+      <div className="md:hidden space-y-8">
+        {projects.map((project, index) => (
+          <div 
+            key={project.id}
+            className="cursor-pointer group relative"
+            role="gridcell"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                setSelectedProject(project);
+              }
+            }}
+            onClick={() => setSelectedProject(project)}
+            aria-label={`Open ${project.title} by ${project.artist}`}
+          >
+            {/* Project container for mobile */}
+            <div className="relative">
+              {/* Project number - positioned according to design specs */}
+              <div className="absolute top-0 right-0 z-10 px-2 py-1">
+                <span className="text-sm font-medium text-foreground">
+                  {index + 1}
+                </span>
+              </div>
+              
+              {/* Video container - full width on mobile */}
+              <div className="relative w-full h-64 overflow-hidden">
+                <StaticVideoThumbnail
+                  src={project.thumbnail || project.fullImage || ''}
+                  poster={project.thumbnail || project.fullImage || ''}
+                  alt={project.title}
+                  className="w-full h-full"
+                  onClick={() => setSelectedProject(project)}
+                />
+              </div>
+            </div>
+            
+            {/* Title - centered below image */}
+            <div className="mt-4 text-center">
+              <p className="text-base font-medium uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {project.title}, {project.artist}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop Layout - Grid */}
       <div 
-        className="w-full grid grid-cols-12 gap-y-6 gap-x-6 md:gap-x-8"
+        className="hidden md:grid w-full grid-cols-12 gap-y-20 gap-x-24 md:gap-x-32 mx-auto"
         role="grid"
         aria-label="Projects grid"
       >
         {projects.map((project, index) => (
           <div 
             key={project.id}
-            className={`cursor-pointer group relative col-span-12 md:col-span-6 lg:col-span-4 ${
-              index % 3 === 0 ? 'section-title section-title-delay-1' : 
-              index % 3 === 1 ? 'section-title section-title-delay-2' : 'section-title section-title-delay-3'
+            className={`cursor-pointer group relative col-span-6 lg:col-span-3 ${
+              index % 4 === 0 ? 'section-title section-title-delay-1' : 
+              index % 4 === 1 ? 'section-title section-title-delay-2' : 
+              index % 4 === 2 ? 'section-title section-title-delay-3' : 'section-title section-title-delay-4'
             }`}
             role="gridcell"
             tabIndex={0}
@@ -100,20 +148,34 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 setSelectedProject(project);
               }
             }}
-            aria-label={`${project.title} by ${project.artist}`}
+            onClick={() => setSelectedProject(project)}
+            aria-label={`Open ${project.title} by ${project.artist}`}
           >
-            <div className="relative w-full aspect-video overflow-hidden bg-gray-100 rounded-lg">
-              <StaticVideoThumbnail
-                src={project.thumbnail || project.fullImage || ''}
-                poster={project.thumbnail || project.fullImage || ''}
-                alt={project.title}
-                className="w-full h-full"
-                onClick={() => setSelectedProject(project)}
-              />
+            {/* Project container */}
+            <div className="relative">
+              {/* Project number */}
+              <div className="absolute -top-6 right-0 z-10 px-2 py-1 rounded-sm">
+                <span className="text-xs font-medium text-foreground">
+                  {index + 1}
+                </span>
+              </div>
+              
+              {/* Video container */}
+              <div className="relative w-full h-48 overflow-hidden">
+                <StaticVideoThumbnail
+                  src={project.thumbnail || project.fullImage || ''}
+                  poster={project.thumbnail || project.fullImage || ''}
+                  alt={project.title}
+                  className="w-full h-full"
+                  onClick={() => setSelectedProject(project)}
+                />
+              </div>
             </div>
+            
             <div className="mt-2">
-              <h3 className="text-sm md:text-base font-medium uppercase tracking-wide">{project.title}</h3>
-              <p className="text-xs md:text-sm text-foreground/70">{project.artist}</p>
+              <p className="text-sm md:text-base font-medium uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {project.title}, {project.artist}
+              </p>
             </div>
           </div>
         ))}

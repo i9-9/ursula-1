@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Configuración para SSG (Static Site Generation)
-  // output: 'export', // Comentado para desarrollo
+  // Configuración para SSG en producción
+  output: 'export', // Export estático completo para producción
   trailingSlash: false,
   
   images: {
@@ -17,16 +17,13 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
-    // Don't want to optimize video files
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // Optimización para SSG
-    unoptimized: false, // Mantener optimización de imágenes
+    unoptimized: true, // Deshabilitar optimización para export estático
   },
   
   // Configuración para build estático
   experimental: {
-    // Optimizar el build para SSG
     optimizeCss: true,
     optimizePackageImports: ['contentful'],
   },
@@ -39,7 +36,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable', // Cache por 1 año
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },

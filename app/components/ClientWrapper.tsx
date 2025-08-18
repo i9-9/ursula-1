@@ -140,8 +140,7 @@ export default function ClientWrapper({ children }: ClientWrapperProps) {
 
   return (
     <>
-      {children}
-      {isBlocking && <Loader />}
+      {isBlocking ? <Loader /> : children}
     </>
   );
 } 

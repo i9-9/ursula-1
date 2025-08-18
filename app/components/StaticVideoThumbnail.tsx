@@ -18,7 +18,7 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
   if (!src || src.trim() === '' || !poster || poster.trim() === '') {
     return (
       <div className={`relative ${className}`}>
-        <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
+        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
           <p className="text-gray-500 text-sm">Video no disponible</p>
         </div>
       </div>
@@ -65,7 +65,7 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
           <img
             src={poster}
             alt={alt}
-            className="w-full h-full object-cover rounded-lg"
+            className="w-full h-full object-left"
             loading="lazy"
             decoding="async"
           />
@@ -74,7 +74,7 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
             src={poster}
             alt={alt}
             fill
-            className="object-cover rounded-lg"
+            className="object-left"
             sizes="(max-width: 768px) 100vw, 33vw"
             priority={false}
           />
@@ -92,7 +92,7 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
           loop
           playsInline
           preload="auto"
-          className="w-full h-full object-cover rounded-lg"
+          className="w-full h-full object-left"
           onLoadedData={() => {
             setIsVideoLoaded(true);
             if (videoRef.current) {
@@ -105,9 +105,6 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
           }}
         />
       </div>
-
-      {/* Hover overlay for better UX */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-lg" />
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { suisseBpIntl } from "./fonts";
 import "./globals.css";
 import "./animations.css";
 import "./spacing.css";
-import Navbar from './components/Navbar';
+import NavbarWithLoader from './components/NavbarWithLoader';
 import ClientWrapper from './components/ClientWrapper';
 import ScrollbarStyles from './components/ScrollbarStyles';
 import PasswordProtection from './components/PasswordProtection';
@@ -87,7 +87,7 @@ export default function RootLayout({
         <PasswordProtection>
           <ClientWrapper>
             <div className="min-h-screen bg-background text-foreground">
-              <Navbar />
+              <NavbarWithLoader />
               <div className="pt-[var(--navbar-height)]">
                 {children}
               </div>

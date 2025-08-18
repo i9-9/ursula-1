@@ -23,6 +23,7 @@ export interface PortfolioItem {
   videoUrl?: string;
   description: string;
   vimeoId?: string;
+  youtubeUrl?: string;
   order?: number;
 }
 
@@ -42,7 +43,7 @@ export interface ArchiveSection {
   order?: number;
 }
 
-// Datos de respaldo
+// Datos de respaldo para SSG
 const fallbackPortfolioItems: PortfolioItem[] = [
   {
     id: 'fallback-1',
@@ -76,20 +77,28 @@ const fallbackPortfolioItems: PortfolioItem[] = [
   }
 ];
 
-// Cliente de Contentful
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let client: any = null;
+// Cliente de Contentful optimizado para SSG
+let client: ReturnType<typeof createClient> | null = null;
 
-try {
-  if (process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID && process.env.CONTENTFUL_ACCESS_TOKEN) {
-    client = createClient({
-      space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID,
-      accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
-      environment: process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'master'
-    });
+function initializeContentfulClient() {
+  if (client) return client;
+  
+  try {
+    if (process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID && process.env.CONTENTFUL_ACCESS_TOKEN) {
+      client = createClient({
+        space: process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID,
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
+        environment: process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'master'
+      });
+      console.log('✅ Contentful client initialized successfully');
+    } else {
+      console.warn('⚠️ Contentful environment variables not found, using fallback data');
+    }
+  } catch (error) {
+    console.error('❌ Contentful client initialization failed:', error);
   }
-} catch (error) {
-  console.warn('Contentful client initialization failed, using fallback data:', error);
+  
+  return client;
 }
 
 // Función helper para optimizar URLs de imágenes de Contentful
@@ -108,11 +117,14 @@ function optimizeContentfulImage(url: string, width?: number, height?: number, f
     : `${url}?${params.toString()}`;
 }
 
-// Funciones para obtener datos
+// Funciones para obtener datos optimizadas para SSG
 
 // Obtener slides del hero
 export async function getHeroSlides(): Promise<HeroSlide[]> {
+  const client = initializeContentfulClient();
+  
   if (!client) {
+    console.log('📱 Using fallback hero slides (no Contentful connection)');
     return [];
   }
 
@@ -120,7 +132,15 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
     const entries = await client.getEntries({
       content_type: 'heroSlide',
       order: ['fields.order'],
+      limit: 10, // Limitar para optimizar build
     });
+    
+    if (entries.items.length === 0) {
+      console.log('📱 No hero slides found in Contentful, using fallback');
+      return [];
+    }
+    
+    console.log(`✅ Fetched ${entries.items.length} hero slides from Contentful`);
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return entries.items.map((item: any) => {
@@ -140,14 +160,18 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
         order: fields.order,
       };
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ Error fetching hero slides from Contentful:', error);
     return [];
   }
 }
 
 // Obtener items de trabajos seleccionados
 export async function getPortfolioItems(): Promise<PortfolioItem[]> {
+  const client = initializeContentfulClient();
+  
   if (!client) {
+    console.log('📱 Using fallback portfolio items (no Contentful connection)');
     return fallbackPortfolioItems;
   }
 
@@ -155,11 +179,15 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
     const entries = await client.getEntries({
       content_type: 'portfolioItem',
       order: ['fields.order'],
+      limit: 50, // Limitar para optimizar build
     });
     
     if (entries.items.length === 0) {
+      console.log('📱 No portfolio items found in Contentful, using fallback');
       return fallbackPortfolioItems;
     }
+    
+    console.log(`✅ Fetched ${entries.items.length} portfolio items from Contentful`);
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return entries.items.map((item: any) => {
@@ -175,6 +203,9 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
       const isVideoThumbnail = thumbnailUrl.includes('.mp4') || thumbnailUrl.includes('.mov') || thumbnailUrl.includes('.webm');
       const isVideoFullImage = fullImageUrl.includes('.mp4') || fullImageUrl.includes('.mov') || fullImageUrl.includes('.webm');
       
+      // Determine content type based on actual content, not just videoUrl
+      const hasVideoContent = fields.videoUrl || fields['Vimeo ID'] || fields.vimeoId || isVideoThumbnail || isVideoFullImage;
+      
       return {
         id: item.sys.id,
         title: fields.title || '',
@@ -182,21 +213,26 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
         year: fields.year || '',
         thumbnail: thumbnailUrl ? (isVideoThumbnail ? thumbnailUrl : optimizeContentfulImage(thumbnailUrl, 800, 450, 'webp', 85)) : '',
         fullImage: fullImageUrl ? (isVideoFullImage ? fullImageUrl : optimizeContentfulImage(fullImageUrl, 1920, 1080, 'webp', 85)) : '',
-        contentType: fields.videoUrl ? 'video' as const : 'image' as const,
+        contentType: hasVideoContent ? 'video' as const : 'image' as const,
         videoUrl: fields.videoUrl,
         description: fields.description || '',
         vimeoId: fields['Vimeo ID'] ? String(fields['Vimeo ID']) : (fields.vimeoId ? String(fields.vimeoId) : ''),
         order: fields.order,
       };
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ Error fetching portfolio items from Contentful:', error);
+    console.log('📱 Falling back to local data');
     return fallbackPortfolioItems;
   }
 }
 
 // Obtener datos de archivo
 export async function getArchiveData(): Promise<ArchiveSection[]> {
+  const client = initializeContentfulClient();
+  
   if (!client) {
+    console.log('📱 Using fallback archive data (no Contentful connection)');
     return [];
   }
 
@@ -205,11 +241,15 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
       content_type: 'archiveSection',
       order: ['fields.order'],
       include: 2, // Para obtener referencias anidadas
+      limit: 20, // Limitar para optimizar build
     });
     
     if (entries.items.length === 0) {
+      console.log('📱 No archive sections found in Contentful');
       return [];
     }
+    
+    console.log(`✅ Fetched ${entries.items.length} archive sections from Contentful`);
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return entries.items.map((section: any) => {
@@ -222,7 +262,7 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
             if (!item.fields) {
               // Log warning but don't fail the build
               if (typeof window === 'undefined') {
-                console.warn(`Archive item reference not loaded properly, skipping: ${item.sys?.id}`);
+                console.warn(`⚠️ Archive item reference not loaded properly, skipping: ${item.sys?.id}`);
               }
               return null; // Marcar para filtrar
             }
@@ -237,7 +277,7 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
                 year: item.fields.year || '',
                 company: item.fields.company || '',
                 thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
-                vimeoId: item.fields['Vimeo ID'] ? String(item.fields['Vimeo ID']) : (item.fields.vimeoId ? String(item.fields.vimeoId) : ''),
+                vimeoId: item.fields['Vimeo ID'] ? String(item.fields['Vimeo ID']) : (fields.vimeoId ? String(fields.vimeoId) : ''),
                 videoUrl: item.fields.videoUrl,
                 order: item.fields.order || 0, // Add order field support
               };
@@ -263,7 +303,8 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
         order: parseInt(fields.order) || 0,
       };
     });
-  } catch {
+  } catch (error) {
+    console.error('❌ Error fetching archive data from Contentful:', error);
     // Return empty array instead of throwing to prevent build failure
     return [];
   }
