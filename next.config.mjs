@@ -27,7 +27,7 @@ const nextConfig = {
   // Configuración para build estático
   experimental: {
     // Optimizar el build para SSG
-    optimizeCss: true,
+    // optimizeCss: true, // Comentado por problemas con critters
     optimizePackageImports: ['contentful'],
   },
   

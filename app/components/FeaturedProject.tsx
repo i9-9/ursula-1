@@ -2,19 +2,7 @@
 
 import { useMemo, useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import { motion } from 'framer-motion'
-
-// Simulated types and data
-interface PortfolioItem {
-  id: string
-  title: string
-  artist: string
-  year: string
-  thumbnail?: string
-  fullImage?: string
-  vimeoId?: string
-  contentType: 'video'
-  description: string
-}
+import { PortfolioItem } from '@/lib/contentful'
 
 const localWorks: Array<{
   title?: string

@@ -62,12 +62,14 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
         isVideoLoaded ? 'opacity-0' : 'opacity-100'
       }`}>
         {isContentfulVideo ? (
-          <img
+          <Image
             src={poster}
             alt={alt}
-            className="w-full h-full object-left"
+            fill
+            className="object-left"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            priority={false}
             loading="lazy"
-            decoding="async"
           />
         ) : (
           <Image

@@ -5,10 +5,10 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "build:prod": "next build --config next.config.production.mjs",
+    "build:prod": "cp next.config.production.mjs next.config.mjs && next build && cp next.config.mjs next.config.backup.mjs && git checkout next.config.mjs",
     "start": "next start",
-    "start:prod": "next start --config next.config.production.mjs",
-    "export": "next build --config next.config.production.mjs && next export",
+    "start:prod": "next start",
+    "export": "npm run build:prod",
     "lint": "next lint"
   },
   "dependencies": {

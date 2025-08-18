@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { useScrollReveal, useTouchFeedback /* useSnapScroll */ } from '../hooks/useScrollReveal';
+import { useScrollReveal, useTouchFeedback } from '../hooks/useScrollReveal';
 import Loader from './Loader';
 import { usePathname } from 'next/navigation';
 
@@ -13,7 +13,6 @@ export default function ClientWrapper({ children }: ClientWrapperProps) {
   // Activar los hooks de animación
   useScrollReveal();
   useTouchFeedback();
-  // useSnapScroll(); // Deshabilitado temporalmente
 
   const [isBlocking, setIsBlocking] = useState(true);
   const hasBootedRef = useRef(false);
@@ -31,7 +30,6 @@ export default function ClientWrapper({ children }: ClientWrapperProps) {
       );
       if (elements.length > 0) break;
       // wait a frame
-      // eslint-disable-next-line no-await-in-loop
       await new Promise((r) => requestAnimationFrame(() => r(undefined)));
     }
 
@@ -96,8 +94,9 @@ export default function ClientWrapper({ children }: ClientWrapperProps) {
         el.addEventListener('load', onLoad as EventListener, { once: true });
         // If already loaded or cross-origin loaded, rely on readyState if available
         try {
-          // @ts-expect-error cross-origin may throw
-          if ((el as any).contentDocument?.readyState === 'complete') {
+          // Check if iframe is already loaded
+          const iframe = el as HTMLIFrameElement;
+          if (iframe.contentDocument?.readyState === 'complete') {
             el.removeEventListener('load', onLoad as EventListener);
             setTimeout(() => resolve(), 350);
           }
@@ -135,7 +134,6 @@ export default function ClientWrapper({ children }: ClientWrapperProps) {
     };
     void boot();
     return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return (
