@@ -3,11 +3,7 @@
 import { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 
-interface NavbarWithLoaderProps {
-  children?: React.ReactNode;
-}
-
-export default function NavbarWithLoader({ children }: NavbarWithLoaderProps) {
+export default function NavbarWithLoader() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -20,8 +16,6 @@ export default function NavbarWithLoader({ children }: NavbarWithLoaderProps) {
   }, []);
 
   return (
-    <Navbar isLoaded={isLoaded}>
-      {children}
-    </Navbar>
+    <Navbar isLoaded={isLoaded} />
   );
 }

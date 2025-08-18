@@ -17,7 +17,7 @@ export const useVideoLoader = ({
   const { registerLoader, unregisterLoader, setLoaderReady } = useLoading();
   const [loadingState, setLoadingState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
   const [loadedCount, setLoadedCount] = useState(0);
-  const abortControllerRef = useRef<AbortController>();
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (videos.length === 0) {
@@ -34,9 +34,8 @@ export const useVideoLoader = ({
     const loadVideo = async (videoSrc: string): Promise<boolean> => {
       return new Promise((resolve) => {
         const video = document.createElement('video');
-        let timeoutId: NodeJS.Timeout;
         let resolved = false;
-
+        
         const cleanup = () => {
           if (!resolved) {
             resolved = true;
@@ -56,12 +55,14 @@ export const useVideoLoader = ({
           resolve(false);
         };
 
-        // Timeout individual para cada video
-        timeoutId = setTimeout(() => {
+        const handleTimeout = () => {
           cleanup();
           console.warn(`⏱️ Video load timeout: ${videoSrc}`);
           resolve(false);
-        }, timeout);
+        };
+
+        // Timeout individual para cada video
+        const timeoutId = setTimeout(handleTimeout, timeout);
 
         // Configurar eventos
         video.addEventListener('loadeddata', handleSuccess, { once: true });
@@ -89,7 +90,9 @@ export const useVideoLoader = ({
             if (result) {
               loaded++;
               setLoadedCount(loaded);
-              onProgress?.(loaded, videos.length);
+              if (onProgress) {
+                onProgress(loaded, videos.length);
+              }
             }
             return result;
           })
