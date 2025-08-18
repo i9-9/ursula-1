@@ -70,6 +70,12 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
             sizes="(max-width: 768px) 100vw, 33vw"
             priority={false}
             loading="lazy"
+            onLoad={() => {
+              // setIsPosterLoaded(true); // This line was removed
+            }}
+            onError={() => {
+              // setIsPosterLoaded(true); // This line was removed
+            }}
           />
         ) : (
           <Image
@@ -79,6 +85,12 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
             className="object-left"
             sizes="(max-width: 768px) 100vw, 33vw"
             priority={false}
+            onLoad={() => {
+              // setIsPosterLoaded(true); // This line was removed
+            }}
+            onError={() => {
+              // setIsPosterLoaded(true); // This line was removed
+            }}
           />
         )}
       </div>
@@ -93,13 +105,23 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           className="w-full h-full object-left"
           onLoadedData={() => {
             setIsVideoLoaded(true);
             if (videoRef.current) {
               videoRef.current.pause();
               videoRef.current.currentTime = 0;
+            }
+          }}
+          onLoadedMetadata={() => {
+            // Additional event to ensure video is ready
+            if (videoRef.current && videoRef.current.readyState >= 1) {
+              setIsVideoLoaded(true);
+              if (videoRef.current) {
+                videoRef.current.pause();
+                videoRef.current.currentTime = 0;
+              }
             }
           }}
           onError={() => {

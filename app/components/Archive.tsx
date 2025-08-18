@@ -133,12 +133,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
 
   return (
     <section id="archive" className="py-6 pb-0 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
-      <div 
-        className="mb-4 flex items-center justify-between py-2 rounded-lg relative"
-        aria-label="Archive"
-      >
-        <h2 className="h2 section-title section-title-delay-2 font-suisse-bp-intl">ARCHIVE</h2>
-      </div>
+
       
       <div className="border-t border-gray-300/20 dark:border-gray-700/20"></div>
       

@@ -1,7 +1,27 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 
-export default function NavbarWithLoader() {
-  return <Navbar isLoaded={true} />;
+interface NavbarWithLoaderProps {
+  children?: React.ReactNode;
+}
+
+export default function NavbarWithLoader({ children }: NavbarWithLoaderProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Simular tiempo de carga mínimo para el navbar
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <Navbar isLoaded={isLoaded}>
+      {children}
+    </Navbar>
+  );
 }
