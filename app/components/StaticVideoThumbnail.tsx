@@ -107,9 +107,12 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
           playsInline
           preload="metadata"
           className="w-full h-full object-left"
+          data-video-thumbnail="true"
+          data-video-ready="false"
           onLoadedData={() => {
             setIsVideoLoaded(true);
             if (videoRef.current) {
+              videoRef.current.setAttribute('data-video-ready', 'true');
               videoRef.current.pause();
               videoRef.current.currentTime = 0;
             }
@@ -118,6 +121,7 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
             // Additional event to ensure video is ready
             if (videoRef.current && videoRef.current.readyState >= 1) {
               setIsVideoLoaded(true);
+              videoRef.current.setAttribute('data-video-ready', 'true');
               if (videoRef.current) {
                 videoRef.current.pause();
                 videoRef.current.currentTime = 0;
@@ -126,6 +130,9 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
           }}
           onError={() => {
             setIsVideoLoaded(false);
+            if (videoRef.current) {
+              videoRef.current.setAttribute('data-video-ready', 'error');
+            }
           }}
         />
       </div>
