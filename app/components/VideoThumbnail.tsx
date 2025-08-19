@@ -21,6 +21,7 @@ const VideoThumbnail = ({ src, alt, className = '', vimeoId, youtubeUrl }: Video
     console.log(`Loading Vimeo thumbnail for ID: ${vimeoId}`);
     return (
       <div className={`${className} relative`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={`https://vumbnail.com/${vimeoId}_large.jpg`}
           alt={alt}
@@ -47,6 +48,7 @@ const VideoThumbnail = ({ src, alt, className = '', vimeoId, youtubeUrl }: Video
     if (videoId) {
       return (
         <div className={`${className} relative`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
             alt={alt}
@@ -118,6 +120,7 @@ const VideoThumbnail = ({ src, alt, className = '', vimeoId, youtubeUrl }: Video
   if (src && (src.includes('.jpg') || src.includes('.jpeg') || src.includes('.png') || src.includes('.webp'))) {
     return (
       <div className={`${className} relative`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
           alt={alt}
@@ -131,6 +134,7 @@ const VideoThumbnail = ({ src, alt, className = '', vimeoId, youtubeUrl }: Video
   if (src && src.trim() !== '') {
     return (
       <div className={`${className} relative`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
           alt={alt}

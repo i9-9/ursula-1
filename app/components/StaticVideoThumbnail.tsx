@@ -92,7 +92,7 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
               videoRef.current.currentTime = 0;
             }
           }}
-          onError={(e) => {
+          onError={() => {
             console.error('Error loading video:', src || poster);
             setIsVideoLoaded(false);
             if (videoRef.current) {
