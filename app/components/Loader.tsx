@@ -40,7 +40,7 @@ const Loader = () => {
         <motion.div className="flex justify-center space-x-2">
           {[0, 1, 2].map((index) => (
             <motion.div
-              key={index}
+              key={index} 
               className="w-2 h-2 bg-foreground rounded-full"
               animate={{
                 scale: [1, 1.15, 1],

@@ -1,21 +1,11 @@
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-/* Suisse BP INTL Font Family */
+/* Font Family */
 @font-face {
   font-family: 'Suisse BP INTL';
   src: url('/fonts/Suisse BP Intl Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Suisse BP INTL';
-  src: url('/fonts/Suisse BP Intl Regular Italic.woff2') format('woff2');
-  font-weight: 400;
-  font-style: italic;
   font-display: swap;
 }
 @font-face {
@@ -33,23 +23,13 @@
   font-display: swap;
 }
 
+/* Root Variables */
 :root {
   --background: #FAFAFA;
   --foreground: #252525;
-  --navbar-height: 36px; /* Altura del navbar */
-  
-  /* Typography Scale - Mobile First */
-  --font-size-h1: 1.25rem;
-  --font-size-h2: 1rem;
-  --font-size-h3: 1rem;
-  --font-size-h4: 0.95rem;
-  --font-size-h5: 0.875rem;
-  --font-size-h6: 0.75rem;
-  --font-size-p: 0.875rem;
-  --font-size-small: 0.75rem;
-  --font-size-xs: 0.625rem;
-  
-  /* Sistema de espaciado */
+  --navbar-height: 36px;
+
+  /* Spacing */
   --space-xs: 0.125rem;  /* 2px */
   --space-sm: 0.25rem;   /* 4px */
   --space-md: 0.375rem;  /* 6px */
@@ -58,232 +38,51 @@
   --space-2xl: 1.25rem;  /* 20px */
 }
 
-/* Dark mode variables */
+/* Dark mode */
 .dark {
   --background: #252525;
   --foreground: #FAFAFA;
 }
 
-/* Desktop Typography Scale */
-@media (min-width: 768px) {
-  :root {
-    --font-size-h1: 1.636rem;  /* 18px */
-    --font-size-h2: 1.182rem;  /* 13px */
-    --font-size-h3: 1.182rem;  /* 13px */
-    --font-size-h4: 1.091rem;  /* 12px */
-    --font-size-h5: 1rem;      /* 11px */
-    --font-size-h6: 0.909rem;  /* 10px */
-    --font-size-p: 0.909rem;   /* 10px */
-    --font-size-small: 0.818rem; /* 9px */
-    --font-size-xs: 0.727rem;  /* 8px */
-  }
-}
-
-/* Base Typography */
+/* Body */
 body {
   font-family: 'Suisse BP INTL', sans-serif;
-  font-weight: 400; /* Roman weight */
+  font-weight: 400;
   line-height: 1.5;
   color: var(--foreground);
   background-color: var(--background);
-  font-size: 11px;
-}
-
-@layer base {
-  html {
-    font-size: 11px;
-  }
 }
 
 /* Headings */
-h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: 'Suisse BP INTL', sans-serif;
   font-weight: 500;
   line-height: 1.2;
-  margin-bottom: 0.125em;
   color: var(--foreground);
+  margin-bottom: 0.125em;
 }
 
-h1, .h1 {
-  font-size: var(--font-size-h1);
-}
-
-h2, .h2 {
-  font-size: var(--font-size-h2);
-}
-
-h3, .h3 {
-  font-size: var(--font-size-h3);
-}
-
-h4, .h4 {
-  font-size: var(--font-size-h4);
-}
-
-h5, .h5 {
-  font-size: var(--font-size-h5);
-}
-
-h6, .h6 {
-  font-size: var(--font-size-h6);
-}
-
-/* Paragraphs and Text */
-p, .text-p {
-  font-size: var(--font-size-p);
+/* Paragraphs */
+p {
   font-family: 'Suisse BP INTL', sans-serif;
-  font-weight: 400; /* Roman weight */
+  font-weight: 400;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5;
+  margin: 0; /* dejar que Tailwind y gap manejen el espacio */
 }
 
-small, .text-small {
-  font-size: var(--font-size-small);
-}
-
-.text-xs {
-  font-size: var(--font-size-xs);
-}
-
-/* Spacing Utilities */
-.space-xs { padding: var(--space-xs); }
-.space-sm { padding: var(--space-sm); }
-.space-md { padding: var(--space-md); }
-.space-lg { padding: var(--space-lg); }
-.space-xl { padding: var(--space-xl); }
-.space-2xl { padding: var(--space-2xl); }
-
-/* Margin Top Utilities */
-.mt-xs { margin-top: var(--space-xs); }
-.mt-sm { margin-top: var(--space-sm); }
-.mt-md { margin-top: var(--space-md); }
-.mt-lg { margin-top: var(--space-lg); }
-.mt-xl { margin-top: var(--space-xl); }
-.mt-2xl { margin-top: var(--space-2xl); }
-
-/* Margin Bottom Utilities */
-.mb-xs { margin-bottom: var(--space-xs); }
-.mb-sm { margin-bottom: var(--space-sm); }
-.mb-md { margin-bottom: var(--space-md); }
-.mb-lg { margin-bottom: var(--space-lg); }
-.mb-xl { margin-bottom: var(--space-xl); }
-.mb-2xl { margin-bottom: var(--space-2xl); }
-
-/* Margin Y Utilities */
-.my-xs { margin-top: var(--space-xs); margin-bottom: var(--space-xs); }
-.my-sm { margin-top: var(--space-sm); margin-bottom: var(--space-sm); }
-.my-md { margin-top: var(--space-md); margin-bottom: var(--space-md); }
-.my-lg { margin-top: var(--space-lg); margin-bottom: var(--space-lg); }
-.my-xl { margin-top: var(--space-xl); margin-bottom: var(--space-xl); }
-.my-2xl { margin-top: var(--space-2xl); margin-bottom: var(--space-2xl); }
-
-/* Text Balance */
-.text-balance {
-  text-wrap: balance;
-}
-
-/* Animations */
-.fade-in {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.fade-in-slow {
-  animation: fadeIn 1s ease-in-out;
-}
-
-.fade-up {
-  animation: fadeUp 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Hover View Effect */
-.hover-view {
-  position: relative;
-  overflow: hidden;
-}
-
-.hover-view::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.hover-view:hover::after {
-  opacity: 1;
-}
-
-/* Scrollbar Styles */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: var(--background);
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--foreground);
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #333;
-}
-
-/* SSG Loader and Content Transitions */
-.loader-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #ffffff;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
-}
-.loader-wrapper.loader-hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-.content-wrapper {
-  min-height: 100vh;
-  opacity: 0;
-  transition: opacity 0.4s ease-in;
-}
-.content-wrapper.content-visible {
-  opacity: 1;
-}
-.content-wrapper:not(.content-visible) {
-  visibility: hidden;
-}
-
-/* Basic video defaults to avoid layout shift */
-video {
-  width: 100%;
-  height: auto;
-  background: #f0f0f0;
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import Image from 'next/image';
 
 interface StaticVideoThumbnailProps {
   src: string;
@@ -13,12 +12,13 @@ interface StaticVideoThumbnailProps {
 
 const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: StaticVideoThumbnailProps) => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  if (!src || src.trim() === '' || !poster || poster.trim() === '') {
+  if (!src || src.trim() === '') {
     return (
       <div className={`relative ${className}`}>
-        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+        <div className="w-full aspect-video bg-gray-200 flex items-center justify-center">
           <p className="text-gray-500 text-sm">Video no disponible</p>
         </div>
       </div>
@@ -26,7 +26,7 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
   }
 
   const handleMouseEnter = () => {
-    if (videoRef.current) {
+    if (videoRef.current && isVideoLoaded) {
       videoRef.current.play().catch(() => {
         // Autoplay failed silently
       });
@@ -40,7 +40,12 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
     }
   };
 
-  const isContentfulVideo = poster.includes('videos.ctfassets.net');
+  // Si tanto src como poster son videos, usar solo el video
+  const isVideoFile = (url: string) => {
+    return url.includes('.mp4') || url.includes('.mov') || url.includes('.webm') || url.includes('.avi');
+  };
+
+  const useVideoAsPoster = isVideoFile(poster) || isVideoFile(src);
 
   return (
     <div 
@@ -57,60 +62,21 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
       }}
       aria-label={`Play ${alt}`}
     >
-      {/* Poster image until first frame is ready */}
-      <div className={`absolute inset-0 transition-opacity duration-500 ${
-        isVideoLoaded ? 'opacity-0' : 'opacity-100'
-      }`}>
-        {isContentfulVideo ? (
-          <Image
-            src={poster}
-            alt={alt}
-            fill
-            className="object-left"
-            sizes="(max-width: 768px) 100vw, 33vw"
-            priority={false}
-            loading="lazy"
-            onLoad={() => {
-              // setIsPosterLoaded(true); // This line was removed
-            }}
-            onError={() => {
-              // setIsPosterLoaded(true); // This line was removed
-            }}
-          />
-        ) : (
-          <Image
-            src={poster}
-            alt={alt}
-            fill
-            className="object-left"
-            sizes="(max-width: 768px) 100vw, 33vw"
-            priority={false}
-            onLoad={() => {
-              // setIsPosterLoaded(true); // This line was removed
-            }}
-            onError={() => {
-              // setIsPosterLoaded(true); // This line was removed
-            }}
-          />
-        )}
-      </div>
-
-      {/* Paused video showing first frame; plays on hover */}
-      <div className={`absolute inset-0 transition-opacity duration-500 ${
-        isVideoLoaded ? 'opacity-100' : 'opacity-0'
-      }`}>
+      {/* Si es un video, mostrar solo el elemento video */}
+      {useVideoAsPoster ? (
         <video
           ref={videoRef}
-          src={src}
+          src={src || poster}
           muted
           loop
           playsInline
           preload="metadata"
-          className="w-full h-full object-left"
+          className="w-full h-auto object-cover"
           data-video-thumbnail="true"
-          data-video-ready="false"
+          data-video-ready={isVideoLoaded ? 'true' : 'false'}
           onLoadedData={() => {
             setIsVideoLoaded(true);
+            setShowVideo(true);
             if (videoRef.current) {
               videoRef.current.setAttribute('data-video-ready', 'true');
               videoRef.current.pause();
@@ -118,24 +84,65 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
             }
           }}
           onLoadedMetadata={() => {
-            // Additional event to ensure video is ready
             if (videoRef.current && videoRef.current.readyState >= 1) {
               setIsVideoLoaded(true);
+              setShowVideo(true);
               videoRef.current.setAttribute('data-video-ready', 'true');
-              if (videoRef.current) {
-                videoRef.current.pause();
-                videoRef.current.currentTime = 0;
-              }
+              videoRef.current.pause();
+              videoRef.current.currentTime = 0;
             }
           }}
-          onError={() => {
+          onError={(e) => {
+            console.error('Error loading video:', src || poster);
             setIsVideoLoaded(false);
             if (videoRef.current) {
               videoRef.current.setAttribute('data-video-ready', 'error');
             }
           }}
         />
-      </div>
+      ) : (
+        // Si hay una imagen real como poster, usar img normal
+        <>
+          {!showVideo && poster && !isVideoFile(poster) && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={poster}
+              alt={alt}
+              className="w-full h-auto object-cover"
+              loading="lazy"
+              onLoad={() => console.log('Image loaded:', poster)}
+              onError={() => console.error('Error loading image:', poster)}
+            />
+          )}
+          
+          <video
+            ref={videoRef}
+            src={src}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className={`w-full h-auto object-cover ${showVideo ? 'block' : 'hidden'}`}
+            data-video-thumbnail="true"
+            data-video-ready={isVideoLoaded ? 'true' : 'false'}
+            onLoadedData={() => {
+              setIsVideoLoaded(true);
+              setShowVideo(true);
+              if (videoRef.current) {
+                videoRef.current.setAttribute('data-video-ready', 'true');
+                videoRef.current.pause();
+                videoRef.current.currentTime = 0;
+              }
+            }}
+            onError={() => {
+              setIsVideoLoaded(false);
+              if (videoRef.current) {
+                videoRef.current.setAttribute('data-video-ready', 'error');
+              }
+            }}
+          />
+        </>
+      )}
     </div>
   );
 };

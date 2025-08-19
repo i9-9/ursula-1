@@ -14,7 +14,7 @@ const PasswordProtection = ({ children }: PasswordProtectionProps) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Change this to your desired password
-  const CORRECT_PASSWORD = 'ursula2024';
+  const CORRECT_PASSWORD = 'ursula';
 
   useEffect(() => {
     // Check if user is already authenticated

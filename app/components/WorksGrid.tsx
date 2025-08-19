@@ -1,79 +1,62 @@
 'use client';
 
-import { useState } from 'react';
+import Link from 'next/link';
 import { PortfolioItem } from '@/lib/contentful';
 import StaticVideoThumbnail from './StaticVideoThumbnail';
-import VideoModal from './VideoModal';
+
+// Función para generar slug limpio y legible (debe coincidir con la página [slug])
+function generateCleanSlug(title: string, artist: string): string {
+  // Limpiar y normalizar el título y artista
+  const cleanTitle = title
+    .toLowerCase()
+    .trim()
+    .replace(/[áäâà]/g, 'a')
+    .replace(/[éëêè]/g, 'e')
+    .replace(/[íïîì]/g, 'i')
+    .replace(/[óöôò]/g, 'o')
+    .replace(/[úüûù]/g, 'u')
+    .replace(/[ñ]/g, 'n')
+    .replace(/[^a-z0-9\s-]/g, '') // Solo letras, números, espacios y guiones
+    .replace(/\s+/g, '-') // Espacios a guiones
+    .replace(/-+/g, '-') // Múltiples guiones a uno solo
+    .replace(/^-|-$/g, ''); // Eliminar guiones del inicio y final
+
+  const cleanArtist = artist
+    .toLowerCase()
+    .trim()
+    .replace(/[áäâà]/g, 'a')
+    .replace(/[éëêè]/g, 'e')
+    .replace(/[íïîì]/g, 'i')
+    .replace(/[óöôò]/g, 'o')
+    .replace(/[úüûù]/g, 'u')
+    .replace(/[ñ]/g, 'n')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+
+  // Crear slug combinando título y artista
+  const slug = cleanTitle && cleanArtist ? `${cleanTitle}-${cleanArtist}` : cleanTitle || cleanArtist || 'untitled';
+  
+  // Limitar longitud y asegurar que sea único
+  return slug.substring(0, 60);
+}
 
 interface WorksGridProps {
   works: PortfolioItem[];
 }
 
 const WorksGrid = ({ works = [] }: WorksGridProps) => {
-  const [selectedProject, setSelectedProject] = useState<PortfolioItem | null>(null);
-  
-  const projects: PortfolioItem[] = works.length > 0 ? works : [
-    {
-      id: 'grid-1',
-      title: 'Tres Pecados Después',
-      artist: 'Milo J',
-      year: '2024',
-      thumbnail: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
-      fullImage: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
-      contentType: 'video' as const,
-      description: 'Videoclip para Milo J - Tres Pecados Después.',
-    },
-    {
-      id: 'grid-2',
-      title: 'Ali Oli',
-      artist: 'Milo J',
-      year: '2024',
-      thumbnail: '/videos_grid/2 Milo J - Ali Oli.mp4',
-      fullImage: '/videos_grid/2 Milo J - Ali Oli.mp4',
-      contentType: 'video' as const,
-      description: 'Videoclip para Milo J - Ali Oli.',
-    },
-    {
-      id: 'grid-3',
-      title: 'Sola',
-      artist: 'Chita',
-      year: '2024',
-      thumbnail: '/videos_grid/3 - Chita - Sola.mp4',
-      fullImage: '/videos_grid/3 - Chita - Sola.mp4',
-      contentType: 'video' as const,
-      description: 'Videoclip para Chita - Sola.',
-    },
-    {
-      id: 'grid-4',
-      title: 'S.O.S',
-      artist: 'Taichu ft Lali',
-      year: '2024',
-      thumbnail: '/videos_grid/4 - Taichu ft Lali - S.O.S.mp4',
-      fullImage: '/videos_grid/4 - Taichu ft Lali - S.O.S.mp4',
-      contentType: 'video' as const,
-      description: 'Videoclip para Taichu ft Lali - S.O.S.',
-    },
-    {
-      id: 'grid-5',
-      title: 'Cirugía',
-      artist: 'Dillom',
-      year: '2024',
-      thumbnail: '/videos_grid/5 - Dillom - Cirugia.mp4',
-      fullImage: '/videos_grid/5 - Dillom - Cirugia.mp4',
-      contentType: 'video' as const,
-      description: 'Videoclip para Dillom - Cirugía.',
-    },
-    {
-      id: 'grid-6',
-      title: 'Bonafont MX',
-      artist: 'Dir. Carmen Rivoira - Prod. Mamahungara',
-      year: '2024',
-      thumbnail: '/videos_grid/6 - Dir. Carmen Rivoira - Prod. Mamahungara - Bonafont MX.mp4',
-      fullImage: '/videos_grid/6 - Dir. Carmen Rivoira - Prod. Mamahungara - Bonafont MX.mp4',
-      contentType: 'video' as const,
-      description: 'Comercial para Bonafont MX.',
-    },
-  ];
+  // Si no hay proyectos de Contentful, mostrar mensaje o componente vacío
+  if (works.length === 0) {
+    return (
+      <section className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in">
+        <div className="text-center py-12">
+          <p className="text-gray-500">No hay proyectos disponibles.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in">
@@ -82,19 +65,12 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
       
       {/* Mobile Layout - Vertical Stack */}
       <div className="md:hidden space-y-8">
-        {projects.map((project, index) => (
-          <div 
+        {works.map((project, index) => (
+          <Link
+            href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
             key={project.id}
-            className="cursor-pointer group relative"
-            role="gridcell"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                setSelectedProject(project);
-              }
-            }}
-            onClick={() => setSelectedProject(project)}
-            aria-label={`Open ${project.title} by ${project.artist}`}
+            className="block cursor-pointer group relative"
+            aria-label={`Ver ${project.title} by ${project.artist}`}
           >
             {/* Project container for mobile */}
             <div className="relative">
@@ -106,13 +82,12 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               </div>
               
               {/* Video container - full width on mobile */}
-              <div className="relative w-full h-64 overflow-hidden">
+              <div className="relative w-full">
                 <StaticVideoThumbnail
                   src={project.thumbnail || project.fullImage || ''}
                   poster={project.thumbnail || project.fullImage || ''}
                   alt={project.title}
-                  className="w-full h-full"
-                  onClick={() => setSelectedProject(project)}
+                  className="w-full h-auto"
                 />
               </div>
             </div>
@@ -123,7 +98,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 {project.title}, {project.artist}
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 
@@ -133,23 +108,16 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         role="grid"
         aria-label="Projects grid"
       >
-        {projects.map((project, index) => (
-          <div 
+        {works.map((project, index) => (
+          <Link
+            href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
             key={project.id}
-            className={`cursor-pointer group relative col-span-6 lg:col-span-3 ${
+            className={`block cursor-pointer group relative col-span-6 lg:col-span-3 ${
               index % 4 === 0 ? 'section-title section-title-delay-1' : 
               index % 4 === 1 ? 'section-title section-title-delay-2' : 
               index % 4 === 2 ? 'section-title section-title-delay-3' : 'section-title section-title-delay-4'
             }`}
-            role="gridcell"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                setSelectedProject(project);
-              }
-            }}
-            onClick={() => setSelectedProject(project)}
-            aria-label={`Open ${project.title} by ${project.artist}`}
+            aria-label={`Ver ${project.title} by ${project.artist}`}
           >
             {/* Project container */}
             <div className="relative">
@@ -161,13 +129,12 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               </div>
               
               {/* Video container */}
-              <div className="relative w-full h-48 overflow-hidden">
+              <div className="relative w-full">
                 <StaticVideoThumbnail
                   src={project.thumbnail || project.fullImage || ''}
                   poster={project.thumbnail || project.fullImage || ''}
                   alt={project.title}
-                  className="w-full h-full"
-                  onClick={() => setSelectedProject(project)}
+                  className="w-full h-auto"
                 />
               </div>
             </div>
@@ -177,17 +144,11 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 {project.title}, {project.artist}
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
-
-      {/* Video Modal */}
-      <VideoModal 
-        project={selectedProject} 
-        onClose={() => setSelectedProject(null)} 
-      />
     </section>
   );
 };
 
-export default WorksGrid; 
+export default WorksGrid;

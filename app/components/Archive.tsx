@@ -1,130 +1,73 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
-import Image from 'next/image';
-import { AnimatePresence, motion } from 'framer-motion';
-import ArchiveFilters from './ArchiveFilters';
-import { useScrollReveal } from '@/app/hooks/useScrollReveal';
-import { ArchiveSection, ArchiveItem } from '@/lib/contentful';
-import { getCategoriesInOrder, getProjectOrder } from '@/app/data/clientOrder';
+import React, { useState, useMemo } from 'react';
+
+// Types matching your Contentful structure
+interface ArchiveItem {
+  project?: string;
+  company?: string;
+  year?: string;
+  thumbnail?: string;
+  videoUrl?: string;
+  vimeoId?: string;
+  order?: number;
+}
+
+interface ArchiveSection {
+  title: string;
+  items: ArchiveItem[];
+  order?: number;
+}
 
 interface ArchiveProps {
   sections: ArchiveSection[];
 }
 
 const Archive = ({ sections = [] }: ArchiveProps) => {
-  useScrollReveal();
-
-  const [hoveredItem, setHoveredItem] = useState<ArchiveItem | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedItem, setSelectedItem] = useState<ArchiveItem | null>(null);
-  const [filters, setFilters] = useState<{ category: string | null }>({
-    category: null
-  });
-  // Archive is always expanded in routed layout
 
-  // Process and sort sections according to client order
-  const processedSections = useMemo(() => {
-    if (!sections || sections.length === 0) return [];
-    
-    // Get the categories in the order specified by the client
-    const orderedCategories = getCategoriesInOrder();
-    
-    // Create a map of existing sections for quick lookup
-    const sectionMap = new Map(sections.map(section => [section.title, section]));
-    
-    // Create sections in the client-specified order, including empty ones if needed
-    const orderedSections = orderedCategories.map(categoryTitle => {
-      const existingSection = sectionMap.get(categoryTitle);
-      
-      if (existingSection) {
-                 // Sort the items within each section according to client order
-         const sortedItems = existingSection.items
-           .map(item => ({
-             ...item,
-             clientOrder: getProjectOrder(item.company || '', item.project || '')
-           }))
-           .sort((a, b) => {
-             // First sort by client order if available
-             if (a.clientOrder !== 999 && b.clientOrder !== 999) {
-               return a.clientOrder - b.clientOrder;
-             }
-             // Then by existing order field from Contentful
-             if (a.order !== undefined && b.order !== undefined) {
-               return a.order - b.order;
-             }
-             // Finally by year (descending) as fallback
-             const yearA = parseInt(a.year) || 0;
-             const yearB = parseInt(b.year) || 0;
-             return yearB - yearA;
-           });
-        
-        return {
-          ...existingSection,
-          items: sortedItems
-        };
-      } else {
-        // Create an empty section if it doesn't exist in Contentful yet
-        return {
-          title: categoryTitle,
-          items: [],
-          order: orderedCategories.indexOf(categoryTitle)
-        };
-      }
-    });
-    
-    // Filter out empty sections
-    return orderedSections.filter(section => section.items.length > 0);
+  // Get all unique categories from sections
+  const categories = useMemo(() => {
+    if (!sections || sections.length === 0) return ['all'];
+    const cats = ['all', ...sections.map(section => section.title)];
+    return [...new Set(cats)];
   }, [sections]);
 
-  // Filter sections based on selected filters
-  const filteredSections = useMemo(() => {
-    return processedSections.filter(section => {
-      // If no filters are selected, show all sections
-      if (!filters.category) return true;
-      
-      // Filter by category
-      if (filters.category && section.title !== filters.category) return false;
-      
-      return true;
+  // Get all items from all sections with their category
+  const allItems = useMemo(() => {
+    const items: (ArchiveItem & { category: string })[] = [];
+    sections.forEach(section => {
+      section.items.forEach(item => {
+        items.push({
+          ...item,
+          category: section.title
+        });
+      });
     });
-  }, [filters, processedSections]);
+    return items;
+  }, [sections]);
 
-  // No-op; dejamos firma para compatibilidad de props si se necesitara
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleMouseMove = (e: React.MouseEvent) => {};
+  // Filter items based on selected category
+  const filteredItems = useMemo(() => {
+    if (selectedCategory === 'all') {
+      return allItems;
+    }
+    return allItems.filter(item => item.category === selectedCategory);
+  }, [selectedCategory, allItems]);
 
-  // Función para extraer ID de YouTube
+  // Extract YouTube ID from URL
   const extractYouTubeId = (url: string): string | null => {
     if (!url || !url.includes('youtu')) return null;
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
     return match ? match[1] : null;
   };
 
-  const handleItemClick = (item: ArchiveItem) => {
-    setSelectedItem(item);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedItem(null);
-  };
-
-  const resetFilters = useCallback(() => {
-    setFilters({
-      category: null
-    });
-  }, []);
-
-  // Archive stays open in routes layout; no global open/close listeners needed
-
   // Show loading state if no sections
   if (!sections || sections.length === 0) {
     return (
-      <section id="archive" className="py-6 pb-0 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }}>
-        <div className="mb-4 flex items-center justify-between py-2 rounded-lg">
-          <h2 className="h2 section-title section-title-delay-2 font-suisse-bp-intl">ARCHIVE</h2>
-        </div>
-        <div className="border-t border-gray-300/20 dark:border-gray-700/20"></div>
-        <div className="py-10 text-center opacity-60">
+      <section className="w-full max-w-7xl mx-auto px-6 py-8">
+        <div className="text-center opacity-60">
           <p>Loading archive data...</p>
         </div>
       </section>
@@ -132,284 +75,117 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
   }
 
   return (
-    <section id="archive" className="py-6 pb-0 md:py-8 px-2.5 md:px-[15px] relative" style={{ zIndex: 1 }} onMouseMove={handleMouseMove}>
+    <>
+      <section className="w-full max-w-7xl mx-auto px-6 py-8">
+        {/* Filter */}
+        <div className="mb-12">
+          <label className="text-xs tracking-wider mr-3">FILTER</label>
+          <select 
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="border border-black px-3 py-1 text-sm bg-white focus:outline-none cursor-pointer"
+          >
+            {categories.map(cat => (
+              <option key={cat} value={cat}>
+                {cat === 'all' ? 'ALL' : cat.toUpperCase()}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      
-      <div className="border-t border-gray-300/20 dark:border-gray-700/20"></div>
-      
-      <div className="pt-6 relative">
-            {/* Componente de filtros con animación secuencial */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ 
-                delay: 0.2,
-                duration: 0.3
-              }}
+        {/* Items List */}
+        <div className="space-y-1">
+          {filteredItems.map((item, index) => (
+            <div 
+              key={index}
+              className="flex items-start group cursor-pointer hover:opacity-60 transition-opacity"
+              onClick={() => setSelectedItem(item)}
             >
-              <ArchiveFilters 
-                categories={processedSections.map(section => section.title)} 
-                selectedCategory={filters.category}
-                onCategoryChange={(category) => setFilters(prev => ({ ...prev, category }))}
-                onReset={resetFilters}
-              />
-            </motion.div>
-
-            <div className="space-y-0">
-              {filteredSections.length > 0 ? (
-                filteredSections.map((section, index) => (
-                  <div key={index} className="archive-section">
-                    <div className={`py-4`}>
-                      <div className="text-sm md:text-base font-medium uppercase tracking-wide opacity-80">
-                        {section.title}
-                      </div>
-                      
-                      {/* Header for desktop */}
-                      <div className="hidden md:grid md:grid-cols-12 mb-2 text-xs opacity-60">
-                        <div className="col-span-6">{section.title === "COMMERCIAL" ? "CLIENT" : "PROJECT"}</div>
-                        <div className="col-start-7 col-span-3">YEAR</div>
-                        <div className="col-start-10 col-span-3">PROD COMPANY</div>
-                      </div>
-                      
-                      {/* Header for mobile */}
-                      <div className="md:hidden mb-3 text-xs opacity-60">
-                        <div>{section.title === "COMMERCIAL" ? "CLIENT" : "PROJECT"}</div>
-                      </div>
-                      
-                      <div className="space-y-0">
-                        {section.items.map((item, idx) => (
-                          <div 
-                            key={idx} 
-                            className="group cursor-pointer hover:bg-black/5 transition-colors duration-200 -mx-2 px-2 py-1 mb-0 relative"
-                            onMouseEnter={() => setHoveredItem(item)}
-                            onMouseLeave={() => setHoveredItem(null)}
-                            onClick={() => handleItemClick(item)}
-                          >
-                            {/* Desktop layout (3 columns) */}
-                            <div className="hidden md:grid md:grid-cols-12 items-start">
-                              <div className="col-span-6 pr-4 whitespace-nowrap overflow-visible text-p uppercase">{item.project}</div>
-                              <div className="col-start-7 col-span-3 text-left whitespace-nowrap text-p">{item.year}</div>
-                              <div className="col-start-10 col-span-3 text-left whitespace-nowrap overflow-visible text-p uppercase">{item.company}</div>
-                            </div>
-                            
-                            {/* Mobile layout */}
-                            <div className="md:hidden">
-                              <div className="flex flex-col">
-                                <div className="font-medium text-p mb-1 uppercase">{item.project}</div>
-                                {(item.year || item.company) && (
-                                  <div className="text-sm opacity-70 flex items-center flex-wrap">
-                                    {item.year && <span className="mr-2">{item.year}</span>}
-                                    {item.company && <span className="uppercase">{item.company}</span>}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="py-10 text-center opacity-60">
-                  <p>No results found for selected filters</p>
-                  <button 
-                    className="mt-4 text-xs px-3 py-1 rounded-full bg-foreground/10 hover:bg-foreground/20 transition-colors"
-                    onClick={resetFilters}
-                  >
-                    Reset filters
-                  </button>
-                </div>
-              )}
+              <span className="text-black mr-4 text-sm leading-6 font-mono">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <div className="text-sm tracking-wide leading-6">
+                <span className="uppercase">
+                  {item.project}
+                  {item.company && `, ${item.company}`}
+                  {item.year && ` (${item.year})`}
+                </span>
+              </div>
             </div>
+          ))}
+        </div>
 
-            {/* Imagen de hover centrada en el componente (solo en desktop) */}
-            <AnimatePresence>
-              {hoveredItem && (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
-                  className="hidden md:block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-[100]"
-                >
-                  {/* Tooltip: mismo layout y aspect ratio que el modal */}
-                  <div className="relative w-full max-w-2xl aspect-video bg-black rounded-lg overflow-hidden border border-white/20 shadow-2xl">
-                    {hoveredItem.thumbnail ? (
-                      <Image
-                        src={hoveredItem.thumbnail}
-                        alt={hoveredItem.project}
-                        fill
-                        sizes="(max-width: 768px) 90vw, 800px"
-                        className="object-contain w-full h-full"
-                        priority={false}
-                        loading="lazy"
-                        quality={95}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-500 text-sm">Sin imagen</span>
-                      </div>
-                    )}
-                    {/* Título del proyecto en el tooltip */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white text-sm p-4">
-                      <div className="font-medium truncate">{hoveredItem.project}</div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+        {/* Footer - optional, remove if handled elsewhere */}
+        <div className="mt-16 text-right text-xs opacity-60">
+          © 2025
+        </div>
+      </section>
 
-      {/* Modal para visualización móvil y desktop */}
-      <AnimatePresence>
-        {selectedItem && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[999] bg-black/80 flex items-center justify-center p-4"
-            onClick={handleCloseModal}
+      {/* Modal */}
+      {selectedItem && (
+        <div 
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedItem(null)}
+        >
+          <div 
+            className="bg-white max-w-4xl w-full rounded-sm overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-background text-foreground max-w-[90vw] md:max-w-4xl w-full rounded-lg overflow-hidden shadow-2xl"
-              style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Video container */}
-              <div className="relative w-full aspect-video bg-black">
-                {selectedItem.vimeoId ? (
-                  // Video de Vimeo con autoplay y sin controles
-                  <iframe
-                    src={`https://player.vimeo.com/video/${selectedItem.vimeoId}?autoplay=1&loop=1&title=0&byline=0&portrait=0&controls=0`}
-                    className="w-full h-full"
-                    frameBorder="0"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                    title={selectedItem.project}
-                  />
-                ) : selectedItem.videoUrl && extractYouTubeId(selectedItem.videoUrl) ? (
-                  // Video de YouTube con autoplay y sin controles
-                  <iframe
-                    src={`https://www.youtube.com/embed/${extractYouTubeId(selectedItem.videoUrl)}?autoplay=1&loop=1&controls=0&showinfo=0&rel=0&mute=1&playlist=${extractYouTubeId(selectedItem.videoUrl)}`}
-                    className="w-full h-full"
-                    frameBorder="0"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                    title={selectedItem.project}
-                  />
-                ) : selectedItem.videoUrl ? (
-                  // Fallback para otros tipos de video
-                  <div className="w-full h-full flex items-center justify-center text-white">
-                    <div className="text-center">
-                      <div className="mb-4">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" className="mx-auto">
-                          <path d="M8 5v14l11-7z"/>
-                        </svg>
-                      </div>
-                      <p className="text-sm">Video disponible</p>
-                      <a 
-                        href={selectedItem.videoUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-blue-400 underline text-sm mt-2 inline-block"
-                      >
-                        Ver en fuente externa
-                      </a>
-                    </div>
-                  </div>
-                ) : selectedItem.thumbnail ? (
-                  // Mostrar imagen si no hay video
-                  <Image 
-                    src={selectedItem.thumbnail}
-                    alt={selectedItem.project}
-                    fill
-                    sizes="(max-width: 768px) 90vw, 800px"
-                    className="object-contain w-full h-full"
-                    priority={true}
-                  />
-                ) : (
-                  // Placeholder si no hay contenido
-                  <div className="w-full h-full bg-gray-900 flex items-center justify-center text-white">
-                    <span className="text-sm">Sin contenido disponible</span>
-                  </div>
-                )}
-                
-                {/* Botón de cerrar */}
-                <button 
-                  className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-lg bg-black/50 text-white hover:bg-black/70 transition-colors"
-                  onClick={handleCloseModal}
-                  aria-label="Cerrar modal"
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </button>
-              </div>
-              
-              {/* Información del proyecto */}
-              <div className="p-6 bg-background">
-                <h4 className="text-lg md:text-xl font-medium uppercase text-foreground">{selectedItem.project}</h4>
-                <div className="mt-2 flex flex-wrap gap-x-4 text-sm text-foreground/60">
-                  {selectedItem.year && <span>{selectedItem.year}</span>}
-                  {selectedItem.company && <span className="uppercase">{selectedItem.company}</span>}
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Tooltip de imagen de proyecto (hoveredItem) */}
-      <AnimatePresence>
-        {hoveredItem && !selectedItem && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="hidden md:block fixed z-[9999] pointer-events-none top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-[90vw] md:max-w-4xl w-full rounded-lg overflow-hidden shadow-2xl"
-          >
+            {/* Video/Image Container */}
             <div className="relative w-full aspect-video bg-black">
-              {hoveredItem.thumbnail ? (
-                <Image
-                  src={hoveredItem.thumbnail}
-                  alt={hoveredItem.project}
-                  fill
-                  sizes="(max-width: 768px) 90vw, 800px"
-                  className="object-contain w-full h-full"
-                  priority={false}
-                  loading="lazy"
-                  quality={95}
+              {selectedItem.vimeoId ? (
+                <iframe
+                  src={`https://player.vimeo.com/video/${selectedItem.vimeoId}?autoplay=1&loop=1&title=0&byline=0&portrait=0`}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen"
+                  allowFullScreen
+                  title={selectedItem.project}
+                />
+              ) : selectedItem.videoUrl && extractYouTubeId(selectedItem.videoUrl) ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${extractYouTubeId(selectedItem.videoUrl)}?autoplay=1&loop=1&mute=1`}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen"
+                  allowFullScreen
+                  title={selectedItem.project}
+                />
+              ) : selectedItem.thumbnail ? (
+                <img 
+                  src={selectedItem.thumbnail}
+                  alt={selectedItem.project || ''}
+                  className="w-full h-full object-contain"
                 />
               ) : (
-                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-500 text-sm">Sin imagen</span>
+                <div className="w-full h-full flex items-center justify-center text-white">
+                  <span className="text-sm">No content available</span>
                 </div>
               )}
-              {/* Título del proyecto en el tooltip */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white text-sm p-4">
-                <div className="font-medium truncate">{hoveredItem.project}</div>
+              
+              {/* Close button */}
+              <button 
+                className="absolute top-4 right-4 text-white bg-black/50 hover:bg-black/70 w-8 h-8 flex items-center justify-center rounded transition-colors"
+                onClick={() => setSelectedItem(null)}
+                aria-label="Close modal"
+              >
+                ✕
+              </button>
+            </div>
+            
+            {/* Info */}
+            <div className="p-6 bg-white">
+              <h3 className="text-lg font-medium uppercase tracking-wide">{selectedItem.project}</h3>
+              <div className="mt-2 text-sm opacity-60">
+                {selectedItem.company && <span className="uppercase">{selectedItem.company}</span>}
+                {selectedItem.year && <span className="ml-3">{selectedItem.year}</span>}
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </section>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
-export default Archive; 
+export default Archive;

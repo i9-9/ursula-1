@@ -25,6 +25,7 @@ export interface PortfolioItem {
   vimeoId?: string;
   youtubeUrl?: string;
   order?: number;
+  slug?: string; // Agregado para la navegación
 }
 
 export interface ArchiveItem {
@@ -43,40 +44,6 @@ export interface ArchiveSection {
   order?: number;
 }
 
-// Datos de respaldo para SSG
-const fallbackPortfolioItems: PortfolioItem[] = [
-  {
-    id: 'fallback-1',
-    title: 'Tres Pecados Después',
-    artist: 'Milo J',
-    year: '2024',
-    thumbnail: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
-    fullImage: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
-    contentType: 'video',
-    description: 'Videoclip para Milo J - Tres Pecados Después.',
-  },
-  {
-    id: 'fallback-2',
-    title: 'Ali Oli',
-    artist: 'Milo J',
-    year: '2024',
-    thumbnail: '/videos_grid/2 Milo J - Ali Oli.mp4',
-    fullImage: '/videos_grid/2 Milo J - Ali Oli.mp4',
-    contentType: 'video',
-    description: 'Videoclip para Milo J - Ali Oli.',
-  },
-  {
-    id: 'fallback-3',
-    title: 'Sola',
-    artist: 'Chita',
-    year: '2024',
-    thumbnail: '/videos_grid/3 - Chita - Sola.mp4',
-    fullImage: '/videos_grid/3 - Chita - Sola.mp4',
-    contentType: 'video',
-    description: 'Videoclip para Chita - Sola.',
-  }
-];
-
 // Cliente de Contentful optimizado para SSG
 let client: ReturnType<typeof createClient> | null = null;
 
@@ -92,7 +59,7 @@ function initializeContentfulClient() {
       });
       console.log('✅ Contentful client initialized successfully');
     } else {
-      console.warn('⚠️ Contentful environment variables not found, using fallback data');
+      console.warn('⚠️ Contentful environment variables not found');
     }
   } catch (error) {
     console.error('❌ Contentful client initialization failed:', error);
@@ -117,6 +84,16 @@ function optimizeContentfulImage(url: string, width?: number, height?: number, f
     : `${url}?${params.toString()}`;
 }
 
+// Función helper para generar slug desde el título si no existe
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // Remover caracteres especiales
+    .replace(/\s+/g, '-') // Reemplazar espacios con guiones
+    .replace(/-+/g, '-') // Reemplazar múltiples guiones con uno solo
+    .trim();
+}
+
 // Funciones para obtener datos optimizadas para SSG
 
 // Obtener slides del hero
@@ -124,7 +101,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
   const client = initializeContentfulClient();
   
   if (!client) {
-    console.log('📱 Using fallback hero slides (no Contentful connection)');
+    console.log('📱 No Contentful connection');
     return [];
   }
 
@@ -136,7 +113,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
     });
     
     if (entries.items.length === 0) {
-      console.log('📱 No hero slides found in Contentful, using fallback');
+      console.log('📱 No hero slides found in Contentful');
       return [];
     }
     
@@ -171,8 +148,8 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
   const client = initializeContentfulClient();
   
   if (!client) {
-    console.log('📱 Using fallback portfolio items (no Contentful connection)');
-    return fallbackPortfolioItems;
+    console.log('📱 No Contentful connection');
+    return [];
   }
 
   try {
@@ -183,8 +160,8 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
     });
     
     if (entries.items.length === 0) {
-      console.log('📱 No portfolio items found in Contentful, using fallback');
-      return fallbackPortfolioItems;
+      console.log('📱 No portfolio items found in Contentful');
+      return [];
     }
     
     console.log(`✅ Fetched ${entries.items.length} portfolio items from Contentful`);
@@ -211,6 +188,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
         title: fields.title || '',
         artist: fields.artist || '',
         year: fields.year || '',
+        slug: fields.slug || generateSlug(fields.title || ''), // Usar slug de Contentful o generar uno
         thumbnail: thumbnailUrl ? (isVideoThumbnail ? thumbnailUrl : optimizeContentfulImage(thumbnailUrl, 800, 450, 'webp', 85)) : '',
         fullImage: fullImageUrl ? (isVideoFullImage ? fullImageUrl : optimizeContentfulImage(fullImageUrl, 1920, 1080, 'webp', 85)) : '',
         contentType: hasVideoContent ? 'video' as const : 'image' as const,
@@ -222,8 +200,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
     });
   } catch (error) {
     console.error('❌ Error fetching portfolio items from Contentful:', error);
-    console.log('📱 Falling back to local data');
-    return fallbackPortfolioItems;
+    return [];
   }
 }
 
@@ -232,7 +209,7 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
   const client = initializeContentfulClient();
   
   if (!client) {
-    console.log('📱 Using fallback archive data (no Contentful connection)');
+    console.log('📱 No Contentful connection');
     return [];
   }
 
@@ -308,4 +285,4 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
     // Return empty array instead of throwing to prevent build failure
     return [];
   }
-} 
+}
