@@ -251,7 +251,7 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
     // Crear una lista unificada con todos los items
     const allItems: ArchiveItem[] = [
       // PortfolioItems
-      ...portfolioItems.items.map((item: any) => {
+      ...portfolioItems.items.map((item: { fields: Record<string, any>; sys: { id: string; contentType: { sys: { id: string } } } }) => {
         const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
           ? `https:${item.fields.thumbnail.fields.file.url}` 
           : undefined;
@@ -275,7 +275,7 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
         };
       }),
       // ArchiveItems  
-      ...archiveItems.items.map((item: any) => {
+      ...archiveItems.items.map((item: { fields: Record<string, any>; sys: { id: string; contentType: { sys: { id: string } } } }) => {
         const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
           ? `https:${item.fields.thumbnail.fields.file.url}` 
           : undefined;

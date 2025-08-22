@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import Image from 'next/image';
 
 // Types matching your Contentful structure
 interface ArchiveItem {
@@ -61,7 +62,13 @@ const useNavbarPosition = () => {
 
 const Archive = ({ sections }: ArchiveProps) => {
   const [selectedItem, setSelectedItem] = useState<ArchiveItem | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
   const archivePosition = useNavbarPosition();
+  
+  // Mark as hydrated
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   // Simple hash function for consistent randomization
   const hashString = (str: string): number => {
@@ -149,17 +156,32 @@ const Archive = ({ sections }: ArchiveProps) => {
           {/* Main Content - Left aligned with navbar */}
           <div className="flex flex-col justify-center min-h-screen">
                     <main className="w-full">
-            <div className="grid grid-cols-[1fr_auto] gap-0 max-w-6xl">
-              {/* Left space */}
-              <div></div>
-              
-                              {/* Project list aligned with navbar ARCHIVE */}
+                          <div className="grid grid-cols-[1fr_auto] gap-0 max-w-6xl">
+                {/* Left space */}
+                <div></div>
+                
+                {/* Loading state while hydrating */}
+                {!isHydrated && (
+                  <div className="justify-self-start opacity-60">
+                    <div className="animate-pulse">
+                      <div className="h-4 bg-gray-300 rounded w-32 mb-2"></div>
+                      <div className="h-4 bg-gray-300 rounded w-40 mb-2"></div>
+                      <div className="h-4 bg-gray-300 rounded w-36"></div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Project list aligned with navbar ARCHIVE */}
                 <div 
-                  className="justify-self-start project-list"
+                  className={`justify-self-start project-list ${
+                    isHydrated ? 'opacity-100' : 'opacity-0'
+                  }`}
                   style={{
                     position: 'absolute',
-                    left: `${archivePosition.left}px`,
-                    top: `${archivePosition.top}px`
+                    left: isHydrated ? `${archivePosition.left}px` : '50%',
+                    top: isHydrated ? `${archivePosition.top}px` : '50%',
+                    transform: isHydrated ? 'none' : 'translate(-50%, -50%)',
+                    transition: 'all 0.3s ease'
                   }}
                 >
                                  {filteredItems.map((item, index) => (
@@ -230,10 +252,11 @@ const Archive = ({ sections }: ArchiveProps) => {
                   title={selectedItem.title || selectedItem.project}
                 />
               ) : selectedItem.thumbnail ? (
-                <img 
+                <Image 
                   src={selectedItem.thumbnail}
                   alt={selectedItem.title || selectedItem.project || ''}
-                  className="w-full h-full object-contain"
+                  fill
+                  className="object-contain"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-white">
