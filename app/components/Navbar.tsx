@@ -2,64 +2,29 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import UrsulaLogo from "./UrsulaLogo";
+import ThemeToggle from "./ThemeToggle";
+import { useSafeScroll } from "@/app/hooks/useSafeScroll";
 
 interface NavbarProps {
   isLoaded?: boolean;
 }
 
 const Navbar = ({ isLoaded = true }: NavbarProps) => {
-  const [scrolled, setScrolled] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { scrolled } = useSafeScroll();
   const pathname = usePathname();
-
-  // Inicializar tema
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as "light" | "dark";
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-
-    if (!savedTheme) {
-      const systemTheme = prefersDark ? "dark" : "light";
-      setTheme(systemTheme);
-      document.documentElement.classList.toggle("dark", systemTheme === "dark");
-      localStorage.setItem("theme", systemTheme);
-    } else {
-      setTheme(savedTheme);
-      document.documentElement.classList.toggle("dark", savedTheme === "dark");
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark");
-  };
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
     <AnimatePresence>
       {isLoaded && (
         <motion.nav
-          initial={{ y: -100, opacity: 0 }}
+          // Desactivamos todas las animaciones estableciendo valores idénticos
+          initial={{ y: 0, opacity: 1 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -100, opacity: 0 }}
-          transition={{
-            duration: 0.4,
-            ease: [0.16, 1, 0.3, 1],
-            delay: 0.05,
-          }}
-          className={`fixed top-0 left-0 w-full z-50 py-8 transition-all duration-300 flex items-center justify-center ${
+          exit={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0 }} // Sin duración = sin animación
+          className={`fixed top-0 left-0 w-full z-50 py-4 transition-all duration-300 flex items-center justify-center ${
             scrolled ? "bg-background/90 backdrop-blur-md" : "bg-transparent"
           }`}
           role="navigation"
@@ -87,7 +52,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
             <div className="flex gap-4 md:gap-6 items-baseline justify-center md:justify-self-center">
               <Link
                 href="/work"
-                className={`relative flex items-center font-['Suisse_BP_INTL'] uppercase text-[11px] transition-colors hover:text-neutral-500 ${
+                className={`relative flex items-center font-['Suisse_BP_INTL'] uppercase text-[12px] transition-colors hover:text-neutral-500 ${
                   pathname === "/work" ? "text-neutral-500" : "text-foreground"
                 }`}
                 style={{
@@ -104,7 +69,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
 
               <Link
                 href="/archive"
-                className={`relative flex items-center font-['Suisse_BP_INTL'] uppercase text-[11px] transition-colors hover:text-neutral-500 ${
+                className={`relative flex items-center font-['Suisse_BP_INTL'] uppercase text-[12px] transition-colors hover:text-neutral-500 ${
                   pathname === "/archive"
                     ? "text-neutral-500"
                     : "text-foreground"
@@ -123,7 +88,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
 
               <Link
                 href="/about"
-                className={`relative flex items-center font-['Suisse_BP_INTL'] uppercase text-[11px] transition-colors hover:text-neutral-500 ${
+                className={`relative flex items-center font-['Suisse_BP_INTL'] uppercase text-[12px] transition-colors hover:text-neutral-500 ${
                   pathname === "/about" ? "text-neutral-500" : "text-foreground"
                 }`}
                 style={{
@@ -145,21 +110,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
               role="group"
               aria-label="Theme toggle"
             >
-              <button
-                onClick={toggleTheme}
-                className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors cursor-pointer 
-    ${theme === "dark" ? "bg-white/10" : "bg-black/10"}`}
-                aria-label={`Switch to ${
-                  theme === "light" ? "dark" : "light"
-                } mode`}
-              >
-                <span
-                  className={`inline-block h-2.5 w-2.5 transform rounded-full transition-transform 
-      ${
-        theme === "dark" ? "translate-x-4 bg-white" : "translate-x-1 bg-black"
-      }`}
-                />
-              </button>
+              <ThemeToggle />
             </div>
           </div>
         </motion.nav>

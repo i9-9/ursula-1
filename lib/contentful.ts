@@ -28,14 +28,32 @@ export interface PortfolioItem {
   slug?: string; // Agregado para la navegación
 }
 
+// Tipo actualizado para manejar tanto portfolioItem como archiveItem
 export interface ArchiveItem {
-  project: string;
+  // Para portfolioItem (tiene title + artist)
+  title?: string;
+  artist?: string;
+  
+  // Para archiveItem (tiene project + company)  
+  project?: string;
+  company?: string;
+  
+  // Campos comunes
   year: string;
-  company: string;
-  thumbnail?: string; // URL de la imagen thumbnail desde Contentful
-  vimeoId?: string; // ID de Vimeo para reproducir el video
-  videoUrl?: string; // URL del video (Google Drive u otro)
+  thumbnail?: string;
+  vimeoId?: string;
+  videoUrl?: string;
   order?: number;
+  
+  // Para identificación del sistema
+  sys?: {
+    id: string;
+    contentType: {
+      sys: {
+        id: string;
+      };
+    };
+  };
 }
 
 export interface ArchiveSection {
@@ -204,7 +222,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
   }
 }
 
-// Obtener datos de archivo
+// Obtener datos de archivo - NUEVA VERSIÓN que incluye todos los items
 export async function getArchiveData(): Promise<ArchiveSection[]> {
   const client = initializeContentfulClient();
   
@@ -214,75 +232,83 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
   }
 
   try {
-    const entries = await client.getEntries({
-      content_type: 'archiveSection',
-      order: ['fields.order'],
-      include: 2, // Para obtener referencias anidadas
-      limit: 20, // Limitar para optimizar build
-    });
-    
-    if (entries.items.length === 0) {
-      console.log('📱 No archive sections found in Contentful');
-      return [];
-    }
-    
-    console.log(`✅ Fetched ${entries.items.length} archive sections from Contentful`);
-    
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return entries.items.map((section: any) => {
-      const fields = section.fields;
-      const items = fields.items ? 
-        fields.items
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .map((item: any) => {
-            // Verificar si item tiene fields (referencia cargada correctamente)
-            if (!item.fields) {
-              // Log warning but don't fail the build
-              if (typeof window === 'undefined') {
-                console.warn(`⚠️ Archive item reference not loaded properly, skipping: ${item.sys?.id}`);
-              }
-              return null; // Marcar para filtrar
-            }
-            
-            try {
-              const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
-                ? `https:${item.fields.thumbnail.fields.file.url}` 
-                : undefined;
-              
-              return {
-                project: item.fields.project || '',
-                year: item.fields.year || '',
-                company: item.fields.company || '',
-                thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
-                vimeoId: item.fields['Vimeo ID'] ? String(item.fields['Vimeo ID']) : (fields.vimeoId ? String(fields.vimeoId) : ''),
-                videoUrl: item.fields.videoUrl,
-                order: item.fields.order || 0, // Add order field support
-              };
-            } catch {
-              return null;
-            }
-          })
-          .filter((item: ArchiveItem | null): item is ArchiveItem => item !== null) // Filtrar referencias rotas
-          .sort((a: ArchiveItem, b: ArchiveItem) => {
-            // First sort by order field if available, then by year
-            if (a.order !== undefined && b.order !== undefined) {
-              return a.order - b.order;
-            }
-            // Fallback to year sorting (descending)
-            const yearA = parseInt(a.year) || 0;
-            const yearB = parseInt(b.year) || 0;
-            return yearB - yearA;
-          }) : [];
+    // Obtener AMBOS tipos de contenido
+    const [portfolioItems, archiveItems] = await Promise.all([
+      client.getEntries({
+        content_type: 'portfolioItem',
+        order: ['fields.order'],
+        limit: 200,
+      }),
+      client.getEntries({
+        content_type: 'archiveItem', 
+        order: ['fields.order'],
+        limit: 200,
+      })
+    ]);
+
+    console.log(`✅ Fetched ${portfolioItems.items.length} portfolio items and ${archiveItems.items.length} archive items`);
+
+    // Crear una lista unificada con todos los items
+    const allItems: ArchiveItem[] = [
+      // PortfolioItems
+      ...portfolioItems.items.map((item: any) => {
+        const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
+          ? `https:${item.fields.thumbnail.fields.file.url}` 
+          : undefined;
         
-      return {
-        title: fields.title || '',
-        items,
-        order: parseInt(fields.order) || 0,
-      };
-    });
+        return {
+          title: item.fields.title || '',
+          artist: item.fields.artist || '',
+          year: item.fields.year || '',
+          thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
+          vimeoId: item.fields.vimeoId ? String(item.fields.vimeoId) : undefined,
+          videoUrl: item.fields.videoUrl,
+          order: item.fields.order || 0,
+          sys: {
+            id: item.sys.id,
+            contentType: {
+              sys: {
+                id: item.sys.contentType.sys.id
+              }
+            }
+          }
+        };
+      }),
+      // ArchiveItems  
+      ...archiveItems.items.map((item: any) => {
+        const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
+          ? `https:${item.fields.thumbnail.fields.file.url}` 
+          : undefined;
+        
+        return {
+          project: item.fields.project || '',
+          company: item.fields.company || '',
+          year: item.fields.year || '',
+          thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
+          vimeoId: item.fields.vimeoId ? String(item.fields.vimeoId) : undefined,
+          videoUrl: item.fields.videoUrl,
+          order: item.fields.order || 0,
+          sys: {
+            id: item.sys.id,
+            contentType: {
+              sys: {
+                id: item.sys.contentType.sys.id
+              }
+            }
+          }
+        };
+      })
+    ];
+
+    // Retornar una sección única con todos los items
+    return [{
+      title: 'ALL',
+      items: allItems,
+      order: 1
+    }];
+
   } catch (error) {
     console.error('❌ Error fetching archive data from Contentful:', error);
-    // Return empty array instead of throwing to prevent build failure
     return [];
   }
 }

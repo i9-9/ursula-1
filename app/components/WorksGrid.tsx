@@ -59,7 +59,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   }
 
   return (
-    <section className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in">
+    <section className="py-12 md:py-16 px-2.5 md:px-[15px] fade-in">
       <div className="mb-6 md:mb-8">
       </div>
       
@@ -94,7 +94,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             
             {/* Title - centered below image */}
             <div className="mt-4 text-center">
-              <p className="text-base font-medium uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <p className="text-base font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {project.title}, {project.artist}
               </p>
             </div>
@@ -122,8 +122,8 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             {/* Project container */}
             <div className="relative">
               {/* Project number */}
-              <div className="absolute -top-6 right-0 z-10 px-2 py-1 rounded-sm">
-                <span className="text-xs font-medium text-foreground">
+              <div className="absolute -top-12 right-0 z-10">
+                <span className="text-xs font-normal text-foreground">
                   {index + 1}
                 </span>
               </div>
@@ -140,7 +140,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             </div>
             
             <div className="mt-2">
-              <p className="text-sm md:text-base font-medium uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <p className="text-sm md:text-base font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {project.title}, {project.artist}
               </p>
             </div>

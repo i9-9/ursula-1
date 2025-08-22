@@ -7,6 +7,7 @@ import PreloadScript from './components/PreloadScript';
 import NavbarWithLoader from './components/NavbarWithLoader';
 import ClientWrapper from './components/ClientWrapper';
 import ScrollbarStyles from './components/ScrollbarStyles';
+import ThemeProvider from './components/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Ursula Benavidez - Portfolio',
@@ -71,34 +72,6 @@ export default function RootLayout({
     <html lang="es">
       <head>
         <PreloadScript />
-        {/* Script para prevenir FOUC del tema - DEBE ir antes que cualquier CSS */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  const savedTheme = localStorage.getItem('theme');
-                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-                  
-                  if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                  
-                  // Guardar el tema si no estaba guardado
-                  if (!savedTheme) {
-                    localStorage.setItem('theme', theme);
-                  }
-                } catch (e) {
-                  // En caso de error, usar tema claro por defecto
-                  document.documentElement.classList.remove('dark');
-                }
-              })();
-            `,
-          }}
-        />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon/favicon16x16.ico" sizes="16x16" type="image/x-icon" />
         <link rel="icon" href="/favicon/favicon32x32.ico" sizes="32x32" type="image/x-icon" />
@@ -110,15 +83,17 @@ export default function RootLayout({
         <meta name="msapplication-config" content="/seo/browserconfig.xml.png" />
       </head>
       <body>
-        <ClientWrapper>
-          <div className="min-h-screen bg-background text-foreground">
-            <NavbarWithLoader />
-            <div className="pt-[var(--navbar-height)]">
-              {children}
+        <ThemeProvider>
+          <ClientWrapper>
+            <div className="min-h-screen bg-background text-foreground">
+              <NavbarWithLoader />
+              <div className="pt-[var(--navbar-height)]">
+                {children}
+              </div>
             </div>
-          </div>
-        </ClientWrapper>
-        <ScrollbarStyles />
+          </ClientWrapper>
+          <ScrollbarStyles />
+        </ThemeProvider>
       </body>
     </html>
   );

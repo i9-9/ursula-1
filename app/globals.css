@@ -62,13 +62,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.125em;
 }
 
-/* Paragraphs */
+/* Paragraphs - Global 10px size */
 p {
-  font-family: 'Suisse BP INTL', sans-serif;
-  font-weight: 400;
-  font-size: 0.875rem; /* 14px */
-  line-height: 1.5;
-  margin: 0; /* dejar que Tailwind y gap manejen el espacio */
+  font-size: 10px;
+  margin: 0;
 }
 
 /* Scrollbar */

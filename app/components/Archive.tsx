@@ -1,16 +1,26 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 // Types matching your Contentful structure
 interface ArchiveItem {
-  project?: string;
-  company?: string;
+  title?: string;
+  artist?: string;
+  project?: string;  
+  company?: string;  
   year?: string;
   thumbnail?: string;
   videoUrl?: string;
   vimeoId?: string;
   order?: number;
+  sys?: {
+    id: string;
+    contentType: {
+      sys: {
+        id: string;
+      };
+    };
+  };
 }
 
 interface ArchiveSection {
@@ -23,38 +33,104 @@ interface ArchiveProps {
   sections: ArchiveSection[];
 }
 
-const Archive = ({ sections = [] }: ArchiveProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedItem, setSelectedItem] = useState<ArchiveItem | null>(null);
-
-  // Get all unique categories from sections
-  const categories = useMemo(() => {
-    if (!sections || sections.length === 0) return ['all'];
-    const cats = ['all', ...sections.map(section => section.title)];
-    return [...new Set(cats)];
-  }, [sections]);
-
-  // Get all items from all sections with their category
-  const allItems = useMemo(() => {
-    const items: (ArchiveItem & { category: string })[] = [];
-    sections.forEach(section => {
-      section.items.forEach(item => {
-        items.push({
-          ...item,
-          category: section.title
+// Custom hook to get navbar position
+const useNavbarPosition = () => {
+  const [archivePosition, setArchivePosition] = useState({ left: 0, top: 0 });
+  
+  useEffect(() => {
+    const calculatePosition = () => {
+      const archiveLink = document.querySelector('[href="/archive"]');
+      if (archiveLink) {
+        const bounds = archiveLink.getBoundingClientRect();
+        setArchivePosition({
+          left: bounds.left,
+          top: bounds.bottom + 20
         });
-      });
-    });
-    return items;
+      }
+    };
+
+    // Calculate on mount and resize
+    calculatePosition();
+    window.addEventListener('resize', calculatePosition);
+    
+    return () => window.removeEventListener('resize', calculatePosition);
+  }, []);
+
+  return archivePosition;
+};
+
+const Archive = ({ sections }: ArchiveProps) => {
+  const [selectedItem, setSelectedItem] = useState<ArchiveItem | null>(null);
+  const archivePosition = useNavbarPosition();
+
+  // Simple hash function for consistent randomization
+  const hashString = (str: string): number => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  };
+
+  // Get all individual items (exclude section containers)
+  const allItems = useMemo(() => {
+    return sections.reduce((acc: ArchiveItem[], section) => {
+      if (section.items && Array.isArray(section.items)) {
+        // Only include items that are not section containers
+        const validItems = section.items.filter(item => {
+          const contentType = item.sys?.contentType?.sys?.id;
+          return contentType !== 'archiveSection';
+        });
+        acc.push(...validItems);
+      }
+      return acc;
+    }, []);
   }, [sections]);
 
-  // Filter items based on selected category
+  // Debug: Log items to see what we're getting
+  if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+    console.log('🔍 All items from Contentful:', allItems);
+    console.log('📊 Items breakdown:');
+    allItems.forEach((item, index) => {
+      console.log(`${index + 1}. Title: "${item.title || 'N/A'}" | Project: "${item.project || 'N/A'}" | Type: ${item.sys?.contentType?.sys?.id || 'unknown'}`);
+    });
+  }
+
+  // Process items: randomize with consistent seed and add sequential numbering
   const filteredItems = useMemo(() => {
-    if (selectedCategory === 'all') {
-      return allItems;
-    }
-    return allItems.filter(item => item.category === selectedCategory);
-  }, [selectedCategory, allItems]);
+    return allItems
+      .filter(item => {
+        // Only include items with actual content - be more flexible
+        const hasTitle = !!(item.title && item.title.trim());
+        const hasProject = !!(item.project && item.project.trim());
+        const hasContent = hasTitle || hasProject;
+        
+        // Debug logging for filtered items
+        if (!hasContent && typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+          console.log('❌ Filtering out empty item:', {
+            title: item.title,
+            project: item.project,
+            sys: item.sys,
+            fullItem: item
+          });
+        }
+        
+        return hasContent;
+      })
+      .map(item => {
+        // Create consistent random seed
+        const identifier = item.title || item.project || item.sys?.id || '';
+        const seed = hashString(identifier);
+        return { ...item, randomSeed: seed };
+      })
+      .sort((a, b) => a.randomSeed - b.randomSeed) // Sort by random seed
+      .map((item, index) => ({ // Add sequential numbering
+        ...item,
+        displayOrder: index + 1
+      }));
+  }, [allItems]);
 
   // Extract YouTube ID from URL
   const extractYouTubeId = (url: string): string | null => {
@@ -63,63 +139,65 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
     return match ? match[1] : null;
   };
 
-  // Show loading state if no sections
-  if (!sections || sections.length === 0) {
-    return (
-      <section className="w-full max-w-7xl mx-auto px-6 py-8">
-        <div className="text-center opacity-60">
-          <p>Loading archive data...</p>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <>
-      <section className="w-full max-w-7xl mx-auto px-6 py-8">
-        {/* Filter */}
-        <div className="mb-12">
-          <label className="text-xs tracking-wider mr-3">FILTER</label>
-          <select 
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="border border-black px-3 py-1 text-sm bg-white focus:outline-none cursor-pointer"
-          >
-            {categories.map(cat => (
-              <option key={cat} value={cat}>
-                {cat === 'all' ? 'ALL' : cat.toUpperCase()}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Items List */}
-        <div className="space-y-1">
-          {filteredItems.map((item, index) => (
-            <div 
-              key={index}
-              className="flex items-start group cursor-pointer hover:opacity-60 transition-opacity"
-              onClick={() => setSelectedItem(item)}
-            >
-              <span className="text-black mr-4 text-sm leading-6 font-mono">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <div className="text-sm tracking-wide leading-6">
-                <span className="uppercase">
-                  {item.project}
-                  {item.company && `, ${item.company}`}
-                  {item.year && ` (${item.year})`}
-                </span>
+                      <div className="min-h-screen bg-background flex flex-col px-8 pt-80 pb-16" style={{
+          '--nav-right-padding': '20px',
+          '--nav-top-padding': '20px',
+          '--archive-link-offset': '60px'
+        } as React.CSSProperties}>
+          {/* Main Content - Left aligned with navbar */}
+          <div className="flex flex-col justify-center min-h-screen">
+                    <main className="w-full">
+            <div className="grid grid-cols-[1fr_auto] gap-0 max-w-6xl">
+              {/* Left space */}
+              <div></div>
+              
+                              {/* Project list aligned with navbar ARCHIVE */}
+                <div 
+                  className="justify-self-start project-list"
+                  style={{
+                    position: 'absolute',
+                    left: `${archivePosition.left}px`,
+                    top: `${archivePosition.top}px`
+                  }}
+                >
+                                 {filteredItems.map((item, index) => (
+                   <div 
+                     key={`${item.sys?.id || index}-row`}
+                     className="flex items-start group cursor-pointer hover:opacity-60 transition-opacity"
+                     onClick={() => setSelectedItem(item)}
+                   >
+                                           {/* Number column */}
+                      <div className="flex-shrink-0 w-8 py-0 pl-0 m-0">
+                        <span 
+                          className="text-foreground text-[10px] leading-4 font-normal block text-left" 
+                          style={{ fontFamily: 'Suisse BP INTL' }}
+                        >
+                          {String(item.displayOrder).padStart(2, '0')}
+                        </span>
+                      </div>
+                     
+                     {/* Project name column */}
+                     <div className="flex-1 py-0 pl-2">
+                       <span className="text-[10px] tracking-tight uppercase leading-4 block">
+                         {item.title || item.project}
+                         {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
+                         {item.year && ` (${item.year})`}
+                       </span>
+                     </div>
+                   </div>
+                 ))}
               </div>
             </div>
-          ))}
+          </main>
         </div>
 
-        {/* Footer - optional, remove if handled elsewhere */}
-        <div className="mt-16 text-right text-xs opacity-60">
-          © 2025
-        </div>
-      </section>
+        {/* Footer */}
+        <footer className="fixed bottom-8 right-8">
+          <span className="text-xs opacity-60">© 2025</span>
+        </footer>
+      </div>
 
       {/* Modal */}
       {selectedItem && (
@@ -140,7 +218,7 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                   frameBorder="0"
                   allow="autoplay; fullscreen"
                   allowFullScreen
-                  title={selectedItem.project}
+                  title={selectedItem.title || selectedItem.project}
                 />
               ) : selectedItem.videoUrl && extractYouTubeId(selectedItem.videoUrl) ? (
                 <iframe
@@ -149,12 +227,12 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
                   frameBorder="0"
                   allow="autoplay; fullscreen"
                   allowFullScreen
-                  title={selectedItem.project}
+                  title={selectedItem.title || selectedItem.project}
                 />
               ) : selectedItem.thumbnail ? (
                 <img 
                   src={selectedItem.thumbnail}
-                  alt={selectedItem.project || ''}
+                  alt={selectedItem.title || selectedItem.project || ''}
                   className="w-full h-full object-contain"
                 />
               ) : (
@@ -175,15 +253,52 @@ const Archive = ({ sections = [] }: ArchiveProps) => {
             
             {/* Info */}
             <div className="p-6 bg-white">
-              <h3 className="text-lg font-medium uppercase tracking-wide">{selectedItem.project}</h3>
+              <h3 className="text-lg font-medium uppercase tracking-wide">{selectedItem.title || selectedItem.project}</h3>
               <div className="mt-2 text-sm opacity-60">
-                {selectedItem.company && <span className="uppercase">{selectedItem.company}</span>}
+                {(selectedItem.artist || selectedItem.company) && <span className="uppercase">{selectedItem.artist || selectedItem.company}</span>}
                 {selectedItem.year && <span className="ml-3">{selectedItem.year}</span>}
               </div>
             </div>
           </div>
         </div>
       )}
+      
+      <style jsx>{`
+        .project-list {
+          font-family: inherit;
+          font-size: 14px;
+          line-height: 1.4;
+          z-index: 10;
+          background: var(--background);
+          padding: 20px;
+          border-radius: 4px;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .project-list > div {
+          margin-bottom: 8px;
+          white-space: nowrap;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          padding-left: 0;
+          margin-left: 0;
+        }
+        
+        .project-list > div:hover {
+          opacity: 0.7;
+          transform: translateX(4px);
+        }
+        
+        @media (max-width: 768px) {
+          .project-list {
+            position: static !important;
+            max-width: 90%;
+            margin: 0 auto;
+            left: auto !important;
+            top: auto !important;
+          }
+        }
+      `}</style>
     </>
   );
 };
