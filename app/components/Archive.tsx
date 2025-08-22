@@ -102,17 +102,17 @@ const Archive = ({ sections }: ArchiveProps) => {
 
   return (
     <>
-              <div className="min-h-screen bg-background flex flex-col px-8 pt-80 pb-16">
+              <div className="min-h-screen bg-background flex flex-col px-8 pt-32 md:pt-80 pb-16">
           {/* Main Content - Left aligned with navbar ARCHIVE */}
           <div className="flex flex-col justify-center min-h-screen">
             <main className="w-full">
               {/* Archive list - Aligned with navbar ARCHIVE using grid */}
               <div className="grid grid-cols-12 gap-0 max-w-7xl">
-                {/* Empty columns 1-5 to align with navbar */}
-                <div className="col-span-5"></div>
+                {/* Empty columns 1-4 to align with navbar */}
+                <div className="col-span-4"></div>
                 
-                {/* Archive list starts at column 6 (aligned with ARCHIVE) */}
-                <div className="col-span-7 space-y-1">
+                {/* Archive list starts at column 5 (aligned with ARCHIVE) */}
+                <div className="col-span-8 space-y-1">
               {filteredItems.map((item, index) => (
                 <div 
                   key={`${item.sys?.id || index}-row`}
