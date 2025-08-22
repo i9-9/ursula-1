@@ -1,8 +1,5 @@
 import type { Metadata } from 'next';
 import "./globals.css";
-import "./animations.css";
-import "./spacing.css";
-import "./transitions.css";
 import PreloadScript from './components/PreloadScript';
 import NavbarWithLoader from './components/NavbarWithLoader';
 import ClientWrapper from './components/ClientWrapper';

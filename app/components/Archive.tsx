@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 
 // Types matching your Contentful structure
@@ -34,52 +34,12 @@ interface ArchiveProps {
   sections: ArchiveSection[];
 }
 
-// Custom hook to get navbar position
-const useNavbarPosition = () => {
-  const [archivePosition, setArchivePosition] = useState({ left: 0, top: 0 });
-  
-  useEffect(() => {
-    const calculatePosition = () => {
-      const archiveLink = document.querySelector('[href="/archive"]');
-      if (archiveLink) {
-        const bounds = archiveLink.getBoundingClientRect();
-        setArchivePosition({
-          left: bounds.left,
-          top: bounds.bottom + 20
-        });
-      }
-    };
 
-    // Calculate on mount and resize
-    calculatePosition();
-    window.addEventListener('resize', calculatePosition);
-    
-    return () => window.removeEventListener('resize', calculatePosition);
-  }, []);
-
-  return archivePosition;
-};
 
 const Archive = ({ sections }: ArchiveProps) => {
   const [selectedItem, setSelectedItem] = useState<ArchiveItem | null>(null);
-  const [isHydrated, setIsHydrated] = useState(false);
-  const archivePosition = useNavbarPosition();
-  
-  // Mark as hydrated
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
 
-  // Simple hash function for consistent randomization
-  const hashString = (str: string): number => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash;
-    }
-    return Math.abs(hash);
-  };
+
 
   // Get all individual items (exclude section containers)
   const allItems = useMemo(() => {
@@ -105,11 +65,11 @@ const Archive = ({ sections }: ArchiveProps) => {
     });
   }
 
-  // Process items: randomize with consistent seed and add sequential numbering
+  // Process items: filter and sort by order from Contentful
   const filteredItems = useMemo(() => {
     return allItems
       .filter(item => {
-        // Only include items with actual content - be more flexible
+        // Only include items with actual content
         const hasTitle = !!(item.title && item.title.trim());
         const hasProject = !!(item.project && item.project.trim());
         const hasContent = hasTitle || hasProject;
@@ -126,16 +86,10 @@ const Archive = ({ sections }: ArchiveProps) => {
         
         return hasContent;
       })
-      .map(item => {
-        // Create consistent random seed
-        const identifier = item.title || item.project || item.sys?.id || '';
-        const seed = hashString(identifier);
-        return { ...item, randomSeed: seed };
-      })
-      .sort((a, b) => a.randomSeed - b.randomSeed) // Sort by random seed
-      .map((item, index) => ({ // Add sequential numbering
+      .sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by Contentful order
+      .map((item, index) => ({ 
         ...item,
-        displayOrder: index + 1
+        displayOrder: item.order || index + 1 // Use real order from Contentful
       }));
   }, [allItems]);
 
@@ -148,69 +102,38 @@ const Archive = ({ sections }: ArchiveProps) => {
 
   return (
     <>
-                      <div className="min-h-screen bg-background flex flex-col px-8 pt-80 pb-16" style={{
-          '--nav-right-padding': '20px',
-          '--nav-top-padding': '20px',
-          '--archive-link-offset': '60px'
-        } as React.CSSProperties}>
-          {/* Main Content - Left aligned with navbar */}
-          <div className="flex flex-col justify-center min-h-screen">
-                    <main className="w-full">
-                          <div className="grid grid-cols-[1fr_auto] gap-0 max-w-6xl">
-                {/* Left space */}
-                <div></div>
-                
-                {/* Loading state while hydrating */}
-                {!isHydrated && (
-                  <div className="justify-self-start opacity-60">
-                    <div className="animate-pulse">
-                      <div className="h-4 bg-gray-300 rounded w-32 mb-2"></div>
-                      <div className="h-4 bg-gray-300 rounded w-40 mb-2"></div>
-                      <div className="h-4 bg-gray-300 rounded w-36"></div>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Project list aligned with navbar ARCHIVE */}
+      <div className="min-h-screen bg-background flex flex-col px-8 pt-80 pb-16">
+        {/* Main Content - Centered */}
+        <div className="flex flex-col justify-center min-h-screen">
+          <main className="w-full max-w-4xl mx-auto">
+            {/* Archive list */}
+            <div className="space-y-1">
+              {filteredItems.map((item, index) => (
                 <div 
-                  className={`justify-self-start project-list ${
-                    isHydrated ? 'opacity-100' : 'opacity-0'
-                  }`}
-                  style={{
-                    position: 'absolute',
-                    left: isHydrated ? `${archivePosition.left}px` : '50%',
-                    top: isHydrated ? `${archivePosition.top}px` : '50%',
-                    transform: isHydrated ? 'none' : 'translate(-50%, -50%)',
-                    transition: 'all 0.3s ease'
-                  }}
+                  key={`${item.sys?.id || index}-row`}
+                  className="flex items-start group cursor-pointer hover:opacity-60 transition-opacity"
+                  onClick={() => setSelectedItem(item)}
                 >
-                                 {filteredItems.map((item, index) => (
-                   <div 
-                     key={`${item.sys?.id || index}-row`}
-                     className="flex items-start group cursor-pointer hover:opacity-60 transition-opacity"
-                     onClick={() => setSelectedItem(item)}
-                   >
-                                           {/* Number column */}
-                      <div className="flex-shrink-0 w-8 py-0 pl-0 m-0">
-                        <span 
-                          className="text-foreground text-[10px] leading-4 font-normal block text-left" 
-                          style={{ fontFamily: 'Suisse BP INTL' }}
-                        >
-                          {String(item.displayOrder).padStart(2, '0')}
-                        </span>
-                      </div>
-                     
-                     {/* Project name column */}
-                     <div className="flex-1 py-0 pl-2">
-                       <span className="text-[10px] tracking-tight uppercase leading-4 block">
-                         {item.title || item.project}
-                         {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
-                         {item.year && ` (${item.year})`}
-                       </span>
-                     </div>
-                   </div>
-                 ))}
-              </div>
+                  {/* Number column */}
+                  <div className="flex-shrink-0 w-8 py-0 pl-0 m-0">
+                    <span 
+                      className="text-foreground text-[10px] leading-4 font-normal block text-left" 
+                      style={{ fontFamily: 'Suisse BP INTL' }}
+                    >
+                      {String(item.displayOrder).padStart(2, '0')}
+                    </span>
+                  </div>
+                 
+                  {/* Project name column */}
+                  <div className="flex-1 py-0 pl-2">
+                    <span className="text-foreground text-[10px] tracking-tight uppercase leading-4 block">
+                      {item.title || item.project}
+                      {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
+                      {item.year && ` (${item.year})`}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </main>
         </div>

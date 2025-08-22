@@ -35,28 +35,34 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
   useEffect(() => {
     if (!isHydrated) return;
 
-    try {
-      const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      
-      const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
-      setTheme(initialTheme);
-      
-      // Aplicar clase CSS de forma segura
-      if (initialTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
+    const initializeTheme = () => {
+      try {
+        const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+        setTheme(initialTheme);
+        
+        // Aplicar clase CSS de forma segura
+        if (initialTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        
+        // Guardar tema si no existía
+        if (!savedTheme) {
+          localStorage.setItem('theme', initialTheme);
+        }
+      } catch (error) {
+        console.warn('Error initializing theme:', error);
+        setTheme('light');
       }
-      
-      // Guardar tema si no existía
-      if (!savedTheme) {
-        localStorage.setItem('theme', initialTheme);
-      }
-    } catch (error) {
-      console.warn('Error initializing theme:', error);
-      setTheme('light');
-    }
+    };
+
+    // Delay para evitar problemas de hidratación
+    const timer = setTimeout(initializeTheme, 0);
+    return () => clearTimeout(timer);
   }, [isHydrated]);
 
   const toggleTheme = () => {
