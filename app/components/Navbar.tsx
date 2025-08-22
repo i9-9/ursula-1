@@ -24,8 +24,8 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 0, opacity: 1 }}
           transition={{ duration: 0 }} // Sin duración = sin animación
-          className={`fixed top-0 left-0 w-full z-50 py-4 transition-all duration-300 flex items-center justify-center ${
-            scrolled ? "bg-background/90 backdrop-blur-md" : "bg-transparent"
+          className={`fixed top-0 left-0 w-full z-50 py-4 transition-all duration-300 flex items-center justify-center bg-background/90 ${
+            scrolled ? "border-b border-foreground/10" : ""
           }`}
           role="navigation"
           aria-label="Main navigation"
