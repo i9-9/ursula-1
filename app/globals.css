@@ -36,11 +36,32 @@
   --space-lg: 0.5rem;    /* 8px */
   --space-xl: 0.75rem;   /* 12px */
   --space-2xl: 1.25rem;  /* 20px */
+
+  /* ===== LAYOUT & ALIGNMENT SYSTEM ===== */
+  /* Layout constants */
+  --layout-max-width: 1536px;
+  --layout-padding: 2rem;
+  --layout-padding-mobile: 1rem;
+  
+  /* Navbar alignment (valores dinámicos actualizados por JS) */
+  --navbar-archive-offset: 33.333333%;
+  --navbar-archive-width: auto;
+  --navbar-container-width: 100%;
+  
+  /* Grid system para alineación consistente */
+  --grid-cols-logo: 1fr;
+  --grid-cols-nav: auto;
+  --grid-cols-actions: 1fr;
+  
+  /* Responsive breakpoints */
+  --breakpoint-mobile: 768px;
+  --breakpoint-tablet: 1024px;
+  --breakpoint-desktop: 1440px;
 }
 
 /* Dark mode */
 .dark {
-  --background: #252525;
+  --background: #0A0A0A;
   --foreground: #FAFAFA;
 }
 
@@ -66,6 +87,286 @@ h1, h2, h3, h4, h5, h6 {
 p {
   font-size: 10px;
   margin: 0;
+}
+
+/* ===== LAYOUT SYSTEM ===== */
+
+/* Container base consistente */
+.layout-container {
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: 0 var(--layout-padding);
+  width: 100%;
+}
+
+/* Navbar grid system */
+.navbar-grid {
+  display: grid;
+  grid-template-columns: var(--grid-cols-logo) var(--grid-cols-nav) var(--grid-cols-actions);
+  align-items: baseline;
+  gap: 1rem;
+  width: 100%;
+}
+
+.navbar-section {
+  display: flex;
+  align-items: baseline;
+}
+
+.navbar-section--logo {
+  justify-content: flex-start;
+}
+
+.navbar-section--nav {
+  justify-content: center;
+}
+
+.navbar-section--actions {
+  justify-content: flex-end;
+}
+
+/* Navigation items */
+.navbar-nav-grid {
+  display: flex;
+  gap: 1.5rem;
+  align-items: baseline;
+}
+
+.navbar-nav-item {
+  position: relative;
+  font-family: 'Suisse BP INTL', sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--foreground);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  padding: 0.25rem 0;
+}
+
+.navbar-nav-item:hover {
+  color: var(--foreground);
+  opacity: 0.6;
+}
+
+.navbar-nav-item--active {
+  opacity: 0.6;
+}
+
+/* Elemento especial para archive con referencia para alineación */
+.navbar-nav-item[data-nav-item="archive"] {
+  /* Este elemento será la referencia para la alineación */
+}
+
+/* ===== ALIGNMENT UTILITIES ===== */
+
+/* Alineación con el elemento archive del navbar */
+.align-with-archive {
+  margin-left: var(--navbar-archive-offset);
+  transition: margin-left 0.3s ease;
+}
+
+/* Contenedor de contenido alineado */
+.content-aligned {
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: 0 var(--layout-padding);
+  position: relative;
+}
+
+/* Grid para alineación precisa */
+.alignment-grid {
+  display: grid;
+  grid-template-columns: var(--navbar-archive-offset) 1fr;
+  gap: 0;
+  width: 100%;
+}
+
+.alignment-grid__spacer {
+  /* Espacio vacío para alineación */
+}
+
+.alignment-grid__content {
+  /* Contenido alineado */
+}
+
+/* ===== ARCHIVE SPECIFIC STYLES ===== */
+
+.archive-page {
+  min-height: 100vh;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  padding-top: calc(var(--navbar-height) * 2);
+  padding-bottom: 4rem;
+}
+
+.archive-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.archive-list {
+  background: var(--background);
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 1.25rem;
+}
+
+.archive-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.25rem 0;
+}
+
+.archive-item:hover {
+  opacity: 0.6;
+  transform: translateX(4px);
+}
+
+.archive-item__number {
+  flex-shrink: 0;
+  width: 2rem;
+  margin-right: 0.5rem;
+}
+
+.archive-item__number-text {
+  font-family: 'Suisse BP INTL', sans-serif;
+  font-size: 10px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: var(--foreground);
+  display: block;
+  text-align: left;
+}
+
+.archive-item__content {
+  flex: 1;
+}
+
+.archive-item__content-text {
+  font-family: 'Suisse BP INTL', sans-serif;
+  font-size: 10px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: var(--foreground);
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  display: block;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+@media (max-width: 768px) {
+  :root {
+    --layout-padding: var(--layout-padding-mobile);
+    --navbar-archive-offset: 0;
+    --grid-cols-logo: auto;
+    --grid-cols-nav: 1fr;
+    --grid-cols-actions: auto;
+  }
+
+  .layout-container {
+    padding: 0 var(--layout-padding-mobile);
+  }
+
+  .navbar-grid {
+    grid-template-columns: auto 1fr auto;
+    gap: 0.5rem;
+  }
+
+  .navbar-nav-grid {
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .navbar-nav-item {
+    font-size: 11px;
+  }
+
+  .align-with-archive {
+    margin-left: 0;
+  }
+
+  .alignment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .alignment-grid__spacer {
+    display: none;
+  }
+
+  .archive-list {
+    margin: 0 auto;
+    max-width: 90%;
+  }
+
+  .mobile-hidden {
+    display: none;
+  }
+  
+  .mobile-full {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-nav-grid {
+    gap: 0.75rem;
+  }
+
+  .navbar-nav-item {
+    font-size: 10px;
+  }
+
+  .archive-item__number-text,
+  .archive-item__content-text {
+    font-size: 9px;
+  }
+}
+
+@media (min-width: 769px) {
+  .desktop-hidden {
+    display: none;
+  }
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Fallback para cuando las variables CSS no estén listas */
+.align-with-archive:not([style*="--navbar-archive-offset"]) {
+  margin-left: 33.333333%;
+}
+
+/* Estados de carga */
+.loading-archive {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Debugging utilities (solo en desarrollo) */
+.debug-alignment {
+  position: relative;
+}
+
+.debug-alignment::before {
+  content: '';
+  position: absolute;
+  left: var(--navbar-archive-offset);
+  top: -20px;
+  width: 1px;
+  height: 100vh;
+  background: red;
+  z-index: 9999;
+  opacity: 0.5;
 }
 
 /* Scrollbar */
@@ -172,23 +473,5 @@ p {
   }
   50% {
     opacity: .5;
-  }
-}
-
-/* ===== RESPONSIVE UTILITIES ===== */
-@media (max-width: 768px) {
-  .mobile-hidden {
-    display: none;
-  }
-  
-  .mobile-full {
-    width: 100%;
-    max-width: none;
-  }
-}
-
-@media (min-width: 769px) {
-  .desktop-hidden {
-    display: none;
   }
 }
