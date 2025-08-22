@@ -251,7 +251,18 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
     // Crear una lista unificada con todos los items
     const allItems: ArchiveItem[] = [
       // PortfolioItems
-      ...portfolioItems.items.map((item: { fields: Record<string, any>; sys: { id: string; contentType: { sys: { id: string } } } }) => {
+      ...portfolioItems.items.map((item: { 
+        fields: { 
+          thumbnail?: { fields?: { file?: { url?: string } } };
+          title?: string;
+          artist?: string;
+          year?: string;
+          vimeoId?: string;
+          videoUrl?: string;
+          order?: number;
+        }; 
+        sys: { id: string; contentType: { sys: { id: string } } } 
+      }) => {
         const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
           ? `https:${item.fields.thumbnail.fields.file.url}` 
           : undefined;
@@ -275,7 +286,18 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
         };
       }),
       // ArchiveItems  
-      ...archiveItems.items.map((item: { fields: Record<string, any>; sys: { id: string; contentType: { sys: { id: string } } } }) => {
+      ...archiveItems.items.map((item: { 
+        fields: { 
+          thumbnail?: { fields?: { file?: { url?: string } } };
+          project?: string;
+          company?: string;
+          year?: string;
+          vimeoId?: string;
+          videoUrl?: string;
+          order?: number;
+        }; 
+        sys: { id: string; contentType: { sys: { id: string } } } 
+      }) => {
         const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
           ? `https:${item.fields.thumbnail.fields.file.url}` 
           : undefined;
