@@ -13,7 +13,7 @@ export default function NotFound() {
         className="text-sm opacity-60 mb-8 text-center"
         style={{ fontFamily: 'Suisse BP INTL' }}
       >
-        The project you're looking for doesn't exist.
+        The project you&apos;re looking for doesn&apos;t exist.
       </p>
       <Link 
         href="/archive"

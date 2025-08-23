@@ -395,7 +395,23 @@ export async function getArchiveItemById(id: string): Promise<ArchiveItem | null
 
     console.log(`✅ Found item with ID ${id}`);
 
-    const fields = entry.fields as any;
+    const fields = entry.fields as {
+      title?: string;
+      artist?: string;
+      project?: string;
+      company?: string;
+      year?: string;
+      thumbnail?: {
+        fields?: {
+          file?: {
+            url?: string;
+          };
+        };
+      };
+      vimeoId?: string | number;
+      videoUrl?: string;
+      order?: number;
+    };
     const contentType = entry.sys.contentType.sys.id;
     
     // Obtener thumbnail URL si existe
