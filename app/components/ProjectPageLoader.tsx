@@ -4,11 +4,25 @@ import { useState } from 'react';
 import Link from 'next/link';
 import HomeLoader from './HomeLoader';
 
+interface Project {
+  id: string;
+  slug: string;
+  title: string;
+  artist: string;
+  year: string;
+  thumbnail: string;
+  fullImage: string;
+  contentType: string;
+  description: string;
+  vimeoId?: string;
+  youtubeUrl?: string;
+}
+
 interface ProjectPageLoaderProps {
-  project: any;
+  project: Project;
   currentIndex: number;
-  prevProject: any;
-  nextProject: any;
+  prevProject: Project | null;
+  nextProject: Project | null;
 }
 
 export default function ProjectPageLoader({ project, currentIndex, prevProject, nextProject }: ProjectPageLoaderProps) {
@@ -50,7 +64,7 @@ export default function ProjectPageLoader({ project, currentIndex, prevProject, 
         {/* Contenido principal */}
         <main className="pt-24 min-h-screen">
           {/* Video a pantalla completa */}
-          <div className="relative w-full h-screen">
+          <div className="relative w-full h-screen bg-background">
             {/* Video Player - Full width */}
             <div className="absolute inset-0 w-full h-full">
               {project.vimeoId ? (
