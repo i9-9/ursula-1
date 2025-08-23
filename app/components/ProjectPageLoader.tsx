@@ -93,7 +93,7 @@ export default function ProjectPageLoader({ project, currentIndex, prevProject, 
             </div>
 
             {/* Información del proyecto superpuesta - Izquierda */}
-            <div className="absolute top-1/2 left-8 transform -translate-y-1/2 z-10 text-white">
+            <div className="absolute top-1/2 left-8 transform -translate-y-1/2 z-10 text-foreground">
               <div className="space-y-6">
                 <div className="text-4xl font-medium">
                   {currentIndex + 1}
@@ -125,7 +125,7 @@ export default function ProjectPageLoader({ project, currentIndex, prevProject, 
 
             {/* Controles del video - Header */}
             <div className="absolute top-8 left-8 z-10">
-              <div className="text-white text-sm">
+              <div className="text-foreground text-sm">
                 <div className="font-medium">URSULA BENAVIDEZ</div>
                 <div className="text-xs opacity-80">{project.title}</div>
               </div>
@@ -134,7 +134,7 @@ export default function ProjectPageLoader({ project, currentIndex, prevProject, 
             {/* Controles del video - Derecha */}
             <div className="absolute top-8 right-8 z-10">
               <div className="flex items-center gap-2">
-                <button className="text-white hover:opacity-80 transition-opacity">
+                <button className="text-foreground hover:opacity-80 transition-opacity">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                   </svg>

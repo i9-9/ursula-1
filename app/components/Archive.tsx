@@ -245,7 +245,7 @@ const Archive = ({ sections }: ArchiveProps) => {
 
         {/* Mobile Layout - Single Column */}
         <div className="block md:hidden px-4">
-          <div className="space-y-3 max-w-sm mx-auto flex justify-center">
+          <div className="space-y-3 max-w-sm mx-auto">
             {filteredItems.map((item, index) => (
               <div 
                 key={`${item.sys?.id || `item-${index}`}-row`}
@@ -260,7 +260,7 @@ const Archive = ({ sections }: ArchiveProps) => {
                 onClick={() => handleProjectClick(item)}
               >
                 <div className="flex">
-                  <span className="inline-block w-6 text-[7px] text-foreground tracking-tight uppercase leading-none" style={{ fontFamily: 'Suisse BP INTL' }}>
+                  <span className="inline-block w-6 text-[7px] text-foreground tracking-tight uppercase leading-none flex-shrink-0" style={{ fontFamily: 'Suisse BP INTL' }}>
                     {String(item.displayOrder).padStart(2, '0')}
                   </span>
                   <span 
