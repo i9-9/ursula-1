@@ -22,7 +22,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 0, opacity: 1 }}
           transition={{ duration: 0 }}
-          className="w-full py-2 transition-all duration-300 bg-background"
+          className="w-full py-6 transition-all duration-300 bg-background"
           role="navigation"
           aria-label="Main navigation"
         >
@@ -30,7 +30,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
           <div className="hidden md:block w-full px-8">
             <div className="grid grid-cols-12 gap-2">
               {/* Columnas 1-4: Área del logo */}
-              <div className="col-span-4 flex items-center justify-start">
+              <div className="col-span-4 flex items-baseline justify-start">
                 <Link
                   href="/"
                   className="text-foreground hover:opacity-60 transition-opacity duration-200"
@@ -42,8 +42,8 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
               </div>
 
               {/* Columnas 5-8: Área de navegación - centrada con enlaces juntos */}
-              <div className="col-span-4 flex items-center justify-center">
-                <div className="flex items-center space-x-3">
+              <div className="col-span-4 flex items-baseline justify-center">
+                <div className="flex items-baseline space-x-3">
                   {/* WORK */}
                   <Link
                     href="/work"
@@ -87,7 +87,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
               </div>
 
               {/* Columnas 9-12: Área del toggle */}
-              <div className="col-span-4 flex items-center justify-end">
+              <div className="col-span-4 flex items-baseline justify-end">
                 <ThemeToggle />
               </div>
             </div>
