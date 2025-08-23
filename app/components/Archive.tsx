@@ -173,7 +173,7 @@ const Archive = ({ sections }: ArchiveProps) => {
       </div>
 
       {/* Mobile Filter */}
-      <div className="block md:hidden px-4 mb-8">
+      <div className="hidden md:hidden px-4 mb-8">
         <div className="flex items-center space-x-4">
           <span className="text-foreground text-[10px] uppercase tracking-wide font-medium">
             FILTER
@@ -245,7 +245,7 @@ const Archive = ({ sections }: ArchiveProps) => {
 
         {/* Mobile Layout - Single Column */}
         <div className="block md:hidden px-4">
-          <div className="space-y-3 max-w-sm mx-auto">
+          <div className="space-y-3 max-w-sm mx-auto flex justify-center">
             {filteredItems.map((item, index) => (
               <div 
                 key={`${item.sys?.id || `item-${index}`}-row`}
@@ -259,15 +259,19 @@ const Archive = ({ sections }: ArchiveProps) => {
                 }}
                 onClick={() => handleProjectClick(item)}
               >
-                <span 
-                  className="text-black text-[9px] tracking-tight uppercase leading-none block text-left"
-                  style={{ fontFamily: 'Suisse BP INTL' }}
-                >
-                  <span className="inline-block w-6 text-[7px]">{String(item.displayOrder).padStart(2, '0')}</span>
-                  {item.title || item.project}
-                  {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
-                  {item.year && ` (${item.year})`}
-                </span>
+                <div className="flex">
+                  <span className="inline-block w-6 text-[7px] text-foreground tracking-tight uppercase leading-none" style={{ fontFamily: 'Suisse BP INTL' }}>
+                    {String(item.displayOrder).padStart(2, '0')}
+                  </span>
+                  <span 
+                    className="text-foreground text-[9px] tracking-tight uppercase leading-none flex-1"
+                    style={{ fontFamily: 'Suisse BP INTL' }}
+                  >
+                    {item.title || item.project}
+                    {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
+                    {item.year && ` (${item.year})`}
+                  </span>
+                </div>
               </div>
             ))}
           </div>

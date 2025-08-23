@@ -95,7 +95,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
 
           {/* Mobile Layout - Single Column */}
           <div className="block md:hidden px-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-baseline justify-between">
               {/* Logo */}
               <Link
                 href="/"
@@ -107,10 +107,10 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
               </Link>
 
               {/* Nav items */}
-              <div className="flex items-center space-x-1">
+              <div className="flex items-baseline space-x-3">
                 <Link
                   href="/work"
-                  className={`text-foreground text-[11px] uppercase tracking-wide font-medium hover:opacity-60 transition-opacity duration-200 ${
+                  className={`text-foreground text-[11px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
                     pathname === "/work" ? "opacity-100" : "opacity-100"
                   }`}
                   style={{ fontFamily: 'Suisse BP INTL' }}
@@ -122,7 +122,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
 
                 <Link
                   href="/archive"
-                  className={`text-foreground text-[11px] uppercase tracking-wide font-medium hover:opacity-60 transition-opacity duration-200 ${
+                  className={`text-foreground text-[11px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
                     pathname === "/archive" ? "opacity-100" : "opacity-100"
                   }`}
                   style={{ fontFamily: 'Suisse BP INTL' }}
@@ -135,7 +135,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
 
                 <Link
                   href="/about"
-                  className={`text-foreground text-[11px] uppercase tracking-wide font-medium hover:opacity-60 transition-opacity duration-200 ${
+                  className={`text-foreground text-[11px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
                     pathname === "/about" ? "opacity-100" : "opacity-100"
                   }`}
                   style={{ fontFamily: 'Suisse BP INTL' }}
@@ -143,9 +143,11 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
                   aria-current={pathname === "/about" ? "page" : undefined}
                 >
                   ABOUT
-                </Link>
+                                  </Link>
 
-                <ThemeToggle />
+                <div className="ml-4">
+                  <ThemeToggle />
+                </div>
               </div>
             </div>
           </div>
