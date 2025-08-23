@@ -84,9 +84,7 @@ export default function RootLayout({
           <ClientWrapper>
             <div className="min-h-screen bg-background text-foreground">
               <NavbarWithLoader />
-              <div className="pt-[var(--navbar-height)]">
-                {children}
-              </div>
+              {children}
             </div>
           </ClientWrapper>
           <ScrollbarStyles />

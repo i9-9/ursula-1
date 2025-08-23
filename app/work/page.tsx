@@ -1,13 +1,21 @@
+import { Suspense } from 'react';
 import { getPortfolioItems } from '@/lib/contentful';
 import WorksGrid from '@/app/components/WorksGrid';
+import WorksGridSkeleton from '@/app/components/WorksGridSkeleton';
 
 export default async function WorkPage() {
-  const works = await getPortfolioItems();
   return (
     <main className="min-h-screen">
-      <WorksGrid works={works} />
+      <Suspense fallback={<WorksGridSkeleton />}>
+        <WorksGridWrapper />
+      </Suspense>
     </main>
   );
+}
+
+async function WorksGridWrapper() {
+  const works = await getPortfolioItems();
+  return <WorksGrid works={works} />;
 }
 
 

@@ -134,118 +134,116 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
         {/* Contenido principal */}
         <main className="pt-24 min-h-screen">
-          <div className="max-w-7xl mx-auto px-2.5 md:px-[15px]">
-            <div className="grid grid-cols-12 gap-8 lg:gap-12">
-              
-              {/* Panel de información del proyecto (izquierda) */}
-              <div className="col-span-12 lg:col-span-3 pt-8">
-                <div className="space-y-4">
-                  <div className="text-2xl font-medium text-foreground">
-                    {currentIndex + 1}
+          {/* Video a pantalla completa */}
+          <div className="relative w-full h-screen">
+            {/* Video Player - Full width */}
+            <div className="absolute inset-0 w-full h-full">
+              {project.vimeoId ? (
+                <iframe
+                  src={`https://player.vimeo.com/video/${project.vimeoId}?h=1234567890&autoplay=0&title=0&byline=0&portrait=0`}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  title={`${project.title} - ${project.artist}`}
+                />
+              ) : project.youtubeUrl ? (
+                <iframe
+                  src={project.youtubeUrl.replace('youtu.be', 'youtube.com/embed')}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={`${project.title} - ${project.artist}`}
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <p className="text-gray-500">Video no disponible</p>
+                </div>
+              )}
+            </div>
+
+            {/* Información del proyecto superpuesta - Izquierda */}
+            <div className="absolute top-1/2 left-8 transform -translate-y-1/2 z-10 text-white">
+              <div className="space-y-6">
+                <div className="text-4xl font-medium">
+                  {currentIndex + 1}
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-sm font-medium uppercase tracking-wide block">TITLE:</span>
+                    <p className="text-lg">{project.title}</p>
                   </div>
-                  <div className="space-y-2">
-                    <div>
-                      <span className="text-sm font-medium uppercase tracking-wide">TITLE:</span>
-                      <p className="text-foreground/80">{project.title}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium uppercase tracking-wide">ARTIST:</span>
-                      <p className="text-foreground/80">{project.artist}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium uppercase tracking-wide">YEAR:</span>
-                      <p className="text-foreground/80">{project.year}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium uppercase tracking-wide">TYPE OF PROJECT:</span>
-                      <p className="text-foreground/80">VIDEO</p>
-                    </div>
+                  <div>
+                    <span className="text-sm font-medium uppercase tracking-wide block">YEAR:</span>
+                    <p className="text-lg">{project.year}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium uppercase tracking-wide block">CLIENT:</span>
+                    <p className="text-lg">{project.artist}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium uppercase tracking-wide block">TYPE OF PROJECT:</span>
+                    <p className="text-lg">MUSIC VIDEO</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium uppercase tracking-wide block">PRODUCTION COMPANY:</span>
+                    <p className="text-lg">ARENA COLLECTIVE</p>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Área central del video */}
-              <div className="col-span-12 lg:col-span-6 pt-8">
-                <div className="relative group">
-                  {/* Video Player */}
-                  <div className="relative w-full bg-black rounded-lg overflow-hidden">
-                    {project.vimeoId ? (
-                      <iframe
-                        src={`https://player.vimeo.com/video/${project.vimeoId}?h=1234567890&autoplay=0&title=0&byline=0&portrait=0`}
-                        className="w-full aspect-video"
-                        frameBorder="0"
-                        allow="autoplay; fullscreen; picture-in-picture"
-                        allowFullScreen
-                        title={`${project.title} - ${project.artist}`}
-                      />
-                    ) : project.youtubeUrl ? (
-                      <iframe
-                        src={project.youtubeUrl.replace('youtu.be', 'youtube.com/embed')}
-                        className="w-full aspect-video"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        title={`${project.title} - ${project.artist}`}
-                      />
-                    ) : (
-                      <div className="w-full aspect-video bg-gray-200 flex items-center justify-center">
-                        <p className="text-gray-500">Video no disponible</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Controles del video (similar al home) */}
-                  <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="text-white text-sm">
-                      <div className="font-medium">URSULA BENAVIDEZ</div>
-                      <div className="text-xs opacity-80">{project.title}</div>
-                    </div>
-                  </div>
-
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="flex items-center gap-2">
-                      <button className="text-white hover:opacity-80 transition-opacity">
-                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
+            {/* Controles del video - Header */}
+            <div className="absolute top-8 left-8 z-10">
+              <div className="text-white text-sm">
+                <div className="font-medium">URSULA BENAVIDEZ</div>
+                <div className="text-xs opacity-80">{project.title}</div>
               </div>
+            </div>
 
-              {/* Navegación entre proyectos (derecha) */}
-              <div className="col-span-12 lg:col-span-3 pt-8">
-                <div className="flex flex-col items-end space-y-4">
-                  {/* Indicador de posición */}
-                  <div className="w-2 h-2 bg-foreground rounded-full"></div>
+            {/* Controles del video - Derecha */}
+            <div className="absolute top-8 right-8 z-10">
+              <div className="flex items-center gap-2">
+                <button className="text-white hover:opacity-80 transition-opacity">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Navegación entre proyectos - Derecha */}
+            <div className="absolute bottom-8 right-8 z-10">
+              <div className="flex flex-col items-end space-y-4">
+                {/* Indicador de posición */}
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                
+                {/* Flechas de navegación */}
+                <div className="flex flex-col gap-2">
+                  {prevProject && (
+                    <Link 
+                      href={`/work/${prevProject.slug}`}
+                      className="text-white hover:opacity-80 transition-opacity"
+                      aria-label={`Previous project: ${prevProject.title}`}
+                    >
+                      <svg className="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </Link>
+                  )}
                   
-                  {/* Flechas de navegación */}
-                  <div className="flex flex-col gap-2">
-                    {prevProject && (
-                      <Link 
-                        href={`/work/${prevProject.slug}`}
-                        className="text-foreground hover:text-neutral-500 transition-colors"
-                        aria-label={`Previous project: ${prevProject.title}`}
-                      >
-                        <svg className="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </Link>
-                    )}
-                    
-                    {nextProject && (
-                      <Link 
-                        href={`/work/${nextProject.slug}`}
-                        className="text-foreground hover:text-neutral-500 transition-colors"
-                        aria-label={`Next project: ${nextProject.title}`}
-                      >
-                        <svg className="w-6 h-6 -rotate-90" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </Link>
-                    )}
-                  </div>
+                  {nextProject && (
+                    <Link 
+                      href={`/work/${nextProject.slug}`}
+                      className="text-white hover:opacity-80 transition-opacity"
+                      aria-label={`Next project: ${nextProject.title}`}
+                    >
+                      <svg className="w-6 h-6 -rotate-90" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>

@@ -27,8 +27,8 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
 
   const handleMouseEnter = () => {
     if (videoRef.current && isVideoLoaded) {
-      videoRef.current.play().catch(() => {
-        // Autoplay failed silently
+      videoRef.current.play().catch((error) => {
+        console.log('Autoplay failed:', error);
       });
     }
   };
@@ -46,6 +46,7 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
   };
 
   const useVideoAsPoster = isVideoFile(poster) || isVideoFile(src);
+  const hasVideo = isVideoFile(src);
 
   return (
     <div 
@@ -70,15 +71,12 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           className="w-full h-auto object-cover"
-          data-video-thumbnail="true"
-          data-video-ready={isVideoLoaded ? 'true' : 'false'}
           onLoadedData={() => {
             setIsVideoLoaded(true);
             setShowVideo(true);
             if (videoRef.current) {
-              videoRef.current.setAttribute('data-video-ready', 'true');
               videoRef.current.pause();
               videoRef.current.currentTime = 0;
             }
@@ -87,7 +85,6 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
             if (videoRef.current && videoRef.current.readyState >= 1) {
               setIsVideoLoaded(true);
               setShowVideo(true);
-              videoRef.current.setAttribute('data-video-ready', 'true');
               videoRef.current.pause();
               videoRef.current.currentTime = 0;
             }
@@ -95,9 +92,6 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
           onError={() => {
             console.error('Error loading video:', src || poster);
             setIsVideoLoaded(false);
-            if (videoRef.current) {
-              videoRef.current.setAttribute('data-video-ready', 'error');
-            }
           }}
         />
       ) : (
@@ -115,32 +109,28 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
             />
           )}
           
-          <video
-            ref={videoRef}
-            src={src}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            className={`w-full h-auto object-cover ${showVideo ? 'block' : 'hidden'}`}
-            data-video-thumbnail="true"
-            data-video-ready={isVideoLoaded ? 'true' : 'false'}
-            onLoadedData={() => {
-              setIsVideoLoaded(true);
-              setShowVideo(true);
-              if (videoRef.current) {
-                videoRef.current.setAttribute('data-video-ready', 'true');
-                videoRef.current.pause();
-                videoRef.current.currentTime = 0;
-              }
-            }}
-            onError={() => {
-              setIsVideoLoaded(false);
-              if (videoRef.current) {
-                videoRef.current.setAttribute('data-video-ready', 'error');
-              }
-            }}
-          />
+          {hasVideo && (
+            <video
+              ref={videoRef}
+              src={src}
+              muted
+              loop
+              playsInline
+              preload="auto"
+              className={`w-full h-auto object-cover ${showVideo ? 'block' : 'hidden'}`}
+              onLoadedData={() => {
+                setIsVideoLoaded(true);
+                setShowVideo(true);
+                if (videoRef.current) {
+                  videoRef.current.pause();
+                  videoRef.current.currentTime = 0;
+                }
+              }}
+              onError={() => {
+                setIsVideoLoaded(false);
+              }}
+            />
+          )}
         </>
       )}
     </div>

@@ -44,6 +44,7 @@ export interface ArchiveItem {
   vimeoId?: string;
   videoUrl?: string;
   order?: number;
+  projectType?: string; // Tipo de proyecto: music video, commercial, etc.
   
   // Para identificación del sistema
   sys?: {
@@ -196,7 +197,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
       
       // Don't optimize videos - only optimize actual images
       const isVideoThumbnail = thumbnailUrl.includes('.mp4') || thumbnailUrl.includes('.mov') || thumbnailUrl.includes('.webm');
-      const isVideoFullImage = fullImageUrl.includes('.mp4') || fullImageUrl.includes('.mov') || fullImageUrl.includes('.webm');
+      const isVideoFullImage = fullImageUrl.includes('.mp4') || thumbnailUrl.includes('.mov') || thumbnailUrl.includes('.webm');
       
       // Determine content type based on actual content, not just videoUrl
       const hasVideoContent = fields.videoUrl || fields['Vimeo ID'] || fields.vimeoId || isVideoThumbnail || isVideoFullImage;
@@ -210,7 +211,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
         thumbnail: thumbnailUrl ? (isVideoThumbnail ? thumbnailUrl : optimizeContentfulImage(thumbnailUrl, 800, 450, 'webp', 85)) : '',
         fullImage: fullImageUrl ? (isVideoFullImage ? fullImageUrl : optimizeContentfulImage(fullImageUrl, 1920, 1080, 'webp', 85)) : '',
         contentType: hasVideoContent ? 'video' as const : 'image' as const,
-        videoUrl: fields.videoUrl,
+        videoUrl: fields.videoUrl || '',
         description: fields.description || '',
         vimeoId: fields['Vimeo ID'] ? String(fields['Vimeo ID']) : (fields.vimeoId ? String(fields.vimeoId) : ''),
         order: fields.order,
@@ -322,15 +323,120 @@ export async function getArchiveData(): Promise<ArchiveSection[]> {
       })
     ];
 
-    // Retornar una sección única con todos los items
-    return [{
-      title: 'ALL',
-      items: allItems,
-      order: 1
-    }];
+    // Crear secciones organizadas por tipo de proyecto
+    const musicVideos = allItems.filter(item => {
+      const contentType = item.sys?.contentType?.sys?.id;
+      return contentType === 'portfolioItem' && item.title && item.artist;
+    });
+    
+    const commercials = allItems.filter(item => {
+      const contentType = item.sys?.contentType?.sys?.id;
+      return contentType === 'archiveItem' && item.project && item.company;
+    });
+    
+    const setDesign = allItems.filter(item => {
+      // Filtrar por algún criterio específico para set design
+      return item.project && item.project.toLowerCase().includes('set');
+    });
+    
+    const films = allItems.filter(item => {
+      // Filtrar por algún criterio específico para film
+      return item.project && item.project.toLowerCase().includes('film');
+    });
+
+    // Retornar secciones organizadas
+    return [
+      {
+        title: 'MUSIC VIDEOS',
+        items: musicVideos,
+        order: 1
+      },
+      {
+        title: 'COMMERCIAL',
+        items: commercials,
+        order: 2
+      },
+      {
+        title: 'SET DESIGN',
+        items: setDesign,
+        order: 3
+      },
+      {
+        title: 'FILM',
+        items: films,
+        order: 4
+      }
+    ].filter(section => section.items.length > 0); // Solo retornar secciones con items
 
   } catch (error) {
     console.error('❌ Error fetching archive data from Contentful:', error);
     return [];
+  }
+}
+
+// NUEVA FUNCIÓN: Obtener un item específico por ID (para páginas dinámicas)
+export async function getArchiveItemById(id: string): Promise<ArchiveItem | null> {
+  const client = initializeContentfulClient();
+  
+  if (!client) {
+    console.log('📱 No Contentful connection');
+    return null;
+  }
+
+  try {
+    // Buscar en portfolioItem primero
+    let entry;
+    try {
+      entry = await client.getEntry(id);
+    } catch {
+      console.log(`❌ Item with ID ${id} not found`);
+      return null;
+    }
+
+    console.log(`✅ Found item with ID ${id}`);
+
+    const fields = entry.fields as any;
+    const contentType = entry.sys.contentType.sys.id;
+    
+    // Obtener thumbnail URL si existe
+    const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
+      ? `https:${fields.thumbnail.fields.file.url}` 
+      : undefined;
+
+    // Estructura común para ambos tipos
+    const baseItem = {
+      year: fields.year || '',
+      thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 1920, 1080, 'webp', 95) : undefined,
+      vimeoId: fields.vimeoId ? String(fields.vimeoId) : undefined,
+      videoUrl: fields.videoUrl,
+      order: fields.order || 0,
+      sys: {
+        id: entry.sys.id,
+        contentType: {
+          sys: {
+            id: contentType
+          }
+        }
+      }
+    };
+
+    // Retornar según el tipo de contenido
+    if (contentType === 'portfolioItem') {
+      return {
+        ...baseItem,
+        title: fields.title || '',
+        artist: fields.artist || '',
+      };
+    } else {
+      return {
+        ...baseItem,
+        project: fields.project || '',
+        company: fields.company || '',
+      };
+    }
+
+  } catch (error) {
+    console.error(`❌ Error fetching item ${id} from Contentful:`, error);
+    return null;
   }
 }

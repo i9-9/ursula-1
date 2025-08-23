@@ -47,6 +47,25 @@ interface WorksGridProps {
 }
 
 const WorksGrid = ({ works = [] }: WorksGridProps) => {
+  // Helper function to get video source
+  const getVideoSource = (project: PortfolioItem) => {
+    // Solo usar videoUrl si es una URL de video directa (archivo)
+    if (project.videoUrl && isVideoFile(project.videoUrl)) {
+      return project.videoUrl;
+    }
+    
+    // No usar vimeoId o youtubeUrl como src para el elemento video
+    // Estos necesitan ser manejados de manera diferente
+    
+    // Default to thumbnail or fullImage
+    return project.thumbnail || project.fullImage || '';
+  };
+
+  // Helper function to check if URL is a direct video file
+  const isVideoFile = (url: string) => {
+    return url.includes('.mp4') || url.includes('.mov') || url.includes('.webm') || url.includes('.avi');
+  };
+
   // Si no hay proyectos de Contentful, mostrar mensaje o componente vacío
   if (works.length === 0) {
     return (
@@ -59,12 +78,12 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   }
 
   return (
-    <section className="py-12 md:py-16 px-2.5 md:px-[15px] fade-in">
+    <section className="py-12 md:py-16 px-4 md:px-[15px] fade-in">
       <div className="mb-6 md:mb-8">
       </div>
       
-      {/* Mobile Layout - Vertical Stack */}
-      <div className="md:hidden space-y-8">
+      {/* Mobile Layout - Vertical Stack with more padding */}
+      <div className="md:hidden space-y-8 px-6">
         {works.map((project, index) => (
           <Link
             href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
@@ -74,17 +93,17 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
           >
             {/* Project container for mobile */}
             <div className="relative">
-              {/* Project number - positioned according to design specs */}
-              <div className="absolute top-0 right-0 z-10 px-2 py-1">
-                <span className="text-sm font-medium text-foreground">
+              {/* Project number - positioned consistently with desktop */}
+              <div className="absolute -top-12 right-0 z-10">
+                <span className="text-xs font-normal text-foreground">
                   {index + 1}
                 </span>
               </div>
               
-              {/* Video container - full width on mobile */}
-              <div className="relative w-full">
+              {/* Video container - smaller width on mobile with padding */}
+              <div className="relative w-full max-w-sm mx-auto">
                 <StaticVideoThumbnail
-                  src={project.thumbnail || project.fullImage || ''}
+                  src={getVideoSource(project)}
                   poster={project.thumbnail || project.fullImage || ''}
                   alt={project.title}
                   className="w-full h-auto"
@@ -131,7 +150,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               {/* Video container */}
               <div className="relative w-full">
                 <StaticVideoThumbnail
-                  src={project.thumbnail || project.fullImage || ''}
+                  src={getVideoSource(project)}
                   poster={project.thumbnail || project.fullImage || ''}
                   alt={project.title}
                   className="w-full h-auto"

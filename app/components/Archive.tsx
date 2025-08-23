@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import Image from 'next/image';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
 // Types matching your Contentful structure
 interface ArchiveItem {
@@ -34,18 +34,20 @@ interface ArchiveProps {
   sections: ArchiveSection[];
 }
 
-
-
 const Archive = ({ sections }: ArchiveProps) => {
-  const [selectedItem, setSelectedItem] = useState<ArchiveItem | null>(null);
+  const router = useRouter();
+  const [selectedFilter, setSelectedFilter] = useState('');
+  const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-
+  // Debug: log sections data
+  console.log('Archive sections:', sections);
 
   // Get all individual items (exclude section containers)
   const allItems = useMemo(() => {
     return sections.reduce((acc: ArchiveItem[], section) => {
       if (section.items && Array.isArray(section.items)) {
-        // Only include items that are not section containers
         const validItems = section.items.filter(item => {
           const contentType = item.sys?.contentType?.sys?.id;
           return contentType !== 'archiveSection';
@@ -56,202 +58,171 @@ const Archive = ({ sections }: ArchiveProps) => {
     }, []);
   }, [sections]);
 
-  // Debug: Log items to see what we're getting
-  if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-    console.log('🔍 All items from Contentful:', allItems);
-    console.log('📊 Items breakdown:');
-    allItems.forEach((item, index) => {
-      console.log(`${index + 1}. Title: "${item.title || 'N/A'}" | Project: "${item.project || 'N/A'}" | Type: ${item.sys?.contentType?.sys?.id || 'unknown'}`);
-    });
-  }
-
-  // Process items: filter and sort by order from Contentful
+  // Process items: filter and use sequential numbering
   const filteredItems = useMemo(() => {
-    return allItems
-      .filter(item => {
-        // Only include items with actual content
-        const hasTitle = !!(item.title && item.title.trim());
-        const hasProject = !!(item.project && item.project.trim());
-        const hasContent = hasTitle || hasProject;
-        
-        // Debug logging for filtered items
-        if (!hasContent && typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-          console.log('❌ Filtering out empty item:', {
-            title: item.title,
-            project: item.project,
-            sys: item.sys,
-            fullItem: item
-          });
-        }
-        
-        return hasContent;
-      })
-      .sort((a, b) => (a.order || 0) - (b.order || 0)) // Sort by Contentful order
-      .map((item, index) => ({ 
-        ...item,
-        displayOrder: item.order || index + 1 // Use real order from Contentful
-      }));
-  }, [allItems]);
+    let filtered = allItems.filter(item => {
+      const hasTitle = !!(item.title && item.title.trim());
+      const hasProject = !!(item.project && item.project.trim());
+      return hasTitle || hasProject;
+    });
 
-  // Extract YouTube ID from URL
-  const extractYouTubeId = (url: string): string | null => {
-    if (!url || !url.includes('youtu')) return null;
-    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-    return match ? match[1] : null;
+    // Apply filter logic
+    if (selectedFilter === 'music-videos') {
+      filtered = filtered.filter(item => {
+        return sections.some(section => 
+          section.title === 'MUSIC VIDEOS' && 
+          section.items?.some(sectionItem => sectionItem.sys?.id === item.sys?.id)
+        );
+      });
+    } else if (selectedFilter === 'commercial') {
+      filtered = filtered.filter(item => {
+        return sections.some(section => 
+          section.title === 'COMMERCIAL' && 
+          section.items?.some(sectionItem => sectionItem.sys?.id === item.sys?.id)
+        );
+      });
+    } else if (selectedFilter === 'set-design') {
+      filtered = filtered.filter(item => {
+        return sections.some(section => 
+          section.title === 'SET DESIGN' && 
+          section.items?.some(sectionItem => sectionItem.sys?.id === item.sys?.id)
+        );
+      });
+    } else if (selectedFilter === 'film') {
+      filtered = filtered.filter(item => {
+        return sections.some(section => 
+          section.title === 'FILM' && 
+          section.items?.some(sectionItem => sectionItem.sys?.id === item.sys?.id)
+        );
+      });
+    }
+
+    return filtered.map((item, index) => ({ 
+      ...item,
+      displayOrder: index + 1
+    }));
+  }, [allItems, selectedFilter, sections]);
+
+  // Animation logic
+  useEffect(() => {
+    if (filteredItems.length === 0) return;
+
+    // Reset visible items when filter changes
+    if (!isInitialLoad) {
+      setVisibleItems(new Set());
+    }
+
+    // Start animation sequence with smoother timing
+    const timer = setTimeout(() => {
+      filteredItems.forEach((_, index) => {
+        setTimeout(() => {
+          setVisibleItems(prev => new Set(prev).add(index));
+        }, index * 35); // Reduced to 35ms for smoother flow
+      });
+    }, isInitialLoad ? 150 : 30); // Shorter initial delay
+
+    setIsInitialLoad(false);
+
+    return () => clearTimeout(timer);
+  }, [filteredItems, isInitialLoad]);
+
+  // Function to navigate to project page
+  const handleProjectClick = (item: ArchiveItem) => {
+    if (item.sys?.id) {
+      router.push(`/archive/${item.sys.id}`);
+    }
   };
 
   return (
-    <>
-              <div className="min-h-screen bg-background flex flex-col px-8 pt-32 md:pt-80 pb-16">
-          {/* Main Content - Left aligned with navbar ARCHIVE */}
-          <div className="flex flex-col justify-center min-h-screen">
-            <main className="w-full">
-              {/* Archive list - Aligned with navbar ARCHIVE using grid */}
-              <div className="grid grid-cols-12 gap-0 max-w-7xl">
-                {/* Empty columns 1-4 to align with navbar */}
-                <div className="col-span-4"></div>
-                
-                {/* Archive list starts at column 5 (aligned with ARCHIVE) */}
-                <div className="col-span-8 space-y-1">
-              {filteredItems.map((item, index) => (
-                <div 
-                  key={`${item.sys?.id || index}-row`}
-                  className="flex items-start group cursor-pointer hover:opacity-60 transition-opacity"
-                  onClick={() => setSelectedItem(item)}
-                >
-                  {/* Number column */}
-                  <div className="flex-shrink-0 w-8 py-0 pl-0 m-0">
-                    <span 
-                      className="text-foreground text-[10px] leading-4 font-normal block text-left" 
-                      style={{ fontFamily: 'Suisse BP INTL' }}
-                    >
-                      {String(item.displayOrder).padStart(2, '0')}
-                    </span>
-                  </div>
-                 
-                  {/* Project name column */}
-                  <div className="flex-1 py-0 pl-2">
-                    <span className="text-foreground text-[10px] tracking-tight uppercase leading-4 block">
-                      {item.title || item.project}
-                      {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
-                      {item.year && ` (${item.year})`}
-                    </span>
-                  </div>
-                                  </div>
-                ))}
-                </div>
-              </div>
-            </main>
-        </div>
-
-        {/* Footer */}
-        <footer className="fixed bottom-8 right-8">
-          <span className="text-xs opacity-60">© 2025</span>
-        </footer>
-      </div>
-
-      {/* Modal */}
-      {selectedItem && (
-        <div 
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-          onClick={() => setSelectedItem(null)}
-        >
-          <div 
-            className="bg-white max-w-4xl w-full rounded-sm overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Video/Image Container */}
-            <div className="relative w-full aspect-video bg-black">
-              {selectedItem.vimeoId ? (
-                <iframe
-                  src={`https://player.vimeo.com/video/${selectedItem.vimeoId}?autoplay=1&loop=1&title=0&byline=0&portrait=0`}
-                  className="w-full h-full"
-                  frameBorder="0"
-                  allow="autoplay; fullscreen"
-                  allowFullScreen
-                  title={selectedItem.title || selectedItem.project}
-                />
-              ) : selectedItem.videoUrl && extractYouTubeId(selectedItem.videoUrl) ? (
-                <iframe
-                  src={`https://www.youtube.com/embed/${extractYouTubeId(selectedItem.videoUrl)}?autoplay=1&loop=1&mute=1`}
-                  className="w-full h-full"
-                  frameBorder="0"
-                  allow="autoplay; fullscreen"
-                  allowFullScreen
-                  title={selectedItem.title || selectedItem.project}
-                />
-              ) : selectedItem.thumbnail ? (
-                <Image 
-                  src={selectedItem.thumbnail}
-                  alt={selectedItem.title || selectedItem.project || ''}
-                  fill
-                  className="object-contain"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-white">
-                  <span className="text-sm">No content available</span>
-                </div>
-              )}
-              
-              {/* Close button */}
-              <button 
-                className="absolute top-4 right-4 text-white bg-black/50 hover:bg-black/70 w-8 h-8 flex items-center justify-center rounded transition-colors"
-                onClick={() => setSelectedItem(null)}
-                aria-label="Close modal"
-              >
-                ✕
-              </button>
-            </div>
-            
-            {/* Info */}
-            <div className="p-6 bg-white">
-              <h3 className="text-lg font-medium uppercase tracking-wide">{selectedItem.title || selectedItem.project}</h3>
-              <div className="mt-2 text-sm opacity-60">
-                {(selectedItem.artist || selectedItem.company) && <span className="uppercase">{selectedItem.artist || selectedItem.company}</span>}
-                {selectedItem.year && <span className="ml-3">{selectedItem.year}</span>}
-              </div>
+    <div className="min-h-screen bg-background flex flex-col pt-20 md:pt-28 pb-16">
+      
+      {/* Filter Section - esquina superior izquierda */}
+      <div className="absolute top-16 md:top-20 left-8 mb-8 z-10">
+        <div className="flex items-center space-x-4">
+          <span className="text-foreground text-[12px] uppercase tracking-wide font-medium">
+            FILTER
+          </span>
+          <div className="relative">
+            <select 
+              className="appearance-none bg-transparent border border-foreground/20 rounded px-2 py-1 text-[12px] text-foreground focus:outline-none focus:border-foreground/40 transition-colors cursor-pointer"
+              style={{ fontFamily: 'Suisse BP INTL' }}
+              value={selectedFilter}
+              onChange={(e) => setSelectedFilter(e.target.value)}
+            >
+              <option value="">All Projects</option>
+              <option value="music-videos">Music Videos</option>
+              <option value="commercial">Commercial</option>
+              <option value="set-design">Set Design</option>
+              <option value="film">Film</option>
+            </select>
+            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
+              <svg className="w-3 h-3 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
           </div>
         </div>
-      )}
-      
-      <style jsx>{`
-        .project-list {
-          font-family: inherit;
-          font-size: 14px;
-          line-height: 1.4;
-          z-index: 10;
-          background: var(--background);
-          padding: 20px;
-          border-radius: 4px;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .project-list > div {
-          margin-bottom: 8px;
-          white-space: nowrap;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          padding-left: 0;
-          margin-left: 0;
-        }
-        
-        .project-list > div:hover {
-          opacity: 0.7;
-          transform: translateX(4px);
-        }
-        
-        @media (max-width: 768px) {
-          .project-list {
-            position: static !important;
-            max-width: 90%;
-            margin: 0 auto;
-            left: auto !important;
-            top: auto !important;
-          }
-        }
-      `}</style>
-    </>
+      </div>
+
+      {/* Main Content - Lista centrada por los números */}
+      <div className="flex-1 w-full flex justify-center pt-16" ref={containerRef}>
+        <div className="relative">
+          {/* Container centrado donde los números quedan exactamente en el centro */}
+          <div className="space-y-0.5">
+            {filteredItems.map((item, index) => (
+              <div 
+                key={`${item.sys?.id || index}-row`}
+                className={`flex items-start group cursor-pointer hover:opacity-60 text-left relative transition-all duration-700 ease-out ${
+                  visibleItems.has(index) 
+                    ? 'opacity-100 transform translate-y-0' 
+                    : 'opacity-0 transform translate-y-1'
+                }`}
+                style={{
+                  transitionDelay: `${index * 35}ms` // Matching the smoother stagger
+                }}
+                onClick={() => handleProjectClick(item)}
+              >
+                {/* Number column - posicionado para estar en el centro absoluto de la pantalla */}
+                <div 
+                  className="absolute py-0.5 flex justify-center"
+                  style={{
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '32px'
+                  }}
+                >
+                  <span 
+                    className="text-foreground text-[10px] leading-3 font-normal" 
+                    style={{ fontFamily: 'Suisse BP INTL' }}
+                  >
+                    {String(item.displayOrder).padStart(2, '0')}
+                  </span>
+                </div>
+               
+                {/* Project name column - posicionado a la derecha del número */}
+                <div 
+                  className="py-0.5 pl-2"
+                  style={{
+                    marginLeft: 'calc(50% + 16px)' // 50% + half of number width + small gap
+                  }}
+                >
+                  <span className="text-foreground text-[10px] tracking-tight uppercase leading-3 block whitespace-nowrap">
+                    {item.title || item.project}
+                    {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
+                    {item.year && ` (${item.year})`}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="fixed bottom-8 right-8">
+        <span className="text-xs opacity-60">© 2025</span>
+      </footer>
+    </div>
   );
 };
 

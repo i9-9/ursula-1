@@ -240,7 +240,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       className="relative px-0 bg-background text-foreground overflow-hidden"
       style={{ height: 'calc(100vh - var(--navbar-height))' }}
     >
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full h-full flex items-center justify-center -mt-3">
         <div 
           ref={scrollContainerRef}
           className="w-full overflow-x-auto overflow-y-hidden px-0 snap-x snap-mandatory touch-pan-x"
