@@ -39,7 +39,6 @@ const Archive = ({ sections }: ArchiveProps) => {
   const [selectedFilter, setSelectedFilter] = useState('');
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [isReordering, setIsReordering] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Debug: log sections data
@@ -110,7 +109,6 @@ const Archive = ({ sections }: ArchiveProps) => {
 
     // When filter changes, trigger reorder animation
     if (!isInitialLoad) {
-      setIsReordering(true);
       setVisibleItems(new Set());
 
       // First phase: fade out all items
@@ -124,7 +122,7 @@ const Archive = ({ sections }: ArchiveProps) => {
         
         // End reorder state
         setTimeout(() => {
-          setIsReordering(false);
+          setIsInitialLoad(false);
         }, filteredItems.length * 25 + 200);
       }, 100); // Brief pause between fade out and fade in
     } else {

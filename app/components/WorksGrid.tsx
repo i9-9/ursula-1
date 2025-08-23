@@ -82,8 +82,8 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
       <div className="mb-6 md:mb-8">
       </div>
       
-      {/* Mobile Layout - Vertical Stack with more padding */}
-      <div className="md:hidden space-y-8 px-6">
+      {/* Mobile/Tablet Layout - Vertical Stack with more padding */}
+      <div className="lg:hidden space-y-8 px-6">
         {works.map((project, index) => (
           <Link
             href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
@@ -91,7 +91,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             className="block cursor-pointer group relative"
             aria-label={`Ver ${project.title} by ${project.artist}`}
           >
-            {/* Project container for mobile */}
+            {/* Project container for mobile/tablet */}
             <div className="relative">
               {/* Project number - positioned consistently with desktop */}
               <div className="absolute -top-12 right-0 z-10">
@@ -100,7 +100,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 </span>
               </div>
               
-              {/* Video container - smaller width on mobile with padding */}
+              {/* Video container - smaller width on mobile/tablet with padding */}
               <div className="relative w-full max-w-sm mx-auto">
                 <StaticVideoThumbnail
                   src={getVideoSource(project)}
@@ -121,9 +121,9 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         ))}
       </div>
 
-      {/* Desktop Layout - Grid */}
+      {/* Desktop Layout - Grid (only on large screens) */}
       <div 
-        className="hidden md:grid w-full grid-cols-12 gap-y-20 gap-x-24 md:gap-x-32 mx-auto"
+        className="hidden lg:grid w-full grid-cols-12 gap-y-20 gap-x-24 md:gap-x-32 mx-auto"
         role="grid"
         aria-label="Projects grid"
       >
