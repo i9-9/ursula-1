@@ -37,12 +37,12 @@ export default function VideoPlayer({ item, displayTitle, displayCreator, displa
   };
 
   return (
-    <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - var(--navbar-height))' }}>
+    <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - var(--navbar-height))', width: '100vw', maxWidth: '100vw' }}>
       {item.vimeoId ? (
         <iframe
           ref={iframeRef}
           src={`https://player.vimeo.com/video/${item.vimeoId}?autoplay=0&loop=1&title=0&byline=0&portrait=0&controls=0&background=1`}
-          className="w-full h-full"
+          className="w-screen h-full object-cover"
           frameBorder="0"
           allow="autoplay; fullscreen"
           allowFullScreen
@@ -52,7 +52,7 @@ export default function VideoPlayer({ item, displayTitle, displayCreator, displa
         <iframe
           ref={iframeRef}
           src={`https://www.youtube.com/embed/${extractYouTubeId(item.videoUrl)}?autoplay=0&loop=1&mute=0&controls=0&modestbranding=1&rel=0`}
-          className="w-full h-full"
+          className="w-screen h-full object-cover"
           frameBorder="0"
           allow="autoplay; fullscreen"
           allowFullScreen
@@ -63,27 +63,28 @@ export default function VideoPlayer({ item, displayTitle, displayCreator, displa
           src={item.thumbnail}
           alt={displayTitle}
           fill
-          className="object-cover"
+          className="object-cover w-screen h-full"
           priority
+          style={{ width: '100vw', height: '100%' }}
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center text-white bg-black">
+        <div className="w-screen h-full flex items-center justify-center text-white bg-black">
           <span className="text-sm">No content available</span>
         </div>
       )}
       
-      <div className="absolute top-8 left-8 z-50 text-white">
+      <div className="absolute top-8 left-8 z-50 text-white md:text-white text-black">
         <div className="space-y-2 text-sm font-light tracking-wide">
           <div className="flex items-center space-x-4">
-            <span className="text-xs text-white opacity-100">{String(displayIndex).padStart(2, '0')}</span>
-            <span className="text-xs text-white opacity-100 uppercase">{displayTitle}</span>
-            <span className="text-xs text-white opacity-100 uppercase">{displayCreator}</span>
+            <span className="text-xs text-black md:text-white opacity-100">{String(displayIndex).padStart(2, '0')}</span>
+            <span className="text-xs text-black md:text-white opacity-100 uppercase">{displayTitle}</span>
+            <span className="text-xs text-black md:text-white opacity-100 uppercase">{displayCreator}</span>
           </div>
-          <div className="flex items-center space-x-4 text-xs text-white opacity-100">
+          <div className="flex items-center space-x-4 text-xs text-black md:text-white opacity-100">
             <span>YEAR: {item.year || '2024'}</span>
             <span>TYPE OF PROJECT: MUSIC VIDEO</span>
           </div>
-          <div className="text-xs text-white opacity-100">
+          <div className="text-xs text-black md:text-white opacity-100">
             <span>PRODUCTION COMPANY: {item.company || displayCreator || 'ARENA COLLECTIVE'}</span>
           </div>
         </div>

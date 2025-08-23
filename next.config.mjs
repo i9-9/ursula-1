@@ -4,6 +4,10 @@ const nextConfig = {
   // output: 'export', // Comentado para desarrollo
   trailingSlash: false,
   
+  // Configuración para prevenir problemas de hidratación
+  reactStrictMode: true,
+  // swcMinify: true, // REMOVED - This is deprecated in Next.js 13+
+  
   images: {
     remotePatterns: [
       {
@@ -29,10 +33,24 @@ const nextConfig = {
     // Optimizar el build para SSG
     // optimizeCss: true, // Comentado por problemas con critters
     optimizePackageImports: ['contentful'],
+    // Configuración para mejorar la hidratación
+    optimizeServerReact: true,
+    
+    // ADDED - Turbopack configuration to handle your webpack settings
+    turbo: {
+      rules: {
+        // Add any specific loader rules here if needed
+      },
+    },
   },
 
-  // Webpack configuration to prevent chunk loading issues
+  // Webpack configuration - CONDITIONAL: Only apply when NOT using Turbopack
   webpack: (config, { dev, isServer }) => {
+    // Skip webpack config when using Turbopack in development
+    if (dev && process.env.TURBOPACK) {
+      return config;
+    }
+    
     if (!dev && !isServer) {
       // Optimize chunk splitting for production
       config.optimization.splitChunks = {
@@ -59,6 +77,17 @@ const nextConfig = {
         },
       };
     }
+    
+    // Configuración para mejorar la hidratación
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    
     return config;
   },
   

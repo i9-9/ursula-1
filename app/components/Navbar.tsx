@@ -22,66 +22,129 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 0, opacity: 1 }}
           transition={{ duration: 0 }}
-          className="w-full py-4 transition-all duration-300 bg-background"
+          className="w-full py-2 transition-all duration-300 bg-background"
           role="navigation"
           aria-label="Main navigation"
         >
-          {/* Usar el sistema de layout consistente */}
-          <div className="layout-container">
-            <div className="navbar-grid">
-              {/* Left: Logo */}
-              <div className="navbar-section navbar-section--logo">
+          {/* Desktop Grid System - 12 columnas exacto como Archive */}
+          <div className="hidden md:block w-full px-8">
+            <div className="grid grid-cols-12 gap-2">
+              {/* Columnas 1-4: Área del logo */}
+              <div className="col-span-4 flex items-center justify-start">
                 <Link
                   href="/"
-                  className="navbar-nav-item"
-                  style={{ fontSize: '13px' }}
+                  className="text-foreground hover:opacity-60 transition-opacity duration-200"
+                  style={{ fontSize: '13px', fontFamily: 'Suisse BP INTL' }}
                   aria-label="Home"
                 >
                   <UrsulaLogo className="h-4 w-auto" title="Ursula" />
                 </Link>
               </div>
 
-              {/* Center: Nav items */}
-              <div className="navbar-section navbar-section--nav">
-                <div className="navbar-nav-grid">
+              {/* Columnas 5-8: Área de navegación - centrada con enlaces juntos */}
+              <div className="col-span-4 flex items-center justify-center">
+                <div className="flex items-center space-x-3">
+                  {/* WORK */}
                   <Link
                     href="/work"
-                    className={`navbar-nav-item ${
-                      pathname === "/work" ? "navbar-nav-item--active" : ""
+                    className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
+                      pathname === "/work" ? "opacity-100" : "opacity-100"
                     }`}
+                    style={{ fontFamily: 'Suisse BP INTL' }}
                     aria-label="Selected works"
                     aria-current={pathname === "/work" ? "page" : undefined}
                   >
-                    work
+                    WORK
                   </Link>
 
+                  {/* ARCHIVE */}
                   <Link
                     href="/archive"
-                    className={`navbar-nav-item ${
-                      pathname === "/archive" ? "navbar-nav-item--active" : ""
+                    className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
+                      pathname === "/archive" ? "opacity-100" : "opacity-100"
                     }`}
+                    style={{ fontFamily: 'Suisse BP INTL' }}
                     aria-label="Archive"
                     aria-current={pathname === "/archive" ? "page" : undefined}
                     data-nav-item="archive"
                   >
-                    archive
+                    ARCHIVE
                   </Link>
 
+                  {/* ABOUT */}
                   <Link
                     href="/about"
-                    className={`navbar-nav-item ${
-                      pathname === "/about" ? "navbar-nav-item--active" : ""
+                    className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
+                      pathname === "/about" ? "opacity-100" : "opacity-100"
                     }`}
+                    style={{ fontFamily: 'Suisse BP INTL' }}
                     aria-label="About"
                     aria-current={pathname === "/about" ? "page" : undefined}
                   >
-                    about
+                    ABOUT
                   </Link>
                 </div>
               </div>
 
-              {/* Right: Theme toggle */}
-              <div className="navbar-section navbar-section--actions">
+              {/* Columnas 9-12: Área del toggle */}
+              <div className="col-span-4 flex items-center justify-end">
+                <ThemeToggle />
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Layout - Single Column */}
+          <div className="block md:hidden px-4">
+            <div className="flex items-center justify-between">
+              {/* Logo */}
+              <Link
+                href="/"
+                className="text-foreground hover:opacity-60 transition-opacity duration-200"
+                style={{ fontSize: '12px', fontFamily: 'Suisse BP INTL' }}
+                aria-label="Home"
+              >
+                <UrsulaLogo className="h-3 w-auto" title="Ursula" />
+              </Link>
+
+              {/* Nav items */}
+              <div className="flex items-center space-x-1">
+                <Link
+                  href="/work"
+                  className={`text-foreground text-[11px] uppercase tracking-wide font-medium hover:opacity-60 transition-opacity duration-200 ${
+                    pathname === "/work" ? "opacity-100" : "opacity-100"
+                  }`}
+                  style={{ fontFamily: 'Suisse BP INTL' }}
+                  aria-label="Selected works"
+                  aria-current={pathname === "/work" ? "page" : undefined}
+                >
+                  WORK
+                </Link>
+
+                <Link
+                  href="/archive"
+                  className={`text-foreground text-[11px] uppercase tracking-wide font-medium hover:opacity-60 transition-opacity duration-200 ${
+                    pathname === "/archive" ? "opacity-100" : "opacity-100"
+                  }`}
+                  style={{ fontFamily: 'Suisse BP INTL' }}
+                  aria-label="Archive"
+                  aria-current={pathname === "/archive" ? "page" : undefined}
+                  data-nav-item="archive"
+                >
+                  ARCHIVE
+                </Link>
+
+                <Link
+                  href="/about"
+                  className={`text-foreground text-[11px] uppercase tracking-wide font-medium hover:opacity-60 transition-opacity duration-200 ${
+                    pathname === "/about" ? "opacity-100" : "opacity-100"
+                  }`}
+                  style={{ fontFamily: 'Suisse BP INTL' }}
+                  aria-label="About"
+                  aria-current={pathname === "/about" ? "page" : undefined}
+                >
+                  ABOUT
+                </Link>
+
                 <ThemeToggle />
               </div>
             </div>

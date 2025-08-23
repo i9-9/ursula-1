@@ -82,8 +82,8 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
       <div className="mb-6 md:mb-8">
       </div>
       
-      {/* Mobile/Tablet Layout - Vertical Stack with more padding */}
-      <div className="lg:hidden space-y-8 px-6">
+      {/* Mobile/Tablet Layout - Alineado a la izquierda */}
+      <div className="lg:hidden space-y-8 pl-6">
         {works.map((project, index) => (
           <Link
             href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
@@ -93,15 +93,15 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
           >
             {/* Project container for mobile/tablet */}
             <div className="relative">
-              {/* Project number - positioned consistently with desktop */}
+              {/* Project number - positioned at top right */}
               <div className="absolute -top-12 right-0 z-10">
                 <span className="text-xs font-normal text-foreground">
                   {index + 1}
                 </span>
               </div>
               
-              {/* Video container - smaller width on mobile/tablet with padding */}
-              <div className="relative w-full max-w-sm mx-auto">
+              {/* Video container - aligned to left */}
+              <div className="relative w-full max-w-sm">
                 <StaticVideoThumbnail
                   src={getVideoSource(project)}
                   poster={project.thumbnail || project.fullImage || ''}
@@ -111,8 +111,8 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               </div>
             </div>
             
-            {/* Title - centered below image */}
-            <div className="mt-4 text-center">
+            {/* Title - aligned to left below image */}
+            <div className="mt-4">
               <p className="text-base font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {project.title}, {project.artist}
               </p>
@@ -121,7 +121,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         ))}
       </div>
 
-      {/* Desktop Layout - Grid (only on large screens) */}
+      {/* Desktop Layout - Grid alineado a la izquierda */}
       <div 
         className="hidden lg:grid w-full grid-cols-12 gap-y-20 gap-x-24 md:gap-x-32 mx-auto"
         role="grid"
@@ -147,7 +147,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 </span>
               </div>
               
-              {/* Video container */}
+              {/* Video container - aligned to left */}
               <div className="relative w-full">
                 <StaticVideoThumbnail
                   src={getVideoSource(project)}
@@ -158,6 +158,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               </div>
             </div>
             
+            {/* Title - aligned to left below image */}
             <div className="mt-2">
               <p className="text-sm md:text-base font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {project.title}, {project.artist}

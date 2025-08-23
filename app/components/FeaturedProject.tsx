@@ -3,6 +3,7 @@
 import { useMemo, useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import { motion } from 'framer-motion'
 import { PortfolioItem } from '@/lib/contentful'
+import { useHydration } from '../hooks/useHydration'
 
 const localWorks: Array<{
   title?: string
@@ -93,6 +94,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
   const slideRefs = useRef<HTMLDivElement[]>([])
   const isScrollingRef = useRef(false)
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const isHydrated = useHydration()
 
   // Memoized projects to avoid recalculation
   const projects = useMemo(() => {
@@ -159,15 +161,10 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
     }
   }, [currentIndex])
 
-  // Optimized wheel handler
-  // Wheel handler removed to avoid unnecessary work; container is overflow-hidden
-
-  // Optimized navigation (unused currently)
-
-  // Navigation disabled
-
   // Initial position to center slide without horizontal animation
   useLayoutEffect(() => {
+    if (!isHydrated) return
+    
     const middleIndex = Math.floor(projects.length / 2)
     setCurrentIndex(middleIndex)
 
@@ -179,10 +176,12 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
     container.style.scrollBehavior = 'auto'
     target.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' })
     container.style.scrollBehavior = previousBehavior
-  }, [projects.length])
+  }, [projects.length, isHydrated])
 
   // Optimized scroll listener with RAF throttling
   useEffect(() => {
+    if (!isHydrated) return
+    
     const container = scrollContainerRef.current
     if (!container) return
     
@@ -203,10 +202,12 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       container.removeEventListener('scroll', handleScroll)
       if (rafId) cancelAnimationFrame(rafId)
     }
-  }, [updateCurrentIndexFromScroll])
+  }, [updateCurrentIndexFromScroll, isHydrated])
 
   // Enable vertical wheel -> horizontal scroll mapping
   useEffect(() => {
+    if (!isHydrated) return
+    
     const container = scrollContainerRef.current
     if (!container) return
 
@@ -221,9 +222,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
     return () => {
       container.removeEventListener('wheel', handleWheel)
     }
-  }, [])
-
-  // Keyboard navigation disabled (no scroll)
+  }, [isHydrated])
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -240,7 +239,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       className="relative px-0 bg-background text-foreground overflow-hidden"
       style={{ height: 'calc(100vh - var(--navbar-height))' }}
     >
-      <div className="w-full h-full flex items-center justify-center slider-margin-top">
+      <div className="w-full h-full flex items-center justify-center">
         <div 
           ref={scrollContainerRef}
           className="w-full overflow-x-auto overflow-y-hidden px-0 snap-x snap-mandatory touch-pan-x"
@@ -252,7 +251,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
             <div className="flex-shrink-0" style={{ width: 'calc((100vw - 72vw)/2)' }} aria-hidden="true" />
             
             {projects.map((project, index) => {
-              const isActive = index === currentIndex
+              const isActive = isHydrated && index === currentIndex
               
               return (
                 <div
@@ -302,11 +301,9 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
         </div>
       </div>
 
-      {/* Controls removed: no arrows, no scroll */}
-
       {/* Copyright */}
       <div className="absolute right-4 bottom-3 text-xs opacity-60 select-none">
-        © {new Date().getFullYear()}
+        © 2025
       </div>
     </section>
   )

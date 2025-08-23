@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
+import { useHydration, useSafeBrowserEffect } from '../hooks/useHydration';
 
 interface ThemeContextType {
   theme: 'light' | 'dark';
@@ -23,18 +24,12 @@ interface ThemeProviderProps {
 }
 
 export default function ThemeProvider({ children }: ThemeProviderProps) {
+  // Start with a consistent default theme to avoid hydration mismatch
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [isHydrated, setIsHydrated] = useState(false);
+  const isHydrated = useHydration();
 
-  // Marcar como hidratado
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
-
-  // Inicializar tema solo después de hidratación
-  useEffect(() => {
-    if (!isHydrated) return;
-
+  // Initialize theme only after hydration
+  useSafeBrowserEffect(() => {
     const initializeTheme = () => {
       try {
         const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
@@ -43,27 +38,27 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
         const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
         setTheme(initialTheme);
         
-        // Aplicar clase CSS de forma segura
+        // Apply CSS class safely after hydration
         if (initialTheme === 'dark') {
           document.documentElement.classList.add('dark');
         } else {
           document.documentElement.classList.remove('dark');
         }
         
-        // Guardar tema si no existía
+        // Save theme if it didn't exist
         if (!savedTheme) {
           localStorage.setItem('theme', initialTheme);
         }
       } catch (error) {
         console.warn('Error initializing theme:', error);
-        setTheme('light');
+        // Keep default theme to avoid hydration mismatch
       }
     };
 
-    // Delay para evitar problemas de hidratación
+    // Small delay to ensure hydration is complete
     const timer = setTimeout(initializeTheme, 0);
     return () => clearTimeout(timer);
-  }, [isHydrated]);
+  }, []);
 
   const toggleTheme = () => {
     if (!isHydrated) return;

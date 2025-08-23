@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useSafeBrowserEffect } from '../hooks/useHydration';
 import { initializeChunkErrorHandling } from '../utils/chunkErrorHandler';
 
 const PreloadScript = () => {
-  useEffect(() => {
+  useSafeBrowserEffect(() => {
     // Initialize chunk error handling
     initializeChunkErrorHandling();
     
