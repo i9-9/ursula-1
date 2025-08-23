@@ -1,24 +1,38 @@
+'use client';
+
+import { useEffect } from 'react';
+import { initializeChunkErrorHandling } from '../utils/chunkErrorHandler';
+
 const PreloadScript = () => {
-  const script = `
-    (function() {
-      try {
-        var criticalVideos = document.querySelectorAll('video[data-loading="eager"]');
-        criticalVideos.forEach(function(video){
-          try { video.load(); } catch(e) {}
-        });
-        var preconnects = [];
-        preconnects.forEach(function(url){
-          var link = document.createElement('link');
-          link.rel = 'preconnect';
-          link.href = url;
-          document.head.appendChild(link);
-        });
-      } catch(e) {}
-    })();
-  `;
-  return (
-    <script dangerouslySetInnerHTML={{ __html: script }} />
-  );
+  useEffect(() => {
+    // Initialize chunk error handling
+    initializeChunkErrorHandling();
+    
+    // Preload critical resources
+    const preloadLinks = [
+      { rel: 'preload', href: '/fonts/Suisse BP Intl Regular.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },
+      { rel: 'preload', href: '/fonts/Suisse BP Intl Medium.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },
+      { rel: 'preload', href: '/fonts/Suisse BP Intl Bold.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },
+    ];
+
+    preloadLinks.forEach(linkProps => {
+      const link = document.createElement('link');
+      Object.assign(link, linkProps);
+      document.head.appendChild(link);
+    });
+
+    // Cleanup function
+    return () => {
+      preloadLinks.forEach(linkProps => {
+        const existingLink = document.querySelector(`link[href="${linkProps.href}"]`);
+        if (existingLink) {
+          existingLink.remove();
+        }
+      });
+    };
+  }, []);
+
+  return null;
 };
 
 export default PreloadScript;

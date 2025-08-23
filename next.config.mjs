@@ -30,6 +30,37 @@ const nextConfig = {
     // optimizeCss: true, // Comentado por problemas con critters
     optimizePackageImports: ['contentful'],
   },
+
+  // Webpack configuration to prevent chunk loading issues
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      // Optimize chunk splitting for production
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          default: false,
+          vendors: false,
+          // Create a vendor chunk for node_modules
+          vendor: {
+            name: 'vendor',
+            chunks: 'all',
+            test: /[\\/]node_modules[\\/]/,
+            priority: 20,
+          },
+          // Create a common chunk for shared code
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            priority: 10,
+            reuseExistingChunk: true,
+            enforce: true,
+          },
+        },
+      };
+    }
+    return config;
+  },
   
   // Headers para mejor rendimiento en SSG
   async headers() {

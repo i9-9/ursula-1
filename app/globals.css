@@ -566,6 +566,11 @@ p {
   padding: 0; /* elimina padding en desktop */
 }
 
+/* ===== SLIDER POSITIONING ===== */
+.slider-margin-top {
+  margin-top: -1.5rem;
+}
+
 /* ===== ARCHIVE INDIVIDUAL PAGE - FULL SCREEN ===== */
 .archive-page-fullscreen {
   max-width: 100vw !important;

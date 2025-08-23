@@ -178,9 +178,9 @@ const Archive = ({ sections }: ArchiveProps) => {
         </div>
       </div>
 
-      {/* Main Content - Layout como en desarrollo */}
+      {/* Main Content - Layout responsive */}
       <div className="flex-1 w-full pt-16" ref={containerRef}>
-        <div className="space-y-0.5">
+        <div className="space-y-0.5 px-4 md:px-0">
           {filteredItems.map((item, index) => (
             <div 
               key={`${item.sys?.id || index}-row`}
@@ -194,23 +194,49 @@ const Archive = ({ sections }: ArchiveProps) => {
               }}
               onClick={() => handleProjectClick(item)}
             >
-              {/* Number column - posicionado a la izquierda del centro */}
-              <div className="flex-1 flex justify-end pr-8">
-                <span 
-                  className="text-foreground text-[10px] leading-3 font-normal py-0.5" 
-                  style={{ fontFamily: 'Suisse BP INTL' }}
-                >
-                  {String(item.displayOrder).padStart(2, '0')}
-                </span>
+              {/* Mobile/Tablet Layout - Centrado con texto a la izquierda */}
+              <div className="block md:hidden w-full max-w-md mx-auto">
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-8">
+                    <span 
+                      className="text-foreground text-[10px] leading-3 font-normal py-0.5 block" 
+                      style={{ fontFamily: 'Suisse BP INTL' }}
+                    >
+                      {String(item.displayOrder).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-foreground text-[10px] tracking-tight uppercase leading-3 block text-left">
+                      {item.title || item.project}
+                      {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
+                      {item.year && ` (${item.year})`}
+                    </span>
+                  </div>
+                </div>
               </div>
               
-              {/* Project name column - posicionado a la derecha del centro */}
-              <div className="flex-1 py-0.5">
-                <span className="text-foreground text-[10px] tracking-tight uppercase leading-3 block text-left">
-                  {item.title || item.project}
-                  {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
-                  {item.year && ` (${item.year})`}
-                </span>
+              {/* Desktop Layout - Centrado con números en el centro */}
+              <div className="hidden md:block w-full">
+                <div className="flex items-start">
+                  {/* Number column - posicionado en el centro */}
+                  <div className="flex-1 flex justify-center">
+                    <span 
+                      className="text-foreground text-[10px] leading-3 font-normal py-0.5" 
+                      style={{ fontFamily: 'Suisse BP INTL' }}
+                    >
+                      {String(item.displayOrder).padStart(2, '0')}
+                    </span>
+                  </div>
+                  
+                  {/* Project name column - posicionado a la derecha del centro */}
+                  <div className="flex-1 py-0.5 pl-8">
+                    <span className="text-foreground text-[10px] tracking-tight uppercase leading-3 block text-left">
+                      {item.title || item.project}
+                      {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
+                      {item.year && ` (${item.year})`}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           ))}

@@ -37,7 +37,7 @@ export default function VideoPlayer({ item, displayTitle, displayCreator, displa
   };
 
   return (
-    <div className="relative w-screen h-screen archive-page-fullscreen">
+    <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - var(--navbar-height))' }}>
       {item.vimeoId ? (
         <iframe
           ref={iframeRef}
