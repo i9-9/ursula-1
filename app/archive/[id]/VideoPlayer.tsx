@@ -8,9 +8,10 @@ interface VideoPlayerProps {
   item: ArchiveItem;
   displayTitle: string;
   displayCreator: string;
+  displayIndex: number;
 }
 
-export default function VideoPlayer({ item, displayTitle, displayCreator }: VideoPlayerProps) {
+export default function VideoPlayer({ item, displayTitle, displayCreator, displayIndex }: VideoPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -36,7 +37,7 @@ export default function VideoPlayer({ item, displayTitle, displayCreator }: Vide
   };
 
   return (
-    <div className="relative w-screen h-screen">
+    <div className="relative w-screen h-screen archive-page-fullscreen">
       {item.vimeoId ? (
         <iframe
           ref={iframeRef}
@@ -71,18 +72,18 @@ export default function VideoPlayer({ item, displayTitle, displayCreator }: Vide
         </div>
       )}
       
-      <div className="absolute top-8 left-8 z-10 text-white">
+      <div className="absolute top-8 left-8 z-50 text-white">
         <div className="space-y-2 text-sm font-light tracking-wide">
           <div className="flex items-center space-x-4">
-            <span className="text-xs opacity-60">01</span>
-            <span className="text-xs opacity-60 uppercase">{displayTitle}</span>
-            <span className="text-xs opacity-60 uppercase">{displayCreator}</span>
+            <span className="text-xs text-white opacity-100">{String(displayIndex).padStart(2, '0')}</span>
+            <span className="text-xs text-white opacity-100 uppercase">{displayTitle}</span>
+            <span className="text-xs text-white opacity-100 uppercase">{displayCreator}</span>
           </div>
-          <div className="flex items-center space-x-4 text-xs opacity-60">
+          <div className="flex items-center space-x-4 text-xs text-white opacity-100">
             <span>YEAR: {item.year || '2024'}</span>
             <span>TYPE OF PROJECT: MUSIC VIDEO</span>
           </div>
-          <div className="text-xs opacity-60">
+          <div className="text-xs text-white opacity-100">
             <span>PRODUCTION COMPANY: {item.company || displayCreator || 'ARENA COLLECTIVE'}</span>
           </div>
         </div>

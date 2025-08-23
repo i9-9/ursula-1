@@ -39,6 +39,7 @@ const Archive = ({ sections }: ArchiveProps) => {
   const [selectedFilter, setSelectedFilter] = useState('');
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isReordering, setIsReordering] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Debug: log sections data
@@ -103,27 +104,42 @@ const Archive = ({ sections }: ArchiveProps) => {
     }));
   }, [allItems, selectedFilter, sections]);
 
-  // Animation logic
+  // Animation logic with reorder effect
   useEffect(() => {
     if (filteredItems.length === 0) return;
 
-    // Reset visible items when filter changes
+    // When filter changes, trigger reorder animation
     if (!isInitialLoad) {
+      setIsReordering(true);
       setVisibleItems(new Set());
-    }
 
-    // Start animation sequence with smoother timing
-    const timer = setTimeout(() => {
-      filteredItems.forEach((_, index) => {
+      // First phase: fade out all items
+      setTimeout(() => {
+        // Second phase: fade in items with new order
+        filteredItems.forEach((_, index) => {
+          setTimeout(() => {
+            setVisibleItems(prev => new Set(prev).add(index));
+          }, index * 25); // Faster animation during reorder
+        });
+        
+        // End reorder state
         setTimeout(() => {
-          setVisibleItems(prev => new Set(prev).add(index));
-        }, index * 35); // Reduced to 35ms for smoother flow
-      });
-    }, isInitialLoad ? 150 : 30); // Shorter initial delay
+          setIsReordering(false);
+        }, filteredItems.length * 25 + 200);
+      }, 100); // Brief pause between fade out and fade in
+    } else {
+      // Initial load animation (slower)
+      const timer = setTimeout(() => {
+        filteredItems.forEach((_, index) => {
+          setTimeout(() => {
+            setVisibleItems(prev => new Set(prev).add(index));
+          }, index * 35);
+        });
+      }, 150);
 
-    setIsInitialLoad(false);
-
-    return () => clearTimeout(timer);
+      setIsInitialLoad(false);
+      return () => clearTimeout(timer);
+    }
   }, [filteredItems, isInitialLoad]);
 
   // Function to navigate to project page
@@ -136,8 +152,8 @@ const Archive = ({ sections }: ArchiveProps) => {
   return (
     <div className="min-h-screen bg-background flex flex-col pt-20 md:pt-28 pb-16">
       
-      {/* Filter Section - esquina superior izquierda */}
-      <div className="absolute top-16 md:top-20 left-8 mb-8 z-10">
+      {/* Filter Section - solo visible en desktop */}
+      <div className="hidden md:block absolute top-16 md:top-20 left-8 mb-8 z-10">
         <div className="flex items-center space-x-4">
           <span className="text-foreground text-[12px] uppercase tracking-wide font-medium">
             FILTER
@@ -164,53 +180,74 @@ const Archive = ({ sections }: ArchiveProps) => {
         </div>
       </div>
 
-      {/* Main Content - Lista centrada por los números */}
-      <div className="flex-1 w-full flex justify-center pt-16" ref={containerRef}>
-        <div className="relative">
-          {/* Container centrado donde los números quedan exactamente en el centro */}
-          <div className="space-y-0.5">
+      {/* Main Content - Lista centrada en desktop, alineada a la izquierda en mobile */}
+      <div className="flex-1 w-full flex md:justify-center justify-start pt-16" ref={containerRef}>
+        <div className="relative w-full md:w-auto">
+          {/* Container - responsive positioning */}
+          <div className="space-y-0.5 px-8 md:px-0">
             {filteredItems.map((item, index) => (
               <div 
                 key={`${item.sys?.id || index}-row`}
-                className={`flex items-start group cursor-pointer hover:opacity-60 text-left relative transition-all duration-700 ease-out ${
+                className={`flex items-start group cursor-pointer hover:opacity-60 text-left relative transition-all ease-out ${
+                  isReordering ? 'duration-300' : 'duration-700'
+                } ${
                   visibleItems.has(index) 
                     ? 'opacity-100 transform translate-y-0' 
                     : 'opacity-0 transform translate-y-1'
                 }`}
                 style={{
-                  transitionDelay: `${index * 35}ms` // Matching the smoother stagger
+                  transitionDelay: isReordering ? `${index * 25}ms` : `${index * 35}ms`
                 }}
                 onClick={() => handleProjectClick(item)}
               >
-                {/* Number column - posicionado para estar en el centro absoluto de la pantalla */}
-                <div 
-                  className="absolute py-0.5 flex justify-center"
-                  style={{
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '32px'
-                  }}
-                >
-                  <span 
-                    className="text-foreground text-[10px] leading-3 font-normal" 
-                    style={{ fontFamily: 'Suisse BP INTL' }}
-                  >
-                    {String(item.displayOrder).padStart(2, '0')}
-                  </span>
+                {/* Mobile: layout flex normal, Desktop: layout absoluto centrado */}
+                <div className="block md:hidden">
+                  {/* Mobile layout */}
+                  <div className="flex items-start">
+                    <div className="py-0.5 w-8 flex justify-start">
+                      <span 
+                        className="text-foreground text-[10px] leading-3 font-normal" 
+                        style={{ fontFamily: 'Suisse BP INTL' }}
+                      >
+                        {String(item.displayOrder).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <div className="py-0.5 pl-4 flex-1">
+                      <span className="text-foreground text-[10px] tracking-tight uppercase leading-3 block whitespace-nowrap">
+                        {item.title || item.project}
+                        {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
+                        {item.year && ` (${item.year})`}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-               
-                {/* Project name column - posicionado a la derecha del número */}
-                <div 
-                  className="py-0.5 pl-2"
-                  style={{
-                    marginLeft: 'calc(50% + 16px)' // 50% + half of number width + small gap
-                  }}
-                >
-                  <span className="text-foreground text-[10px] tracking-tight uppercase leading-3 block whitespace-nowrap">
-                    {item.title || item.project}
-                    {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
-                    {item.year && ` (${item.year})`}
-                  </span>
+
+                <div className="hidden md:block">
+                  {/* Desktop layout - centrado */}
+                  <div className="absolute py-0.5 flex justify-center"
+                       style={{
+                         left: '50%',
+                         transform: 'translateX(-50%)',
+                         width: '32px'
+                       }}>
+                    <span 
+                      className="text-foreground text-[10px] leading-3 font-normal" 
+                      style={{ fontFamily: 'Suisse BP INTL' }}
+                    >
+                      {String(item.displayOrder).padStart(2, '0')}
+                    </span>
+                  </div>
+                 
+                  <div className="py-0.5 pl-2"
+                       style={{
+                         marginLeft: 'calc(50% + 16px)'
+                       }}>
+                    <span className="text-foreground text-[10px] tracking-tight uppercase leading-3 block whitespace-nowrap">
+                      {item.title || item.project}
+                      {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
+                      {item.year && ` (${item.year})`}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
