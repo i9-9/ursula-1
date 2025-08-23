@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import "./globals.css";
+import { suisseBpIntl } from './fonts';
 import PreloadScript from './components/PreloadScript';
 import NavbarWithLoader from './components/NavbarWithLoader';
 import ClientWrapper from './components/ClientWrapper';
@@ -66,7 +67,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
+    <html lang="es" className={suisseBpIntl.variable}>
       <head>
         <PreloadScript />
         <link rel="icon" href="/favicon.ico" sizes="any" />
