@@ -69,7 +69,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   // Si no hay proyectos de Contentful, mostrar mensaje o componente vacío
   if (works.length === 0) {
     return (
-      <section className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in">
+      <section className="py-12 md:py-8 px-4 md:px-[15px] fade-in">
         <div className="text-center py-12">
           <p className="text-gray-500">No hay proyectos disponibles.</p>
         </div>
@@ -78,7 +78,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   }
 
   return (
-    <section className="py-12 md:py-16 px-4 md:px-[15px] fade-in">
+    <section className="py-12 md:py-8 px-4 md:px-[15px] fade-in">
       <div className="mb-6 md:mb-8">
       </div>
       
@@ -95,25 +95,25 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             <div className="relative">
               {/* Project number - positioned at top right */}
               <div className="absolute -top-12 right-0 z-10">
-                <span className="text-xs font-normal text-foreground">
+                <span className="text-[11px] font-normal text-foreground">
                   {index + 1}
                 </span>
               </div>
               
-              {/* Video container - aligned to left */}
+              {/* Video container - aligned to left and bottom */}
               <div className="relative w-full max-w-sm">
                 <StaticVideoThumbnail
                   src={getVideoSource(project)}
                   poster={project.thumbnail || project.fullImage || ''}
                   alt={project.title}
-                  className="w-full h-auto"
+                  className="w-full h-auto self-end"
                 />
               </div>
             </div>
             
             {/* Title - aligned to left below image */}
             <div className="mt-4">
-              <p className="text-base font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <p className="text-[14px] font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {project.title}, {project.artist}
               </p>
             </div>
@@ -123,7 +123,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
 
       {/* Desktop Layout - Grid alineado a la izquierda */}
       <div 
-        className="hidden lg:grid w-full grid-cols-12 gap-y-20 gap-x-24 md:gap-x-32 mx-auto"
+        className="hidden lg:grid w-full grid-cols-12 gap-y-20 gap-x-24 md:gap-x-32 mx-auto items-end"
         role="grid"
         aria-label="Projects grid"
       >
@@ -142,25 +142,25 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             <div className="relative">
               {/* Project number */}
               <div className="absolute -top-12 right-0 z-10">
-                <span className="text-xs font-normal text-foreground">
+                <span className="text-[9px] font-normal text-foreground">
                   {index + 1}
                 </span>
               </div>
               
-              {/* Video container - aligned to left */}
+              {/* Video container - aligned to left and bottom */}
               <div className="relative w-full">
                 <StaticVideoThumbnail
                   src={getVideoSource(project)}
                   poster={project.thumbnail || project.fullImage || ''}
                   alt={project.title}
-                  className="w-full h-auto"
+                  className="w-full h-auto self-end"
                 />
               </div>
             </div>
             
             {/* Title - aligned to left below image */}
             <div className="mt-2">
-              <p className="text-sm md:text-base font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <p className="text-[12px] font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {project.title}, {project.artist}
               </p>
             </div>

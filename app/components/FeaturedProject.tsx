@@ -3,7 +3,6 @@
 import { useMemo, useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import { motion } from 'framer-motion'
 import { PortfolioItem } from '@/lib/contentful'
-import { useHydration } from '../hooks/useHydration'
 
 const localWorks: Array<{
   title?: string
@@ -94,7 +93,12 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
   const slideRefs = useRef<HTMLDivElement[]>([])
   const isScrollingRef = useRef(false)
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const isHydrated = useHydration()
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  // Simple hydration check
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
 
   // Memoized projects to avoid recalculation
   const projects = useMemo(() => {
@@ -236,17 +240,29 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
 
   return (
     <section 
-      className="relative px-0 bg-background text-foreground overflow-hidden"
-      style={{ height: 'calc(100vh - var(--navbar-height))' }}
+      className="absolute inset-0 px-0 bg-background text-foreground overflow-hidden flex flex-col items-center justify-center"
+      style={{ 
+        height: '100vh',
+        paddingTop: 0
+      }}
     >
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full flex items-center justify-center">
         <div 
           ref={scrollContainerRef}
           className="w-full overflow-x-auto overflow-y-hidden px-0 snap-x snap-mandatory touch-pan-x"
           aria-label="Featured projects slider"
-          style={{ scrollPaddingInline: 'calc((100vw - 72vw)/2)' }}
+          style={{ 
+            scrollPaddingInline: 'calc((100vw - 72vw)/2)',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}
         >
-          <div className="flex items-center justify-start gap-0 w-max">
+          <style jsx>{`
+            div::-webkit-scrollbar {
+              display: none;
+            }
+          `}</style>
+          <div className="flex items-center justify-start gap-0 w-max" style={{ minHeight: '0' }}>
             {/* Left spacer to allow first slide to center */}
             <div className="flex-shrink-0" style={{ width: 'calc((100vw - 72vw)/2)' }} aria-hidden="true" />
             
@@ -299,11 +315,6 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
             <div className="flex-shrink-0" style={{ width: 'calc((100vw - 72vw)/2)' }} aria-hidden="true" />
           </div>
         </div>
-      </div>
-
-      {/* Copyright */}
-      <div className="absolute right-4 bottom-3 text-xs opacity-60 select-none">
-        © 2025
       </div>
     </section>
   )

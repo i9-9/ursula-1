@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { ArchiveItem } from '../../../lib/contentful';
+import { useTheme } from '../../hooks/useTheme';
 
 interface VideoPlayerProps {
   item: ArchiveItem;
@@ -14,6 +15,7 @@ interface VideoPlayerProps {
 export default function VideoPlayer({ item, displayTitle, displayCreator, displayIndex }: VideoPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const { theme } = useTheme();
 
   const togglePlayPause = () => {
     if (iframeRef.current) {
@@ -92,7 +94,11 @@ export default function VideoPlayer({ item, displayTitle, displayCreator, displa
       
       <div className="absolute top-8 right-8 z-10">
         <button 
-          className="text-white hover:text-white/80 transition-colors"
+          className={`transition-colors ${
+            theme === 'light' 
+              ? 'text-black hover:text-black/80' 
+              : 'text-white hover:text-white/80'
+          }`}
           aria-label={isPlaying ? "Pause video" : "Play video"}
           onClick={togglePlayPause}
         >

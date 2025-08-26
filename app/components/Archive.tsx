@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useHydration, useSafeBrowserEffect } from '../hooks/useHydration';
 
@@ -39,7 +39,7 @@ const Archive = ({ sections }: ArchiveProps) => {
   const router = useRouter();
   const [selectedFilter, setSelectedFilter] = useState('');
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [animationKey, setAnimationKey] = useState(0); // Force re-render on filter change
   const isHydrated = useHydration();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -103,37 +103,31 @@ const Archive = ({ sections }: ArchiveProps) => {
     }));
   }, [allItems, selectedFilter, sections]);
 
+  // Reset animation when filter changes
+  useEffect(() => {
+    setVisibleItems(new Set());
+    setAnimationKey(prev => prev + 1);
+  }, [selectedFilter]);
+
   // Animation logic - only run after hydration
   useSafeBrowserEffect(() => {
     if (filteredItems.length === 0) return;
 
-    if (!isInitialLoad) {
-      setVisibleItems(new Set());
+    // Reset animation state - hide all items immediately
+    setVisibleItems(new Set());
 
-      setTimeout(() => {
-        filteredItems.forEach((_, index) => {
-          setTimeout(() => {
-            setVisibleItems(prev => new Set(prev).add(index));
-          }, index * 25);
-        });
-        
+    // Force a re-render to ensure all items are hidden
+    const resetTimer = setTimeout(() => {
+      // Start animation sequence after reset is complete
+      filteredItems.forEach((_, index) => {
         setTimeout(() => {
-          setIsInitialLoad(false);
-        }, filteredItems.length * 25 + 200);
-      }, 100);
-    } else {
-      const timer = setTimeout(() => {
-        filteredItems.forEach((_, index) => {
-          setTimeout(() => {
-            setVisibleItems(prev => new Set(prev).add(index));
-          }, index * 35);
-        });
-      }, 150);
+          setVisibleItems(prev => new Set(prev).add(index));
+        }, index * 80);
+      });
+    }, 100); // Reduced delay for faster reset
 
-      setIsInitialLoad(false);
-      return () => clearTimeout(timer);
-    }
-  }, [filteredItems, isInitialLoad]);
+    return () => clearTimeout(resetTimer);
+  }, [filteredItems, isHydrated]);
 
   const handleProjectClick = (item: ArchiveItem) => {
     if (item.sys?.id) {
@@ -209,26 +203,26 @@ const Archive = ({ sections }: ArchiveProps) => {
             <div></div>
             
             {/* Columna 2: ARCHIVE - aquí va la lista */}
-            <div>
+            <div key={`archive-column-${animationKey}`}>
               <div className="space-y-2">
                 {filteredItems.map((item, index) => (
                   <div 
                     key={`${item.sys?.id || `item-${index}`}-row`}
                     className={`group cursor-pointer hover:opacity-60 text-left relative transition-all duration-500 ease-out ${
-                      isHydrated && visibleItems.has(index)
+                      visibleItems.has(index)
                         ? 'opacity-100 transform translate-y-0' 
-                        : 'opacity-100 transform translate-y-0'
+                        : 'opacity-0 transform translate-y-4'
                     }`}
                     style={{
-                      transitionDelay: isHydrated ? `${index * 80}ms` : '0ms'
+                      transitionDelay: `${(item.displayOrder || index) * 80}ms`
                     }}
                     onClick={() => handleProjectClick(item)}
                   >
                     <span 
-                      className="text-foreground text-[10px] tracking-tight uppercase leading-none block text-left whitespace-nowrap"
+                      className="text-foreground text-[12px] tracking-tight uppercase leading-none block text-left whitespace-nowrap"
                       style={{ fontFamily: 'Suisse BP INTL' }}
                     >
-                      <span className="inline-block w-8 text-[7px]">{String(item.displayOrder).padStart(2, '0')}</span>
+                      <span className="inline-block w-8 text-[9px]">{String(item.displayOrder).padStart(2, '0')}</span>
                       {item.title || item.project}
                       {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
                       {item.year && ` (${item.year})`}
@@ -244,27 +238,27 @@ const Archive = ({ sections }: ArchiveProps) => {
         </div>
 
         {/* Mobile Layout - Single Column */}
-        <div className="block md:hidden px-4">
+        <div className="block md:hidden px-4" key={`mobile-archive-${animationKey}`}>
           <div className="space-y-3 max-w-sm mx-auto">
             {filteredItems.map((item, index) => (
               <div 
                 key={`${item.sys?.id || `item-${index}`}-row`}
                 className={`group cursor-pointer hover:opacity-60 text-left relative transition-all duration-500 ease-out ${
-                  isHydrated && visibleItems.has(index)
+                  visibleItems.has(index)
                     ? 'opacity-100 transform translate-y-0' 
-                    : 'opacity-100 transform translate-y-0'
+                    : 'opacity-0 transform translate-y-4'
                 }`}
                 style={{
-                  transitionDelay: isHydrated ? `${index * 80}ms` : '0ms'
+                  transitionDelay: `${(item.displayOrder || index) * 80}ms`
                 }}
                 onClick={() => handleProjectClick(item)}
               >
                 <div className="flex">
-                  <span className="inline-block w-6 text-[7px] text-foreground tracking-tight uppercase leading-none flex-shrink-0" style={{ fontFamily: 'Suisse BP INTL' }}>
+                  <span className="inline-block w-6 text-[11px] text-foreground tracking-tight uppercase leading-none flex-shrink-0" style={{ fontFamily: 'Suisse BP INTL' }}>
                     {String(item.displayOrder).padStart(2, '0')}
                   </span>
                   <span 
-                    className="text-foreground text-[9px] tracking-tight uppercase leading-none flex-1"
+                    className="text-foreground text-[14px] tracking-tight uppercase leading-none flex-1"
                     style={{ fontFamily: 'Suisse BP INTL' }}
                   >
                     {item.title || item.project}
@@ -280,7 +274,7 @@ const Archive = ({ sections }: ArchiveProps) => {
 
       {/* Footer */}
       <footer className="fixed bottom-8 right-8">
-        <span className="text-xs opacity-60">© 2025</span>
+        <span className="text-xs text-black">© 2025</span>
       </footer>
     </div>
   );
