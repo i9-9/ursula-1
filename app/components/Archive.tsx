@@ -136,17 +136,17 @@ const Archive = ({ sections }: ArchiveProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pt-20 md:pt-28 pb-16">
+    <div className="min-h-screen bg-background flex flex-col pt-20 pb-16">
       
       {/* Filter Section */}
-      <div className="absolute top-16 md:top-20 left-8 mb-8 z-10 md:block hidden">
+      <div className="absolute top-12 md:top-16 left-8 mb-8 z-10 md:block hidden">
         <div className="flex items-center space-x-4">
-          <span className="text-foreground text-[12px] uppercase tracking-wide font-medium">
+          <span className="text-foreground text-[12px] uppercase tracking-wide font-regular">
             FILTER
           </span>
           <div className="relative">
             <select 
-              className="appearance-none bg-transparent border border-foreground/20 rounded px-2 py-1 text-[12px] text-foreground focus:outline-none focus:border-foreground/40 transition-colors cursor-pointer"
+              className="appearance-none bg-transparent border border-foreground/20 rounded px-3 py-1 text-[12px] text-foreground focus:outline-none focus:border-foreground/40 transition-colors cursor-pointer min-w-[120px]"
               style={{ fontFamily: 'Suisse BP INTL' }}
               value={selectedFilter}
               onChange={(e) => setSelectedFilter(e.target.value)}
@@ -157,7 +157,7 @@ const Archive = ({ sections }: ArchiveProps) => {
               <option value="set-design">Set Design</option>
               <option value="film">Film</option>
             </select>
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
               <svg className="w-3 h-3 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -195,20 +195,20 @@ const Archive = ({ sections }: ArchiveProps) => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 w-full pt-8 md:pt-16" ref={containerRef}>
-        {/* Desktop - Grid de 2 columnas */}
+      <div className="flex-1 w-full pt-2" ref={containerRef}>
+        {/* Desktop - Grid de 12 columnas usando solo Tailwind */}
         <div className="hidden md:block w-full px-8">
-          <div className="grid grid-cols-2 gap-2">
-            {/* Columna 1: vacía */}
-            <div></div>
+          <div className="grid grid-cols-12 gap-2">
+            {/* Columnas 1-4: Vacías */}
+            <div className="col-span-4"></div>
             
-            {/* Columna 2: ARCHIVE - aquí va la lista */}
-            <div key={`archive-column-${animationKey}`}>
-              <div className="space-y-2">
+            {/* Columnas 5-8: Lista de proyectos - alineada con navbar */}
+            <div className="col-span-4 flex justify-start items-start" key={`archive-column-${animationKey}`}>
+              <div className="space-y-1.5" style={{marginLeft: 'calc(33.333% + 52px)'}}>
                 {filteredItems.map((item, index) => (
                   <div 
                     key={`${item.sys?.id || `item-${index}`}-row`}
-                    className={`group cursor-pointer hover:opacity-60 text-left relative transition-all duration-500 ease-out ${
+                    className={`group cursor-pointer hover:opacity-60 relative transition-all duration-500 ease-out text-left ${
                       visibleItems.has(index)
                         ? 'opacity-100 transform translate-y-0' 
                         : 'opacity-0 transform translate-y-4'
@@ -219,10 +219,10 @@ const Archive = ({ sections }: ArchiveProps) => {
                     onClick={() => handleProjectClick(item)}
                   >
                     <span 
-                      className="text-foreground text-[12px] tracking-tight uppercase leading-none block text-left whitespace-nowrap"
+                      className="text-foreground text-[12px] tracking-tight uppercase leading-none block whitespace-nowrap"
                       style={{ fontFamily: 'Suisse BP INTL' }}
                     >
-                      <span className="inline-block w-8 text-[9px]">{String(item.displayOrder).padStart(2, '0')}</span>
+                      <span className="inline-block w-6 text-[9px]">{String(item.displayOrder).padStart(2, '0')}</span>
                       {item.title || item.project}
                       {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
                       {item.year && ` (${item.year})`}
@@ -232,14 +232,14 @@ const Archive = ({ sections }: ArchiveProps) => {
               </div>
             </div>
             
-            {/* Columnas 8-12: vacías */}
-            <div className="col-span-5"></div>
+            {/* Columnas 9-12: Vacías */}
+            <div className="col-span-4"></div>
           </div>
         </div>
 
         {/* Mobile Layout - Single Column */}
         <div className="block md:hidden px-4" key={`mobile-archive-${animationKey}`}>
-          <div className="space-y-3 max-w-sm mx-auto">
+          <div className="space-y-2 max-w-sm mx-auto">
             {filteredItems.map((item, index) => (
               <div 
                 key={`${item.sys?.id || `item-${index}`}-row`}

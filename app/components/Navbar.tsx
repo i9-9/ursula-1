@@ -42,48 +42,43 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
               </div>
 
               {/* Columnas 5-8: Área de navegación - centrada con enlaces juntos */}
-              <div className="col-span-4 flex items-baseline justify-center">
-                <div className="flex items-baseline space-x-3">
-                  {/* WORK */}
-                  <Link
-                    href="/work"
-                    className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
-                      pathname === "/work" ? "opacity-100" : "opacity-100"
-                    }`}
-                    style={{ fontFamily: 'Suisse BP INTL' }}
-                    aria-label="Selected works"
-                    aria-current={pathname === "/work" ? "page" : undefined}
-                  >
-                    WORK
-                  </Link>
+              <div className="col-span-4 grid grid-cols-3 gap-0">
+                <Link
+                  href="/work"
+                  className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 justify-self-center px-0 ${
+                    pathname === "/work" ? "opacity-100" : "opacity-100"
+                  }`}
+                  style={{ fontFamily: 'Suisse BP INTL' }}
+                  aria-label="Selected works"
+                  aria-current={pathname === "/work" ? "page" : undefined}
+                >
+                  WORK
+                </Link>
 
-                  {/* ARCHIVE */}
-                  <Link
-                    href="/archive"
-                    className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
-                      pathname === "/archive" ? "opacity-100" : "opacity-100"
-                    }`}
-                    style={{ fontFamily: 'Suisse BP INTL' }}
-                    aria-label="Archive"
-                    aria-current={pathname === "/archive" ? "page" : undefined}
-                    data-nav-item="archive"
-                  >
-                    ARCHIVE
-                  </Link>
+                <Link
+                  href="/archive"
+                  className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 justify-self-center px-0 ${
+                    pathname === "/archive" ? "opacity-100" : "opacity-100"
+                  }`}
+                  style={{ fontFamily: 'Suisse BP INTL' }}
+                  aria-label="Archive"
+                  aria-current={pathname === "/archive" ? "page" : undefined}
+                  data-nav-item="archive"
+                >
+                  ARCHIVE
+                </Link>
 
-                  {/* ABOUT */}
-                  <Link
-                    href="/about"
-                    className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
-                      pathname === "/about" ? "opacity-100" : "opacity-100"
-                    }`}
-                    style={{ fontFamily: 'Suisse BP INTL' }}
-                    aria-label="About"
-                    aria-current={pathname === "/about" ? "page" : undefined}
-                  >
-                    ABOUT
-                  </Link>
-                </div>
+                <Link
+                  href="/about"
+                  className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 justify-self-center px-0 ${
+                    pathname === "/about" ? "opacity-100" : "opacity-100"
+                  }`}
+                  style={{ fontFamily: 'Suisse BP INTL' }}
+                  aria-label="About"
+                  aria-current={pathname === "/about" ? "page" : undefined}
+                >
+                  ABOUT
+                </Link>
               </div>
 
               {/* Columnas 9-12: Área del toggle */}
