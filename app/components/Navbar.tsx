@@ -41,11 +41,11 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
                 </Link>
               </div>
 
-              {/* Columnas 5-8: Área de navegación - centrada con enlaces juntos */}
-              <div className="col-span-4 grid grid-cols-3 gap-0">
+              {/* Columnas 5-8: Área de navegación - elementos más cercanos */}
+              <div className="col-span-4 flex items-baseline justify-center space-x-6">
                 <Link
                   href="/work"
-                  className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 justify-self-center px-0 ${
+                  className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
                     pathname === "/work" ? "opacity-100" : "opacity-100"
                   }`}
                   style={{ fontFamily: 'Suisse BP INTL' }}
@@ -57,7 +57,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
 
                 <Link
                   href="/archive"
-                  className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 justify-self-center px-0 ${
+                  className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
                     pathname === "/archive" ? "opacity-100" : "opacity-100"
                   }`}
                   style={{ fontFamily: 'Suisse BP INTL' }}
@@ -70,7 +70,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
 
                 <Link
                   href="/about"
-                  className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 justify-self-center px-0 ${
+                  className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
                     pathname === "/about" ? "opacity-100" : "opacity-100"
                   }`}
                   style={{ fontFamily: 'Suisse BP INTL' }}
@@ -88,7 +88,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
             </div>
           </div>
 
-          {/* Mobile Layout - Single Column */}
+          {/* Mobile Layout - Single Column con elementos más cercanos */}
           <div className="block md:hidden px-4">
             <div className="flex items-baseline justify-between">
               {/* Logo */}
@@ -101,9 +101,9 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
                 <UrsulaLogo className="h-4 w-auto" title="Ursula" />
               </Link>
 
-              {/* Nav items */}
-              <div className="flex items-baseline space-x-3">
-                                <Link
+              {/* Nav items con menos espacio */}
+              <div className="flex items-baseline space-x-2">
+                <Link
                   href="/work"
                   className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
                     pathname === "/work" ? "opacity-100" : "opacity-100"
@@ -140,7 +140,7 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
                   ABOUT
                 </Link>
 
-                <div className="ml-4">
+                <div className="ml-3">
                   <ThemeToggle />
                 </div>
               </div>
