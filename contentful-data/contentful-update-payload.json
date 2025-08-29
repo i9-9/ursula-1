@@ -1,0 +1,91 @@
+{
+  "extractedAt": "2025-08-29T22:17:16.923Z",
+  "totalUpdates": 5,
+  "updates": [
+    {
+      "id": "3ZonFUV0y6VHF5XeRaO18f",
+      "title": "CORAZÓN VACÍO",
+      "artist": "MARIA BECERRA",
+      "vimeoId": "846342325",
+      "youtubeUrl": "",
+      "updatePayload": {
+        "fields": {
+          "vimeoId": {
+            "en-US": "846342325"
+          },
+          "youtubeUrl": {
+            "en-US": ""
+          }
+        }
+      }
+    },
+    {
+      "id": "4nT5S9jKnRc2NFMzWSzpjN",
+      "title": "TRES PECADOS DESPUES",
+      "artist": "MILO J",
+      "vimeoId": "1004201478",
+      "youtubeUrl": "",
+      "updatePayload": {
+        "fields": {
+          "vimeoId": {
+            "en-US": "1004201478"
+          },
+          "youtubeUrl": {
+            "en-US": ""
+          }
+        }
+      }
+    },
+    {
+      "id": "3voWEgsNCM1pgNCU1sGA5E",
+      "title": "SOLA",
+      "artist": "CHITA",
+      "vimeoId": "",
+      "youtubeUrl": "https://youtu.be/BNrKaLuLjFw",
+      "updatePayload": {
+        "fields": {
+          "vimeoId": {
+            "en-US": ""
+          },
+          "youtubeUrl": {
+            "en-US": "https://youtu.be/BNrKaLuLjFw"
+          }
+        }
+      }
+    },
+    {
+      "id": "47Xarx2sMmfl2XC8Y9YwfB",
+      "title": "BUENOS TIEMPOS",
+      "artist": "DILLOM",
+      "vimeoId": "976712517",
+      "youtubeUrl": "",
+      "updatePayload": {
+        "fields": {
+          "vimeoId": {
+            "en-US": "976712517"
+          },
+          "youtubeUrl": {
+            "en-US": ""
+          }
+        }
+      }
+    },
+    {
+      "id": "3qqKoY4cQ02Qgfto8TbTi",
+      "title": "S.O.S",
+      "artist": "TAICHU FT LALI",
+      "vimeoId": "954548653",
+      "youtubeUrl": "",
+      "updatePayload": {
+        "fields": {
+          "vimeoId": {
+            "en-US": "954548653"
+          },
+          "youtubeUrl": {
+            "en-US": ""
+          }
+        }
+      }
+    }
+  ]
+}

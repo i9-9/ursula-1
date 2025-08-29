@@ -14,44 +14,32 @@ const localWorks: Array<{
 
 // Memoized helper function
 const getVideoSource = (slide: HeroSlide): string => {
-  console.log('🔍 getVideoSource: Processing slide:', slide);
-  console.log('🔍 getVideoSource: slide.videoUrl:', slide.videoUrl);
-  console.log('🔍 getVideoSource: slide.src:', slide.src);
-  
   // Check if it's a YouTube URL
   if (slide.videoUrl && (slide.videoUrl.includes('youtube.com') || slide.videoUrl.includes('youtu.be'))) {
-    console.log('🔍 getVideoSource: YouTube URL detected:', slide.videoUrl);
     const youtubeId = slide.videoUrl.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&\n?#]+)/)?.[1];
     if (youtubeId) {
       const embedUrl = `https://www.youtube.com/embed/${youtubeId}?controls=0&modestbranding=1&rel=0&showinfo=0&autoplay=1&mute=1`;
-      console.log('🔍 getVideoSource: Converted to embed URL:', embedUrl);
       return embedUrl;
     }
   }
   
   // Check if it's a Vimeo URL
   if (slide.videoUrl && slide.videoUrl.includes('vimeo.com')) {
-    console.log('🔍 getVideoSource: Vimeo URL detected:', slide.videoUrl);
     const vimeoId = slide.videoUrl.match(/vimeo\.com\/(\d+)/)?.[1];
     if (vimeoId) {
       const embedUrl = `https://player.vimeo.com/video/${vimeoId}?controls=0&background=1&autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`;
-      console.log('🔍 getVideoSource: Converted to embed URL:', embedUrl);
       return embedUrl;
     }
   }
   
   // Direct video URL (MP4, etc.)
   if (slide.videoUrl) {
-    console.log('🔍 getVideoSource: Using direct videoUrl:', slide.videoUrl);
     return slide.videoUrl;
   }
   
   if (slide.src) {
-    console.log('🔍 getVideoSource: Using src:', slide.src);
     return slide.src;
   }
-  
-  console.log('🔍 getVideoSource: No direct video source, checking localWorks');
   const localWork = localWorks.find(work => 
     work.title?.toLowerCase().includes(slide.title.toLowerCase()) ||
     slide.title.toLowerCase().includes(work.title?.toLowerCase() || '')
@@ -75,14 +63,8 @@ const getVideoSource = (slide: HeroSlide): string => {
 const VideoSlide = ({ slide }: { slide: HeroSlide }) => {
   const videoSource = useMemo(() => getVideoSource(slide), [slide])
   
-  console.log('🔍 VideoSlide: Rendering slide:', slide);
-  console.log('🔍 VideoSlide: videoSource:', videoSource);
-  console.log('🔍 VideoSlide: slide.videoUrl:', slide.videoUrl);
-  console.log('🔍 VideoSlide: slide.src:', slide.src);
-  
   const VideoContent = useMemo(() => {
     if (!videoSource) {
-      console.log('🔍 VideoSlide: No video source, showing fallback');
       return (
         <div className="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center">
           <p className="text-gray-500 text-sm">Video no disponible</p>
@@ -139,18 +121,9 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
 
   // Memoized slides to avoid recalculation
   const slides = useMemo((): HeroSlide[] => {
-    console.log('🔍 FeaturedProject: heroSlides received:', heroSlides);
-    console.log('🔍 FeaturedProject: heroSlides length:', heroSlides?.length);
-    console.log('🔍 FeaturedProject: heroSlides type:', typeof heroSlides);
-    console.log('🔍 FeaturedProject: heroSlides keys:', heroSlides ? Object.keys(heroSlides) : 'undefined');
-    
     if (heroSlides && heroSlides.length > 0) {
-      console.log('🔍 FeaturedProject: Using heroSlides from Contentful');
-      console.log('🔍 FeaturedProject: First slide:', heroSlides[0]);
       return heroSlides;
     }
-    
-    console.log('🔍 FeaturedProject: Using fallback local works');
     // Fallback to local works if no heroSlides provided
     return [
       {
@@ -287,15 +260,8 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
     }
   }, [])
 
-  console.log('🔍 FeaturedProject: Rendering with slides:', slides);
-  console.log('🔍 FeaturedProject: slides length:', slides.length);
-  console.log('🔍 FeaturedProject: isHydrated:', isHydrated);
-  console.log('🔍 FeaturedProject: Component is rendering!');
-  console.log('🔍 FeaturedProject: About to return JSX...');
-  
   // If no slides, show a fallback message
   if (slides.length === 0) {
-    console.log('🔍 FeaturedProject: No slides, showing fallback message');
     return (
       <section className="absolute inset-0 px-0 bg-red-600 text-white overflow-hidden flex flex-col items-center justify-center" style={{ height: '100vh', paddingTop: 0 }}>
         <div className="text-center">
@@ -306,7 +272,6 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
     );
   }
   
-  console.log('🔍 FeaturedProject: About to return main JSX...');
   return (
     <section 
       className="absolute inset-0 px-0 bg-background text-foreground overflow-hidden flex flex-col items-center justify-center"
@@ -343,7 +308,6 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
             <div className="flex-shrink-0" style={{ width: 'calc((100vw - 72vw)/2)' }} aria-hidden="true" />
             
             {slides.map((slide, index) => {
-              console.log(`🔍 FeaturedProject: Rendering slide ${index}:`, slide);
               const isActive = isHydrated && index === currentIndex
               
               return (
@@ -395,8 +359,6 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
       </div>
     </section>
   )
-  
-  console.log('🔍 FeaturedProject: JSX rendered successfully');
 }
 
 export default FeaturedProject

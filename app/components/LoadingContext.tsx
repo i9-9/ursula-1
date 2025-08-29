@@ -20,13 +20,13 @@ export const LoadingProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const readyRef = useRef<Set<string>>(new Set());
 
   const registerLoader = useCallback((id: string) => {
-    console.log(`📝 Registering loader: ${id}`);
+
     loadersRef.current.add(id);
     setActiveLoaders(new Set(loadersRef.current));
   }, []);
 
   const unregisterLoader = useCallback((id: string) => {
-    console.log(`🗑️ Unregistering loader: ${id}`);
+
     loadersRef.current.delete(id);
     readyRef.current.delete(id);
     setActiveLoaders(new Set(loadersRef.current));

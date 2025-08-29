@@ -85,7 +85,6 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
       {/* Mobile/Tablet Layout - Vertical Stack with more padding */}
       <div className="lg:hidden space-y-8 px-6">
         {works.map((project, index) => {
-          console.log('Project archiveOrder:', project.archiveOrder, 'Project:', project.title); // Debug
           return (
             <Link
               href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
@@ -131,7 +130,6 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         aria-label="Projects grid"
       >
         {works.map((project, index) => {
-          console.log('Project archiveOrder:', project.archiveOrder, 'Project:', project.title); // Debug
           return (
             <Link
               href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}

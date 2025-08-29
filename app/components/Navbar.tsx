@@ -3,29 +3,27 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import UrsulaLogo from "./UrsulaLogo";
 import ThemeToggle from "./ThemeToggle";
 
 interface NavbarProps {
-  isLoaded?: boolean;
+  // Removed isLoaded prop since it's no longer needed
 }
 
-const Navbar = ({ isLoaded = true }: NavbarProps) => {
+const Navbar = ({}: NavbarProps) => {
   const pathname = usePathname();
 
   return (
-    <AnimatePresence>
-      {isLoaded && (
-        <motion.nav
-          initial={{ y: 0, opacity: 1 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0 }}
-          className="w-full py-6 transition-all duration-300 bg-background relative z-50"
-          role="navigation"
-          aria-label="Main navigation"
-        >
+    <motion.nav
+      initial={{ y: 0, opacity: 1 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0 }}
+      className="w-full py-6 transition-all duration-300 bg-background relative z-50"
+      role="navigation"
+      aria-label="Main navigation"
+    >
           {/* Desktop Grid System - 12 columnas exacto como Archive */}
           <div className="hidden md:block w-full px-8">
             <div className="grid grid-cols-12 gap-2">
@@ -147,8 +145,6 @@ const Navbar = ({ isLoaded = true }: NavbarProps) => {
             </div>
           </div>
         </motion.nav>
-      )}
-    </AnimatePresence>
   );
 };
 

@@ -1,0 +1,165 @@
+{
+  "extractedAt": "2025-08-29T22:12:03.418Z",
+  "totalProjects": 20,
+  "projectsWithVideos": [
+    {
+      "id": "4nT5S9jKnRc2NFMzWSzpjN",
+      "title": "TRES PECADOS DESPUES",
+      "artist": "MILO J",
+      "videoUrl": "https://videos.ctfassets.net/9rdevmeb5068/gud8msTbd7b1Hr3eZgf4Y/63a5bf16471d3cc45b0aa0fd792fe9bc/MILO_J_-_TRES_PECADOS_DESPUES_V1.mp4",
+      "order": 37
+    },
+    {
+      "id": "3voWEgsNCM1pgNCU1sGA5E",
+      "title": "SOLA",
+      "artist": "CHITA",
+      "videoUrl": "https://videos.ctfassets.net/9rdevmeb5068/1hOsPqkCkzOZ5JAOW0JGW9/82b8f2ef413ff0dba60361ef1fde199d/CHITA_-_SOLA_V1.mp4",
+      "order": 21
+    },
+    {
+      "id": "539NYSqDxjZNLFFPM6i6JP",
+      "title": "CIRUGIA",
+      "artist": "DILLOM",
+      "videoUrl": "https://videos.ctfassets.net/9rdevmeb5068/4W06IKRKd6G5hx1k9Bjpbd/374bf75c2450c7a7f14707f1f30f28bd/DILLOM_-_CIRUGIA_V1mp4.mp4",
+      "order": 27
+    },
+    {
+      "id": "47Xarx2sMmfl2XC8Y9YwfB",
+      "title": "BUENOS TIEMPOS",
+      "artist": "DILLOM",
+      "videoUrl": "https://videos.ctfassets.net/9rdevmeb5068/23yjzZsUV7JgNW0lXrMMEK/ca1bfa84c7c95e90a76f3aaf922afee8/DILLOM_-_BUENOS_TIEMPOS_V1.mp4",
+      "order": 26
+    },
+    {
+      "id": "3qqKoY4cQ02Qgfto8TbTi",
+      "title": "S.O.S",
+      "artist": "TAICHU FT LALI",
+      "videoUrl": "https://videos.ctfassets.net/9rdevmeb5068/6SaZ7SbyF2sGPImeyrLOFS/64eddf56fe11e9cc79bd75fbdfaf8f00/TAICHU_FT_LALI_-_S.O.S_V1.mp4",
+      "order": 24
+    },
+    {
+      "id": "2gq6ishL9kv23ebEaeMg3q",
+      "title": "PRIMER AVISO",
+      "artist": "MARIA BECERRA",
+      "videoUrl": "https://videos.ctfassets.net/9rdevmeb5068/014YdDg0UlfAV5iuDFfQlw/c2013119026daa3064969c7213e3e973/MARIA_BECERRA_-_PRIMER_AVISO_V1.mp4",
+      "order": 15
+    },
+    {
+      "id": "2K1BiRVu5DldhGBrj6mRTW",
+      "title": "COSAS PARA DECIRTE",
+      "artist": "CONOCIENDO RUSIA",
+      "videoUrl": "https://videos.ctfassets.net/9rdevmeb5068/7vtQWmtoir0SeNfoGELB07/10ef4e7c691adac8d8e50e3a813adbd8/CONOCIENDO_RUSIA_-_COSAS_PARA_DECIRTE_V2.mp4",
+      "order": 2
+    }
+  ],
+  "projectsWithoutVideos": [
+    {
+      "id": "4AmV2ESr3E4J7oATeSBKSt",
+      "title": "MÁS FELÍZ",
+      "artist": "SARAMALACARA",
+      "videoUrl": null,
+      "order": 22
+    },
+    {
+      "id": "3ZonFUV0y6VHF5XeRaO18f",
+      "title": "CORAZÓN VACÍO",
+      "artist": "MARIA BECERRA",
+      "videoUrl": null,
+      "order": 12
+    },
+    {
+      "id": "2aXQRUw5IfOf0XMNd1T4x8",
+      "title": "SI QUIEREN FRONTEAR",
+      "artist": "DUKI, DE LA GHETTO, QUEVEDO",
+      "videoUrl": null,
+      "order": 4
+    },
+    {
+      "id": "1tcxeQkPCMq9ppNjrqixmh",
+      "title": "CUÁNDO SERÁ",
+      "artist": "ALOE",
+      "videoUrl": null,
+      "order": 1
+    },
+    {
+      "id": "4tbZdZQKymCgDXBNUgglNX",
+      "title": "LA FELIEROJA",
+      "artist": "SEBASTIAN YATRA",
+      "videoUrl": null,
+      "order": 33
+    },
+    {
+      "id": "4yRbqEbCDUtTlhWxHKFwJP",
+      "title": "AL LOLI",
+      "artist": "MILO J",
+      "videoUrl": null,
+      "order": 31
+    },
+    {
+      "id": "1f0NgPaDCwMUKaGWrzXs4N",
+      "title": "MISMO AMOR",
+      "artist": "JULIETA VENEGAS",
+      "videoUrl": null,
+      "order": 14
+    },
+    {
+      "id": "aMFoNshCOA5SSugC6j12L",
+      "title": "CON OTRA",
+      "artist": "CAZZU",
+      "videoUrl": null,
+      "order": 34
+    },
+    {
+      "id": "57e7k6bvEzztkwLx3niSj7",
+      "title": "TEMPLO DE PICEAS",
+      "artist": "SEBASTIAN YATRA",
+      "videoUrl": null,
+      "order": 30
+    },
+    {
+      "id": "yGGYTiLUEMxFTJP9fUsgX",
+      "title": "EN TU ORILLA",
+      "artist": "JULIETA VENEGAS",
+      "videoUrl": null,
+      "order": 19
+    },
+    {
+      "id": "4ZP45bk8oPeHqxOxiIuSJA",
+      "title": "IMAN",
+      "artist": "MARIA BECERRA",
+      "videoUrl": null,
+      "order": 17
+    },
+    {
+      "id": "3CxK0mk3IDdoYFMMSDKNM7",
+      "title": "AUTOMATICO",
+      "artist": "MARIA BECERRA",
+      "videoUrl": null,
+      "order": 10
+    },
+    {
+      "id": "gSAKBcTusiNByZCyvicFO",
+      "title": "ANTES DE PERDERTE",
+      "artist": "DUKI",
+      "videoUrl": null,
+      "order": 6
+    }
+  ],
+  "videoMap": {
+    "PLANETARIO": "https://videos.ctfassets.net/9rdevmeb5068/6fWQXhT2T1k9M5V48cpIho/f5ca453de64da5cef5dbc70b6540beb2/SOFIA_PONCINI_-_PLANETARIO.mp4",
+    "BAR SCORPIO": "https://videos.ctfassets.net/9rdevmeb5068/7Fhbp5HGXSwh44WDp5MiO1/2b64ea815e45e85ef9767e17f4c164c7/BLAIR_-_BAR_SCORPIOS_V1.mp4",
+    "BUENOS TIEMPOS": "https://videos.ctfassets.net/9rdevmeb5068/23yjzZsUV7JgNW0lXrMMEK/ca1bfa84c7c95e90a76f3aaf922afee8/DILLOM_-_BUENOS_TIEMPOS_V1.mp4",
+    "DILLOM - MARILINA BERTOLDI - AIRBAG": "https://videos.ctfassets.net/9rdevmeb5068/4majAoSnk0aeEDDdy6NQoN/0807fede7db323d02e26c8345620fced/SPOTIFY_DILLOM.mp4",
+    "CORAZON VACIO": "https://videos.ctfassets.net/9rdevmeb5068/6tDg6TwL5Lcz3tmD4DKOT6/6548e8a788e2ae1909cd64115023f854/MARIA_BECERRA_CORAZON_VACIO_V1.mp4",
+    "COSAS PARA DECIRTE": "https://videos.ctfassets.net/9rdevmeb5068/7vtQWmtoir0SeNfoGELB07/10ef4e7c691adac8d8e50e3a813adbd8/CONOCIENDO_RUSIA_-_COSAS_PARA_DECIRTE_V2.mp4",
+    "KILOMETROS QUE NOS MUEVEN": "https://videos.ctfassets.net/9rdevmeb5068/10SukKYL3PZi4wEDxtPLON/1407352687c426e2f7e66e84e65ef5a4/BONAFONT_-_MAMAHUNGARA_V1.mp4",
+    "CHITA - SOLA V1": "https://videos.ctfassets.net/9rdevmeb5068/1hOsPqkCkzOZ5JAOW0JGW9/82b8f2ef413ff0dba60361ef1fde199d/CHITA_-_SOLA_V1.mp4",
+    "YATRA - PELIROJA V1": "https://videos.ctfassets.net/9rdevmeb5068/5SqPMN08XTEHWVuRgiyqgd/6ed49a5b20aa0adc4d5f86d98e94130d/YATRA_-_PELIROJA_V1.mp4",
+    "LA PELIRROJA": "https://videos.ctfassets.net/9rdevmeb5068/75z7T6B22SOAKXgPWmyYnW/452af90f850d667ecf076f48694277fe/YATRA_-_PELIROJA_V2.mp4",
+    "S.O.S": "https://videos.ctfassets.net/9rdevmeb5068/6SaZ7SbyF2sGPImeyrLOFS/64eddf56fe11e9cc79bd75fbdfaf8f00/TAICHU_FT_LALI_-_S.O.S_V1.mp4",
+    "TRES PECADOS DESPUES": "https://videos.ctfassets.net/9rdevmeb5068/gud8msTbd7b1Hr3eZgf4Y/63a5bf16471d3cc45b0aa0fd792fe9bc/MILO_J_-_TRES_PECADOS_DESPUES_V1.mp4",
+    "PRIMER AVISO": "https://videos.ctfassets.net/9rdevmeb5068/014YdDg0UlfAV5iuDFfQlw/c2013119026daa3064969c7213e3e973/MARIA_BECERRA_-_PRIMER_AVISO_V1.mp4",
+    "CIRUGIA": "https://videos.ctfassets.net/9rdevmeb5068/4W06IKRKd6G5hx1k9Bjpbd/374bf75c2450c7a7f14707f1f30f28bd/DILLOM_-_CIRUGIA_V1mp4.mp4",
+    "SOLA - CHITA - SOLA V2.mp4": "https://videos.ctfassets.net/9rdevmeb5068/43x6JTz12OltWZW2LyRR2l/45c6ea95ac1e8222af253df12da869a4/CHITA_-_SOLA_V2.mp4"
+  }
+}

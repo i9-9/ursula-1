@@ -7,6 +7,7 @@ import ClientWrapper from './components/ClientWrapper';
 import ScrollbarStyles from './components/ScrollbarStyles';
 import ThemeProvider from './components/ThemeProvider';
 import ChunkErrorBoundary from './components/ChunkErrorBoundary';
+import { SplashProvider } from './contexts/SplashContext';
 
 export const metadata: Metadata = {
   title: 'Ursula Benavidez - Portfolio',
@@ -83,14 +84,16 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
-          <ClientWrapper>
-            <ChunkErrorBoundary>
-              <div className="min-h-screen bg-background text-foreground">
-                <NavbarWithLoader />
-                {children}
-              </div>
-            </ChunkErrorBoundary>
-          </ClientWrapper>
+          <SplashProvider>
+            <ClientWrapper>
+              <ChunkErrorBoundary>
+                <div className="min-h-screen bg-background text-foreground">
+                  <NavbarWithLoader />
+                  {children}
+                </div>
+              </ChunkErrorBoundary>
+            </ClientWrapper>
+          </SplashProvider>
           <ScrollbarStyles />
         </ThemeProvider>
       </body>

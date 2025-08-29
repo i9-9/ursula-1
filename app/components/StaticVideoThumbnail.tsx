@@ -27,9 +27,9 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
 
   const handleMouseEnter = () => {
     if (videoRef.current && isVideoLoaded) {
-      videoRef.current.play().catch((error) => {
-        console.log('Autoplay failed:', error);
-      });
+              videoRef.current.play().catch(() => {
+          // Autoplay failed silently
+        });
     }
   };
 
@@ -104,7 +104,7 @@ const StaticVideoThumbnail = ({ src, poster, alt, className = '', onClick }: Sta
               alt={alt}
               className="w-full h-auto object-cover"
               loading="lazy"
-              onLoad={() => console.log('Image loaded:', poster)}
+      
               onError={() => console.error('Error loading image:', poster)}
             />
           )}

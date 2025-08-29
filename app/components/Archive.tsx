@@ -20,30 +20,20 @@ const Archive = ({ projects }: ArchiveProps) => {
   const filteredItems = useMemo(() => {
     if (!projects || projects.length === 0) return [];
     
-    console.log(`🔍 Archive: Recibidos ${projects.length} proyectos`);
-    
     let filtered = projects.filter(project => {
       const hasTitle = !!(project.title && project.title.trim());
       const hasArtist = !!(project.artist && project.artist.trim());
       return hasTitle && hasArtist;
     });
     
-    console.log(`🔍 Archive: Después del filtro básico: ${filtered.length} proyectos`);
-    
     if (selectedFilter === 'music-videos') {
       filtered = filtered.filter(project => project.category === 'MUSIC VIDEOS');
-      console.log(`🔍 Archive: Filtro MUSIC VIDEOS: ${filtered.length} proyectos`);
     } else if (selectedFilter === 'commercial') {
       filtered = filtered.filter(project => project.category === 'COMMERCIAL');
-      console.log(`🔍 Archive: Filtro COMMERCIAL: ${filtered.length} proyectos`);
     } else if (selectedFilter === 'set-design') {
       filtered = filtered.filter(project => project.category === 'SET DESIGN');
-      console.log(`🔍 Archive: Filtro SET DESIGN: ${filtered.length} proyectos`);
     } else if (selectedFilter === 'film') {
       filtered = filtered.filter(project => project.category === 'FILM');
-      console.log(`🔍 Archive: Filtro FILM: ${filtered.length} proyectos`);
-    } else {
-      console.log(`🔍 Archive: Sin filtro (todos): ${filtered.length} proyectos`);
     }
 
     return filtered.map((project, index) => ({ 
@@ -227,4 +217,4 @@ const Archive = ({ projects }: ArchiveProps) => {
   );
 };
 
-export default Archive;
+export default Archive; 

@@ -14,11 +14,11 @@ const VideoThumbnail = ({ src, alt, className = '', vimeoId, youtubeUrl }: Video
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // Debug logging
-  console.log('VideoThumbnail props:', { src, alt, vimeoId, youtubeUrl });
+
 
   // Si tenemos Vimeo ID, mostrar thumbnail de Vimeo
   if (vimeoId) {
-    console.log(`Loading Vimeo thumbnail for ID: ${vimeoId}`);
+    
     return (
       <div className={`${className} relative`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -27,13 +27,13 @@ const VideoThumbnail = ({ src, alt, className = '', vimeoId, youtubeUrl }: Video
           alt={alt}
           className="w-full h-auto"
           onError={(e) => {
-            console.log(`Vimeo thumbnail failed for ID: ${vimeoId}, trying alternative...`);
+    
             const target = e.target as HTMLImageElement;
             // Intentar con tamaño diferente
             target.src = `https://vumbnail.com/${vimeoId}.jpg`;
             target.onerror = () => {
               // Si también falla, usar imagen de fallback
-              console.log(`Vimeo thumbnail completely failed for ID: ${vimeoId}, using fallback`);
+      
               target.src = '/images/hero/chita-sola.jpg';
             };
           }}
@@ -54,7 +54,7 @@ const VideoThumbnail = ({ src, alt, className = '', vimeoId, youtubeUrl }: Video
             alt={alt}
             className="w-full h-auto"
             onError={(e) => {
-              console.log(`YouTube thumbnail failed for ID: ${videoId}, trying alternative...`);
+      
               const target = e.target as HTMLImageElement;
               // Intentar con tamaño diferente
               target.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
@@ -140,7 +140,7 @@ const VideoThumbnail = ({ src, alt, className = '', vimeoId, youtubeUrl }: Video
           alt={alt}
           className="w-full h-auto"
           onError={(e) => {
-            console.log(`Image failed to load: ${src}, using fallback`);
+    
             const target = e.target as HTMLImageElement;
             target.src = '/images/hero/chita-sola.jpg';
           }}
