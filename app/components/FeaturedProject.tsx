@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import { motion } from 'framer-motion'
-import { PortfolioItem } from '@/lib/contentful'
+import { HeroSlide } from '@/lib/contentful'
 
 const localWorks: Array<{
   title?: string
@@ -13,16 +13,48 @@ const localWorks: Array<{
 ]
 
 // Memoized helper function
-const getVideoSource = (project: PortfolioItem): string => {
-  if (project.fullImage) return project.fullImage
-  if (project.thumbnail) return project.thumbnail
-  if (project.vimeoId) {
-    return `https://player.vimeo.com/video/${project.vimeoId}?controls=0&background=1&autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`
+const getVideoSource = (slide: HeroSlide): string => {
+  console.log('🔍 getVideoSource: Processing slide:', slide);
+  console.log('🔍 getVideoSource: slide.videoUrl:', slide.videoUrl);
+  console.log('🔍 getVideoSource: slide.src:', slide.src);
+  
+  // Check if it's a YouTube URL
+  if (slide.videoUrl && (slide.videoUrl.includes('youtube.com') || slide.videoUrl.includes('youtu.be'))) {
+    console.log('🔍 getVideoSource: YouTube URL detected:', slide.videoUrl);
+    const youtubeId = slide.videoUrl.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&\n?#]+)/)?.[1];
+    if (youtubeId) {
+      const embedUrl = `https://www.youtube.com/embed/${youtubeId}?controls=0&modestbranding=1&rel=0&showinfo=0&autoplay=1&mute=1`;
+      console.log('🔍 getVideoSource: Converted to embed URL:', embedUrl);
+      return embedUrl;
+    }
   }
   
+  // Check if it's a Vimeo URL
+  if (slide.videoUrl && slide.videoUrl.includes('vimeo.com')) {
+    console.log('🔍 getVideoSource: Vimeo URL detected:', slide.videoUrl);
+    const vimeoId = slide.videoUrl.match(/vimeo\.com\/(\d+)/)?.[1];
+    if (vimeoId) {
+      const embedUrl = `https://player.vimeo.com/video/${vimeoId}?controls=0&background=1&autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`;
+      console.log('🔍 getVideoSource: Converted to embed URL:', embedUrl);
+      return embedUrl;
+    }
+  }
+  
+  // Direct video URL (MP4, etc.)
+  if (slide.videoUrl) {
+    console.log('🔍 getVideoSource: Using direct videoUrl:', slide.videoUrl);
+    return slide.videoUrl;
+  }
+  
+  if (slide.src) {
+    console.log('🔍 getVideoSource: Using src:', slide.src);
+    return slide.src;
+  }
+  
+  console.log('🔍 getVideoSource: No direct video source, checking localWorks');
   const localWork = localWorks.find(work => 
-    work.title?.toLowerCase().includes(project.title.toLowerCase()) ||
-    project.title.toLowerCase().includes(work.title?.toLowerCase() || '')
+    work.title?.toLowerCase().includes(slide.title.toLowerCase()) ||
+    slide.title.toLowerCase().includes(work.title?.toLowerCase() || '')
   )
   
   if (localWork?.vimeoId) {
@@ -40,11 +72,17 @@ const getVideoSource = (project: PortfolioItem): string => {
 }
 
 // Memoized video component
-const VideoSlide = ({ project }: { project: PortfolioItem }) => {
-  const videoSource = useMemo(() => getVideoSource(project), [project])
+const VideoSlide = ({ slide }: { slide: HeroSlide }) => {
+  const videoSource = useMemo(() => getVideoSource(slide), [slide])
+  
+  console.log('🔍 VideoSlide: Rendering slide:', slide);
+  console.log('🔍 VideoSlide: videoSource:', videoSource);
+  console.log('🔍 VideoSlide: slide.videoUrl:', slide.videoUrl);
+  console.log('🔍 VideoSlide: slide.src:', slide.src);
   
   const VideoContent = useMemo(() => {
     if (!videoSource) {
+      console.log('🔍 VideoSlide: No video source, showing fallback');
       return (
         <div className="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center">
           <p className="text-gray-500 text-sm">Video no disponible</p>
@@ -58,10 +96,9 @@ const VideoSlide = ({ project }: { project: PortfolioItem }) => {
           src={videoSource}
           className="absolute inset-0 w-full h-full z-0"
           frameBorder="0"
-          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-          referrerPolicy="no-referrer-when-downgrade"
+          allow="autoplay; encrypted-media"
           allowFullScreen
-          title={project.title}
+          title={slide.title}
           loading="lazy"
         />
       )
@@ -78,16 +115,16 @@ const VideoSlide = ({ project }: { project: PortfolioItem }) => {
         preload="metadata"
       />
     )
-  }, [videoSource, project.title])
+  }, [videoSource, slide.title])
   
   return VideoContent
 }
 
 interface FeaturedProjectProps {
-  works?: PortfolioItem[]
+  heroSlides?: HeroSlide[]
 }
 
-const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
+const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const slideRefs = useRef<HTMLDivElement[]>([])
@@ -100,42 +137,54 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
     setIsHydrated(true)
   }, [])
 
-  // Memoized projects to avoid recalculation
-  const projects = useMemo(() => {
-    const baseProjects = works.length > 0 ? works : [
+  // Memoized slides to avoid recalculation
+  const slides = useMemo((): HeroSlide[] => {
+    console.log('🔍 FeaturedProject: heroSlides received:', heroSlides);
+    console.log('🔍 FeaturedProject: heroSlides length:', heroSlides?.length);
+    console.log('🔍 FeaturedProject: heroSlides type:', typeof heroSlides);
+    console.log('🔍 FeaturedProject: heroSlides keys:', heroSlides ? Object.keys(heroSlides) : 'undefined');
+    
+    if (heroSlides && heroSlides.length > 0) {
+      console.log('🔍 FeaturedProject: Using heroSlides from Contentful');
+      console.log('🔍 FeaturedProject: First slide:', heroSlides[0]);
+      return heroSlides;
+    }
+    
+    console.log('🔍 FeaturedProject: Using fallback local works');
+    // Fallback to local works if no heroSlides provided
+    return [
       {
         id: 'grid-1',
         title: 'Tres Pecados Después',
-        artist: 'Milo J',
-        year: '2024',
-        thumbnail: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
-        fullImage: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
-        contentType: 'video' as const,
-        description: 'Videoclip para Milo J - Tres Pecados Después.',
+        client: 'Milo J',
+        src: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
+        alt: 'Videoclip para Milo J - Tres Pecados Después',
+        type: 'video' as const,
+        videoUrl: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
+        order: 1,
       },
       {
         id: 'grid-2',
         title: 'Ali Oli',
-        artist: 'Milo J',
-        year: '2024',
-        thumbnail: '/videos_grid/2 Milo J - Ali Oli.mp4',
-        fullImage: '/videos_grid/2 Milo J - Ali Oli.mp4',
-        contentType: 'video' as const,
-        description: 'Videoclip para Milo J - Ali Oli.',
+        client: 'Milo J',
+        src: '/videos_grid/2 Milo J - Ali Oli.mp4',
+        alt: 'Videoclip para Milo J - Ali Oli',
+        type: 'video' as const,
+        videoUrl: '/videos_grid/2 Milo J - Ali Oli.mp4',
+        order: 2,
       },
       {
         id: 'grid-3',
         title: 'Sola',
-        artist: 'Chita',
-        year: '2024',
-        thumbnail: '/videos_grid/3 - Chita - Sola.mp4',
-        fullImage: '/videos_grid/3 - Chita - Sola.mp4',
-        contentType: 'video' as const,
-        description: 'Videoclip para Chita - Sola.',
+        client: 'Chita',
+        src: '/videos_grid/3 - Chita - Sola.mp4',
+        alt: 'Videoclip para Chita - Sola',
+        type: 'video' as const,
+        videoUrl: '/videos_grid/3 - Chita - Sola.mp4',
+        order: 3,
       }
-    ]
-    return baseProjects.slice(0, 3)
-  }, [works])
+    ];
+  }, [heroSlides])
 
   // Optimized scroll update with proper throttling
   const updateCurrentIndexFromScroll = useCallback(() => {
@@ -169,7 +218,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
   useLayoutEffect(() => {
     if (!isHydrated) return
     
-    const middleIndex = Math.floor(projects.length / 2)
+    const middleIndex = Math.floor(slides.length / 2)
     setCurrentIndex(middleIndex)
 
     const container = scrollContainerRef.current
@@ -180,7 +229,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
     container.style.scrollBehavior = 'auto'
     target.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' })
     container.style.scrollBehavior = previousBehavior
-  }, [projects.length, isHydrated])
+  }, [slides.length, isHydrated])
 
   // Optimized scroll listener with RAF throttling
   useEffect(() => {
@@ -238,6 +287,26 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
     }
   }, [])
 
+  console.log('🔍 FeaturedProject: Rendering with slides:', slides);
+  console.log('🔍 FeaturedProject: slides length:', slides.length);
+  console.log('🔍 FeaturedProject: isHydrated:', isHydrated);
+  console.log('🔍 FeaturedProject: Component is rendering!');
+  console.log('🔍 FeaturedProject: About to return JSX...');
+  
+  // If no slides, show a fallback message
+  if (slides.length === 0) {
+    console.log('🔍 FeaturedProject: No slides, showing fallback message');
+    return (
+      <section className="absolute inset-0 px-0 bg-red-600 text-white overflow-hidden flex flex-col items-center justify-center" style={{ height: '100vh', paddingTop: 0 }}>
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">No Featured Projects Available</h1>
+          <p className="text-lg">Please check your Contentful configuration or add some projects.</p>
+        </div>
+      </section>
+    );
+  }
+  
+  console.log('🔍 FeaturedProject: About to return main JSX...');
   return (
     <section 
       className="absolute inset-0 px-0 bg-background text-foreground overflow-hidden flex flex-col items-center justify-center"
@@ -246,6 +315,7 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
         paddingTop: 0
       }}
     >
+      
       <div className="w-full flex items-center justify-center">
         <div 
           ref={scrollContainerRef}
@@ -261,23 +331,30 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
             div::-webkit-scrollbar {
               display: none;
             }
+            
+            /* Hacer que YouTube se vea más limpio */
+            iframe[src*="youtube.com/embed"] {
+              border-radius: 8px;
+              box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
           `}</style>
           <div className="flex items-center justify-start gap-0 w-max" style={{ minHeight: '0' }}>
             {/* Left spacer to allow first slide to center */}
             <div className="flex-shrink-0" style={{ width: 'calc((100vw - 72vw)/2)' }} aria-hidden="true" />
             
-            {projects.map((project, index) => {
+            {slides.map((slide, index) => {
+              console.log(`🔍 FeaturedProject: Rendering slide ${index}:`, slide);
               const isActive = isHydrated && index === currentIndex
               
               return (
                 <div
-                  key={project.id}
+                  key={slide.id}
                   ref={(el) => { if (el) slideRefs.current[index] = el }}
                   className="group flex-shrink-0 snap-center"
                   style={{ width: '72vw' }}
                   role="group"
                   aria-roledescription="slide"
-                  aria-label={`${project.title} by ${project.artist}`}
+                  aria-label={`${slide.title} by ${slide.client}`}
                 >
                   <div
                     className={`transition-all duration-300 ease-out will-change-transform ${isActive ? 'filter-none' : 'filter blur-[1px]'}`}
@@ -286,21 +363,21 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
                       opacity: isActive ? 1 : 0.2
                     }}
                   >
-                  <motion.div
+                    <motion.div
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, ease: 'easeOut' }}
-                    className="relative w-full"
+                      transition={{ duration: 0.35, ease: 'easeOut' }}
+                      className="relative w-full"
                       style={{ paddingBottom: '56.25%' }}
                     >
-                      <VideoSlide project={project} />
+                      <VideoSlide slide={slide} />
                       {/* Hover overlay only on active slide */}
                       {isActive && (
                         <div className="absolute inset-0 z-20 group" aria-hidden="true">
                           <div className="pointer-events-none absolute inset-0 flex items-end p-3 md:p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                             <div className="bg-background/70 text-white px-2 py-1">
-                              <div className="text-sm md:text-base font-medium uppercase leading-tight text-white">{project.title}</div>
-                              <div className="text-xs md:text-sm opacity-80 uppercase text-white">{project.artist}{project.year ? ` · ${project.year}` : ''}</div>
+                              <div className="text-sm md:text-base font-medium uppercase leading-tight text-white">{slide.title}</div>
+                              <div className="text-xs md:text-sm opacity-80 uppercase text-white">{slide.client}{slide.order ? ` · ${slide.order}` : ''}</div>
                             </div>
                           </div>
                         </div>
@@ -318,6 +395,8 @@ const FeaturedProject = ({ works = [] }: FeaturedProjectProps) => {
       </div>
     </section>
   )
+  
+  console.log('🔍 FeaturedProject: JSX rendered successfully');
 }
 
 export default FeaturedProject

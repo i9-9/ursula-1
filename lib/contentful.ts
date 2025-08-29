@@ -363,45 +363,96 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
   }
 
   try {
-    const entries = await client.getEntries({
+    // First try to get heroSlide content type
+    let entries = await client.getEntries({
       content_type: 'heroSlide',
       order: ['fields.order'],
       limit: 10,
     });
     
-    if (entries.items.length === 0) {
-      console.log('📱 No hero slides found in Contentful');
-      return [];
+    if (entries.items.length > 0) {
+      console.log(`✅ Fetched ${entries.items.length} hero slides from Contentful`);
+      
+      return entries.items.map((item: { 
+        fields: { 
+          title?: string;
+          client?: string;
+          image?: { fields?: { file?: { url?: string }; description?: string } };
+          videoUrl?: string;
+          order?: number;
+        }; 
+        sys: { id: string } 
+      }) => {
+        const fields = item.fields;
+        const imageUrl = fields.image?.fields?.file?.url 
+          ? `https:${fields.image.fields.file.url}` 
+          : '';
+        
+        return {
+          id: item.sys.id,
+          title: fields.title || '',
+          client: fields.client || '',
+          src: imageUrl ? optimizeContentfulImage(imageUrl, 1920, 1080, 'webp', 85) : '',
+          alt: fields.image?.fields?.description || fields.title || '',
+          type: fields.videoUrl ? 'video' as const : 'image' as const,
+          videoUrl: fields.videoUrl,
+          order: fields.order,
+        };
+      });
     }
     
-    console.log(`✅ Fetched ${entries.items.length} hero slides from Contentful`);
-    
-    return entries.items.map((item: { 
-      fields: { 
-        title?: string;
-        client?: string;
-        image?: { fields?: { file?: { url?: string }; description?: string } };
-        videoUrl?: string;
-        order?: number;
-      }; 
-      sys: { id: string } 
-    }) => {
-      const fields = item.fields;
-      const imageUrl = fields.image?.fields?.file?.url 
-        ? `https:${fields.image.fields.file.url}` 
-        : '';
-      
-      return {
-        id: item.sys.id,
-        title: fields.title || '',
-        client: fields.client || '',
-        src: imageUrl ? optimizeContentfulImage(imageUrl, 1920, 1080, 'webp', 85) : '',
-        alt: fields.image?.fields?.description || fields.title || '',
-        type: fields.videoUrl ? 'video' as const : 'image' as const,
-        videoUrl: fields.videoUrl,
-        order: fields.order,
-      };
+    // Fallback: Get featured projects from portfolioItem content type
+    console.log('📱 No hero slides found, falling back to featured portfolio items');
+    entries = await client.getEntries({
+      content_type: 'portfolioItem',
+      'fields.isFeatured': true,
+      order: ['fields.order'],
+      limit: 3,
     });
+    
+    if (entries.items.length === 0) {
+      // If no featured items, get the first 3 items
+      entries = await client.getEntries({
+        content_type: 'portfolioItem',
+        order: ['fields.order'],
+        limit: 3,
+      });
+    }
+    
+    if (entries.items.length > 0) {
+      console.log(`✅ Fetched ${entries.items.length} portfolio items for hero`);
+      
+      return entries.items.map((item: { 
+        fields: { 
+          title?: string;
+          artist?: string;
+          thumbnail?: { fields?: { file?: { url?: string } } };
+          videoUrl?: string;
+          order?: number;
+        }; 
+        sys: { id: string } 
+      }) => {
+        const fields = item.fields;
+        const imageUrl = fields.thumbnail?.fields?.file?.url 
+          ? `https:${fields.thumbnail.fields.file.url}` 
+          : '';
+        
+        return {
+          id: item.sys.id,
+          title: fields.title || '',
+          client: fields.artist || '',
+          src: imageUrl ? optimizeContentfulImage(imageUrl, 1920, 1080, 'webp', 85) : '',
+          alt: fields.title || '',
+          type: fields.videoUrl ? 'video' as const : 'image' as const,
+          videoUrl: fields.videoUrl,
+          order: fields.order,
+        };
+      });
+    }
+    
+    console.log('📱 No portfolio items found either');
+    return [];
+    
   } catch (error) {
     console.error('❌ Error fetching hero slides from Contentful:', error);
     return [];
