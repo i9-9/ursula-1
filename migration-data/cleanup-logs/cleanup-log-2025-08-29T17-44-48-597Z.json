@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-08-29T17:44:48.596Z",
+  "action": "cleanup-old-content-types",
+  "contentTypesDeleted": [
+    "portfolioItem",
+    "archiveItem"
+  ],
+  "remainingContentTypes": [
+    {
+      "id": "projects",
+      "name": "Projects"
+    },
+    {
+      "id": "archiveItem",
+      "name": "archiveItem"
+    },
+    {
+      "id": "portfolioItem",
+      "name": "portfolioItem"
+    },
+    {
+      "id": "archiveSection",
+      "name": "archiveSection"
+    },
+    {
+      "id": "heroSlide",
+      "name": "heroSlide"
+    }
+  ],
+  "projectsCount": 37,
+  "worksGridCount": 24,
+  "categoryDistribution": {
+    "MUSIC VIDEOS": 31,
+    "SET DESIGN": 2,
+    "COMMERCIAL": 3,
+    "FILM": 1
+  }
+}

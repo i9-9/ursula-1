@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import WorksGrid from './WorksGrid';
 import HomeLoader from './HomeLoader';
-import { PortfolioItem } from '@/lib/contentful';
+import { Project } from '@/lib/contentful';
 
 interface WorkLoaderProps {
-  works: PortfolioItem[];
+  works: Project[];
 }
 
 export default function WorkLoader({ works }: WorkLoaderProps) {

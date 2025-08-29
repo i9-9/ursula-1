@@ -3,39 +3,13 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useHydration, useSafeBrowserEffect } from '../hooks/useHydration';
-
-// Types matching your Contentful structure
-interface ArchiveItem {
-  title?: string;
-  artist?: string;
-  project?: string;  
-  company?: string;  
-  year?: string;
-  thumbnail?: string;
-  videoUrl?: string;
-  vimeoId?: string;
-  order?: number;
-  sys?: {
-    id: string;
-    contentType: {
-      sys: {
-        id: string;
-      };
-    };
-  };
-}
-
-interface ArchiveSection {
-  title: string;
-  items: ArchiveItem[];
-  order?: number;
-}
+import { Project } from '@/lib/contentful';
 
 interface ArchiveProps {
-  sections: ArchiveSection[];
+  projects: Project[];
 }
 
-const Archive = ({ sections }: ArchiveProps) => {
+const Archive = ({ projects }: ArchiveProps) => {
   const router = useRouter();
   const [selectedFilter, setSelectedFilter] = useState('');
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
@@ -43,65 +17,40 @@ const Archive = ({ sections }: ArchiveProps) => {
   const isHydrated = useHydration();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const allItems = useMemo(() => {
-    if (!sections || !Array.isArray(sections)) return [];
-    
-    return sections.reduce((acc: ArchiveItem[], section) => {
-      if (section.items && Array.isArray(section.items)) {
-        const validItems = section.items.filter(item => {
-          const contentType = item.sys?.contentType?.sys?.id;
-          return contentType !== 'archiveSection';
-        });
-        acc.push(...validItems);
-      }
-      return acc;
-    }, []);
-  }, [sections]);
-
   const filteredItems = useMemo(() => {
-    if (!allItems || allItems.length === 0) return [];
+    if (!projects || projects.length === 0) return [];
     
-    let filtered = allItems.filter(item => {
-      const hasTitle = !!(item.title && item.title.trim());
-      const hasProject = !!(item.project && item.project.trim());
-      return hasTitle || hasProject;
+    console.log(`🔍 Archive: Recibidos ${projects.length} proyectos`);
+    
+    let filtered = projects.filter(project => {
+      const hasTitle = !!(project.title && project.title.trim());
+      const hasArtist = !!(project.artist && project.artist.trim());
+      return hasTitle && hasArtist;
     });
-
+    
+    console.log(`🔍 Archive: Después del filtro básico: ${filtered.length} proyectos`);
+    
     if (selectedFilter === 'music-videos') {
-      filtered = filtered.filter(item => {
-        return sections.some(section => 
-          section.title === 'MUSIC VIDEOS' && 
-          section.items?.some(sectionItem => sectionItem.sys?.id === item.sys?.id)
-        );
-      });
+      filtered = filtered.filter(project => project.category === 'MUSIC VIDEOS');
+      console.log(`🔍 Archive: Filtro MUSIC VIDEOS: ${filtered.length} proyectos`);
     } else if (selectedFilter === 'commercial') {
-      filtered = filtered.filter(item => {
-        return sections.some(section => 
-          section.title === 'COMMERCIAL' && 
-          section.items?.some(sectionItem => sectionItem.sys?.id === item.sys?.id)
-        );
-      });
+      filtered = filtered.filter(project => project.category === 'COMMERCIAL');
+      console.log(`🔍 Archive: Filtro COMMERCIAL: ${filtered.length} proyectos`);
     } else if (selectedFilter === 'set-design') {
-      filtered = filtered.filter(item => {
-        return sections.some(section => 
-          section.title === 'SET DESIGN' && 
-          section.items?.some(sectionItem => sectionItem.sys?.id === item.sys?.id)
-        );
-      });
+      filtered = filtered.filter(project => project.category === 'SET DESIGN');
+      console.log(`🔍 Archive: Filtro SET DESIGN: ${filtered.length} proyectos`);
     } else if (selectedFilter === 'film') {
-      filtered = filtered.filter(item => {
-        return sections.some(section => 
-          section.title === 'FILM' && 
-          section.items?.some(sectionItem => sectionItem.sys?.id === item.sys?.id)
-        );
-      });
+      filtered = filtered.filter(project => project.category === 'FILM');
+      console.log(`🔍 Archive: Filtro FILM: ${filtered.length} proyectos`);
+    } else {
+      console.log(`🔍 Archive: Sin filtro (todos): ${filtered.length} proyectos`);
     }
 
-    return filtered.map((item, index) => ({ 
-      ...item,
-      displayOrder: index + 1
-    }));
-  }, [allItems, selectedFilter, sections]);
+    return filtered.map((project, index) => ({ 
+      ...project,
+      displayOrder: project.archiveOrder || index + 1
+    })).sort((a, b) => a.displayOrder - b.displayOrder);
+  }, [projects, selectedFilter]);
 
   // Reset animation when filter changes
   useEffect(() => {
@@ -129,9 +78,9 @@ const Archive = ({ sections }: ArchiveProps) => {
     return () => clearTimeout(resetTimer);
   }, [filteredItems, isHydrated]);
 
-  const handleProjectClick = (item: ArchiveItem) => {
-    if (item.sys?.id) {
-      router.push(`/archive/${item.sys.id}`);
+  const handleProjectClick = (item: Project) => {
+    if (item.id) {
+      router.push(`/archive/${item.id}`);
     }
   };
 
@@ -207,7 +156,7 @@ const Archive = ({ sections }: ArchiveProps) => {
               <div className="space-y-1.5" style={{marginLeft: 'calc(33.333% + 52px)'}}>
                 {filteredItems.map((item, index) => (
                   <div 
-                    key={`${item.sys?.id || `item-${index}`}-row`}
+                    key={`${item.id || `item-${index}`}-row`}
                     className={`group cursor-pointer hover:opacity-60 relative transition-all duration-500 ease-out text-left ${
                       visibleItems.has(index)
                         ? 'opacity-100 transform translate-y-0' 
@@ -223,9 +172,8 @@ const Archive = ({ sections }: ArchiveProps) => {
                       style={{ fontFamily: 'Suisse BP INTL' }}
                     >
                       <span className="inline-block w-6 text-[9px]">{String(item.displayOrder).padStart(2, '0')}</span>
-                      {item.title || item.project}
-                      {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
-                      {item.year && ` (${item.year})`}
+                      {item.title}
+                      {item.artist && `, ${item.artist}`}
                     </span>
                   </div>
                 ))}
@@ -242,7 +190,7 @@ const Archive = ({ sections }: ArchiveProps) => {
           <div className="space-y-2 max-w-sm mx-auto">
             {filteredItems.map((item, index) => (
               <div 
-                key={`${item.sys?.id || `item-${index}`}-row`}
+                key={`${item.id || `item-${index}`}-row`}
                 className={`group cursor-pointer hover:opacity-60 text-left relative transition-all duration-500 ease-out ${
                   visibleItems.has(index)
                     ? 'opacity-100 transform translate-y-0' 
@@ -261,9 +209,8 @@ const Archive = ({ sections }: ArchiveProps) => {
                     className="text-foreground text-[14px] tracking-tight uppercase leading-none flex-1"
                     style={{ fontFamily: 'Suisse BP INTL' }}
                   >
-                    {item.title || item.project}
-                    {(item.artist || (item.company && item.company.trim())) && `, ${item.artist || item.company}`}
-                    {item.year && ` (${item.year})`}
+                    {item.title}
+                    {item.artist && `, ${item.artist}`}
                   </span>
                 </div>
               </div>

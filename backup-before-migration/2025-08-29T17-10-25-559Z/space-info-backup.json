@@ -1,0 +1,15 @@
+{
+  "sys": {
+    "type": "Space",
+    "id": "9rdevmeb5068"
+  },
+  "name": "Blank",
+  "locales": [
+    {
+      "code": "en-US",
+      "default": true,
+      "name": "English (United States)",
+      "fallbackCode": null
+    }
+  ]
+}

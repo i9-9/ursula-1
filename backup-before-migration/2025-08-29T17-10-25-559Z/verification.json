@@ -1,0 +1,53 @@
+{
+  "verification": {
+    "timestamp": "2025-08-29T17:10:27.303Z",
+    "totalFiles": 7,
+    "totalSize": 308074,
+    "checksums": {},
+    "totalSizeFormatted": "300.85 KB"
+  },
+  "files": [
+    {
+      "filename": "allEntries-backup.json",
+      "size": 68831,
+      "sizeFormatted": "67.22 KB",
+      "lastModified": "2025-08-29T17:10:27.038Z"
+    },
+    {
+      "filename": "archiveItems-complete-backup.json",
+      "size": 17539,
+      "sizeFormatted": "17.13 KB",
+      "lastModified": "2025-08-29T17:10:25.813Z"
+    },
+    {
+      "filename": "assets-backup.json",
+      "size": 189278,
+      "sizeFormatted": "184.84 KB",
+      "lastModified": "2025-08-29T17:10:26.631Z"
+    },
+    {
+      "filename": "backup-metadata.json",
+      "size": 3118,
+      "sizeFormatted": "3.04 KB",
+      "lastModified": "2025-08-29T17:10:27.303Z"
+    },
+    {
+      "filename": "contentTypes-backup.json",
+      "size": 8964,
+      "sizeFormatted": "8.75 KB",
+      "lastModified": "2025-08-29T17:10:26.218Z"
+    },
+    {
+      "filename": "portfolioItems-complete-backup.json",
+      "size": 20115,
+      "sizeFormatted": "19.64 KB",
+      "lastModified": "2025-08-29T17:10:25.725Z"
+    },
+    {
+      "filename": "space-info-backup.json",
+      "size": 229,
+      "sizeFormatted": "229 Bytes",
+      "lastModified": "2025-08-29T17:10:27.303Z"
+    }
+  ]
+}

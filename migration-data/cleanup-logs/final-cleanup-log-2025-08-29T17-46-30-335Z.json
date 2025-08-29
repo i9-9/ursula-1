@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-08-29T17:46:30.334Z",
+  "action": "final-cleanup",
+  "remainingContentTypes": [
+    {
+      "id": "projects",
+      "name": "Projects",
+      "isPublished": true
+    },
+    {
+      "id": "heroSlide",
+      "name": "heroSlide",
+      "isPublished": true
+    }
+  ],
+  "projectsCount": 37,
+  "worksGridCount": 24,
+  "categoryDistribution": {
+    "MUSIC VIDEOS": 31,
+    "SET DESIGN": 2,
+    "COMMERCIAL": 3,
+    "FILM": 1
+  },
+  "cleanupStatus": "COMPLETED"
+}

@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getPortfolioItems } from '@/lib/contentful';
+import { getWorksGridProjects } from '@/lib/contentful';
 import WorkLoader from '@/app/components/WorkLoader';
 import WorksGridSkeleton from '@/app/components/WorksGridSkeleton';
 
@@ -14,7 +14,7 @@ export default async function WorkPage() {
 }
 
 async function WorkLoaderWrapper() {
-  const works = await getPortfolioItems();
+  const works = await getWorksGridProjects();
   return <WorkLoader works={works} />;
 }
 

@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-08-29T17:45:29.495Z",
+  "action": "force-delete-content-types",
+  "remainingContentTypes": [
+    {
+      "id": "projects",
+      "name": "Projects",
+      "isPublished": true
+    },
+    {
+      "id": "archiveSection",
+      "name": "archiveSection",
+      "isPublished": true
+    },
+    {
+      "id": "heroSlide",
+      "name": "heroSlide",
+      "isPublished": true
+    }
+  ],
+  "unexpectedContentTypes": [
+    {
+      "id": "archiveSection",
+      "name": "archiveSection"
+    }
+  ]
+}

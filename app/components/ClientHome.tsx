@@ -3,18 +3,21 @@
 import { useState, useEffect } from 'react';
 import FeaturedProject from './FeaturedProject'
 import HomeLoader from './HomeLoader';
-import { PortfolioItem, ArchiveSection } from '@/lib/contentful';
+import { HeroSlide } from '@/lib/contentful';
 
 interface ClientHomeProps {
-  initialPortfolioItems: PortfolioItem[];
-  archiveSections: ArchiveSection[];
+  heroSlides: HeroSlide[];
 }
 
-export default function ClientHome({ initialPortfolioItems }: ClientHomeProps) {
+export default function ClientHome({ heroSlides }: ClientHomeProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [, setShowWorks] = useState(
     typeof window !== 'undefined' ? window.innerWidth < 768 : false
   );
+
+  // Debug log para verificar heroSlides
+  console.log('🔍 ClientHome: heroSlides recibidos:', heroSlides);
+  console.log('🔍 ClientHome: Cantidad de heroSlides:', heroSlides?.length);
 
   const handleLoadingComplete = () => {
     setIsLoading(false);
@@ -34,9 +37,9 @@ export default function ClientHome({ initialPortfolioItems }: ClientHomeProps) {
 
   return (
     <>
-      {isLoading && <HomeLoader onLoadingComplete={handleLoadingComplete} />}
+      {isLoading && <HomeLoader onLoadingComplete={handleLoadingComplete} duration={100} />}
       <main className={`min-h-screen transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-        <FeaturedProject works={initialPortfolioItems} />
+        <FeaturedProject heroSlides={heroSlides} />
       </main>
     </>
   );

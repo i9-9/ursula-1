@@ -1,0 +1,124 @@
+{
+  "backupInfo": {
+    "createdAt": "2025-08-29T17:10:27.303Z",
+    "spaceId": "9rdevmeb5068",
+    "environment": "master",
+    "portfolioItemsCount": 20,
+    "archiveItemsCount": 17,
+    "totalItems": 37,
+    "backupType": "COMPLETE_BEFORE_MIGRATION"
+  },
+  "contentTypes": {
+    "portfolioItem": {
+      "fields": [
+        "title",
+        "artist",
+        "thumbnail",
+        "videoUrl",
+        "order"
+      ],
+      "sample": {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "9rdevmeb5068"
+            }
+          },
+          "id": "4AmV2ESr3E4J7oATeSBKSt",
+          "type": "Entry",
+          "createdAt": "2025-08-29T02:28:04.011Z",
+          "updatedAt": "2025-08-29T16:16:41.843Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 7,
+          "revision": 4,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "portfolioItem"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "title": "MÁS FELÍZ",
+          "artist": "SARAMALACARA",
+          "thumbnail": null,
+          "videoUrl": null,
+          "order": 22
+        }
+      }
+    },
+    "archiveItem": {
+      "fields": [
+        "project",
+        "company",
+        "thumbnail",
+        "vimeoId",
+        "videoUrl",
+        "order"
+      ],
+      "sample": {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "9rdevmeb5068"
+            }
+          },
+          "id": "4m1TFeiRVXwWSBFgr0k6g0",
+          "type": "Entry",
+          "createdAt": "2025-08-29T02:27:55.063Z",
+          "updatedAt": "2025-08-29T16:14:21.240Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 14,
+          "revision": 7,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "archiveItem"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "project": "KILÓMETROS QUE NOS MUEVEN",
+          "company": "BONAFONT",
+          "thumbnail": null,
+          "vimeoId": "",
+          "videoUrl": null,
+          "order": 13
+        }
+      }
+    }
+  },
+  "migrationNotes": {
+    "purpose": "Unificar portfolioItem y archiveItem en un solo content type projects",
+    "strategy": "Mantener todos los datos existentes, agregar campos worksGridOrder y archiveOrder",
+    "riskLevel": "LOW - Solo lectura, no se modifican datos existentes"
+  }
+}

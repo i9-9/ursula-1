@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { PortfolioItem } from '@/lib/contentful';
+import { Project } from '@/lib/contentful';
 import StaticVideoThumbnail from './StaticVideoThumbnail';
 
 // Función para generar slug limpio y legible (debe coincidir con la página [slug])
@@ -43,12 +43,12 @@ function generateCleanSlug(title: string, artist: string): string {
 }
 
 interface WorksGridProps {
-  works: PortfolioItem[];
+  works: Project[];
 }
 
 const WorksGrid = ({ works = [] }: WorksGridProps) => {
   // Helper function to get video source
-  const getVideoSource = (project: PortfolioItem) => {
+  const getVideoSource = (project: Project) => {
     // Solo usar videoUrl si es una URL de video directa (archivo)
     if (project.videoUrl && isVideoFile(project.videoUrl)) {
       return project.videoUrl;
@@ -57,8 +57,8 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
     // No usar vimeoId o youtubeUrl como src para el elemento video
     // Estos necesitan ser manejados de manera diferente
     
-    // Default to thumbnail or fullImage
-    return project.thumbnail || project.fullImage || '';
+    // Default to thumbnail
+    return project.thumbnail || '';
   };
 
   // Helper function to check if URL is a direct video file
@@ -69,7 +69,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   // Si no hay proyectos de Contentful, mostrar mensaje o componente vacío
   if (works.length === 0) {
     return (
-      <section className="py-12 md:py-8 px-4 md:px-[15px] fade-in">
+      <section className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in">
         <div className="text-center py-12">
           <p className="text-gray-500">No hay proyectos disponibles.</p>
         </div>
@@ -78,94 +78,99 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   }
 
   return (
-    <section className="py-12 md:py-8 px-4 md:px-[15px] fade-in">
+    <section className="py-12 md:py-16 px-4 md:px-[15px] fade-in">
       <div className="mb-6 md:mb-8">
       </div>
       
-      {/* Mobile/Tablet Layout - Alineado a la izquierda */}
-      <div className="lg:hidden space-y-8 pl-6">
-        {works.map((project, index) => (
-          <Link
-            href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
-            key={project.id}
-            className="block cursor-pointer group relative"
-            aria-label={`Ver ${project.title} by ${project.artist}`}
-          >
-            {/* Project container for mobile/tablet */}
-            <div className="relative">
-              {/* Project number - positioned at top right */}
-              <div className="absolute -top-12 right-0 z-10">
-                <span className="text-[11px] font-normal text-foreground">
-                  {index + 1}
-                </span>
+      {/* Mobile/Tablet Layout - Vertical Stack with more padding */}
+      <div className="lg:hidden space-y-8 px-6">
+        {works.map((project, index) => {
+          console.log('Project archiveOrder:', project.archiveOrder, 'Project:', project.title); // Debug
+          return (
+            <Link
+              href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
+              key={project.id}
+              className="block cursor-pointer group relative"
+              aria-label={`Ver ${project.title} by ${project.artist}`}
+            >
+              {/* Project container for mobile/tablet */}
+              <div className="relative">
+                {/* Project number - positioned consistently with desktop */}
+                <div className="absolute -top-12 right-0 z-10">
+                  <span className="text-xs font-normal text-foreground">
+                    {project.archiveOrder ? project.archiveOrder.toString().padStart(2, '0') : (index + 1).toString().padStart(2, '0')}
+                  </span>
+                </div>
+                
+                {/* Video container - smaller width on mobile/tablet with padding */}
+                <div className="relative w-full max-w-sm mx-auto">
+                  <StaticVideoThumbnail
+                    src={getVideoSource(project)}
+                    poster={project.thumbnail || ''}
+                    alt={project.title}
+                    className="w-full h-auto"
+                  />
+                </div>
               </div>
               
-              {/* Video container - aligned to left and bottom */}
-              <div className="relative w-full max-w-sm">
-                <StaticVideoThumbnail
-                  src={getVideoSource(project)}
-                  poster={project.thumbnail || project.fullImage || ''}
-                  alt={project.title}
-                  className="w-full h-auto self-end"
-                />
+              {/* Title - centered below image */}
+              <div className="mt-4 text-center">
+                <p className="text-base font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {project.title}, {project.artist}
+                </p>
               </div>
-            </div>
-            
-            {/* Title - aligned to left below image */}
-            <div className="mt-4">
-              <p className="text-[14px] font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {project.title}, {project.artist}
-              </p>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </div>
 
-      {/* Desktop Layout - Grid alineado a la izquierda */}
+      {/* Desktop Layout - Grid (only on large screens) */}
       <div 
-        className="hidden lg:grid w-full grid-cols-12 gap-y-20 gap-x-24 md:gap-x-32 mx-auto items-end"
+        className="hidden lg:grid w-full grid-cols-12 gap-y-20 gap-x-24 md:gap-x-32 mx-auto"
         role="grid"
         aria-label="Projects grid"
       >
-        {works.map((project, index) => (
-          <Link
-            href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
-            key={project.id}
-            className={`block cursor-pointer group relative col-span-6 lg:col-span-3 ${
-              index % 4 === 0 ? 'section-title section-title-delay-1' : 
-              index % 4 === 1 ? 'section-title section-title-delay-2' : 
-              index % 4 === 2 ? 'section-title section-title-delay-3' : 'section-title section-title-delay-4'
-            }`}
-            aria-label={`Ver ${project.title} by ${project.artist}`}
-          >
-            {/* Project container */}
-            <div className="relative">
-              {/* Project number */}
-              <div className="absolute -top-12 right-0 z-10">
-                <span className="text-[9px] font-normal text-foreground">
-                  {index + 1}
-                </span>
+        {works.map((project, index) => {
+          console.log('Project archiveOrder:', project.archiveOrder, 'Project:', project.title); // Debug
+          return (
+            <Link
+              href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
+              key={project.id}
+              className={`block cursor-pointer group relative col-span-6 lg:col-span-3 ${
+                index % 4 === 0 ? 'section-title section-title-delay-1' : 
+                index % 4 === 1 ? 'section-title section-title-delay-2' : 
+                index % 4 === 2 ? 'section-title section-title-delay-3' : 'section-title section-title-delay-4'
+              }`}
+              aria-label={`Ver ${project.title} by ${project.artist}`}
+            >
+              {/* Project container */}
+              <div className="relative">
+                {/* Project number */}
+                <div className="absolute -top-12 right-0 z-10">
+                  <span className="text-xs font-normal text-foreground">
+                    {project.archiveOrder ? project.archiveOrder.toString().padStart(2, '0') : (index + 1).toString().padStart(2, '0')}
+                  </span>
+                </div>
+                
+                {/* Video container */}
+                <div className="relative w-full">
+                  <StaticVideoThumbnail
+                    src={getVideoSource(project)}
+                    poster={project.thumbnail || ''}
+                    alt={project.title}
+                    className="w-full h-auto"
+                  />
+                </div>
               </div>
               
-              {/* Video container - aligned to left and bottom */}
-              <div className="relative w-full">
-                <StaticVideoThumbnail
-                  src={getVideoSource(project)}
-                  poster={project.thumbnail || project.fullImage || ''}
-                  alt={project.title}
-                  className="w-full h-auto self-end"
-                />
+              <div className="mt-2">
+                <p className="text-sm md:text-base font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {project.title}, {project.artist}
+                </p>
               </div>
-            </div>
-            
-            {/* Title - aligned to left below image */}
-            <div className="mt-2">
-              <p className="text-[12px] font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {project.title}, {project.artist}
-              </p>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

@@ -1,0 +1,2962 @@
+{
+  "sys": {
+    "type": "Array"
+  },
+  "total": 44,
+  "skip": 0,
+  "limit": 1000,
+  "items": [
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "4AmV2ESr3E4J7oATeSBKSt",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:04.011Z",
+        "updatedAt": "2025-08-29T16:16:41.843Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 7,
+        "revision": 4,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "MÁS FELÍZ",
+        "artist": "SARAMALACARA",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 22
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "4m1TFeiRVXwWSBFgr0k6g0",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:55.063Z",
+        "updatedAt": "2025-08-29T16:14:21.240Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 14,
+        "revision": 7,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "KILÓMETROS QUE NOS MUEVEN",
+        "company": "BONAFONT",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 13
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "3ZonFUV0y6VHF5XeRaO18f",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:54.140Z",
+        "updatedAt": "2025-08-29T16:13:45.565Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 7,
+        "revision": 4,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "CORAZÓN VACÍO",
+        "artist": "MARIA BECERRA",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 12
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "3B2vpWjIJvHs1lnypVizkq",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:49.010Z",
+        "updatedAt": "2025-08-29T16:12:02.514Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 14,
+        "revision": 7,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "FW25 ACCESSORIES",
+        "company": "JAZMIN CHEBAR",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 7
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "1lqS4uRjhaVSV3dBzqZTNx",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:46.950Z",
+        "updatedAt": "2025-08-29T16:11:27.908Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "EL PLANETARIO",
+        "company": "SOFIA PONCINI",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 5
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "2aXQRUw5IfOf0XMNd1T4x8",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:45.808Z",
+        "updatedAt": "2025-08-29T16:11:13.290Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 7,
+        "revision": 4,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "SI QUIEREN FRONTEAR",
+        "artist": "DUKI, DE LA GHETTO, QUEVEDO",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 4
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "4lIddCFKEMq6tOmRe0baNP",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:44.717Z",
+        "updatedAt": "2025-08-29T16:10:50.366Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "DEPORTE&CASINO",
+        "company": "BETWARRIOR",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 3
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "1tcxeQkPCMq9ppNjrqixmh",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:42.658Z",
+        "updatedAt": "2025-08-29T16:10:14.274Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "CUÁNDO SERÁ",
+        "artist": "ALOE",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 1
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "6xzDEDN0FdLafw3n0f616g",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:04.895Z",
+        "updatedAt": "2025-08-29T13:29:04.114Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 12,
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "EDITORIAL",
+        "company": "RIES",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 23
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "3Yt5MzuuHnc02WlRwKEV9Y",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:02.179Z",
+        "updatedAt": "2025-08-29T13:29:03.366Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 12,
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "PERSONAL FLOW",
+        "company": "PERSONAL",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 20
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "3DEgwqTQg9IGwncl42GUrb",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:09.631Z",
+        "updatedAt": "2025-08-29T13:29:03.033Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 12,
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "WINDOW INSTALLATION",
+        "company": "AY NOT DEAD",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 28
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "4P7l9JQ3H6Jrnf3EaSOdr1",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:06.947Z",
+        "updatedAt": "2025-08-29T13:29:02.639Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 12,
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "DILLOM",
+        "company": "SPOTIFY",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 25
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "4tbZdZQKymCgDXBNUgglNX",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:14.811Z",
+        "updatedAt": "2025-08-29T13:29:02.251Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 12,
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "LA FELIEROJA",
+        "artist": "SEBASTIAN YATRA",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 33
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "4yRbqEbCDUtTlhWxHKFwJP",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:12.935Z",
+        "updatedAt": "2025-08-29T13:29:01.891Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 12,
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "AL LOLI",
+        "artist": "MILO J",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 31
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "4nT5S9jKnRc2NFMzWSzpjN",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:19.016Z",
+        "updatedAt": "2025-08-29T13:29:01.530Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 12,
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "TRES PECADOS DESPUES",
+        "artist": "MILO J",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 37
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "3voWEgsNCM1pgNCU1sGA5E",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:03.110Z",
+        "updatedAt": "2025-08-29T13:29:01.176Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 12,
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "SOLA",
+        "artist": "CHITA",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 21
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "539NYSqDxjZNLFFPM6i6JP",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:08.721Z",
+        "updatedAt": "2025-08-29T13:29:00.806Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 12,
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "CIRUGIA",
+        "artist": "DILLOM",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 27
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "1f0NgPaDCwMUKaGWrzXs4N",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:55.993Z",
+        "updatedAt": "2025-08-29T13:29:00.455Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 12,
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "MISMO AMOR",
+        "artist": "JULIETA VENEGAS",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 14
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "aMFoNshCOA5SSugC6j12L",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:15.836Z",
+        "updatedAt": "2025-08-29T13:29:00.139Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "CON OTRA",
+        "artist": "CAZZU",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 34
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "57e7k6bvEzztkwLx3niSj7",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:11.676Z",
+        "updatedAt": "2025-08-29T13:28:59.791Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "TEMPLO DE PICEAS",
+        "artist": "SEBASTIAN YATRA",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 30
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "47Xarx2sMmfl2XC8Y9YwfB",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:07.825Z",
+        "updatedAt": "2025-08-29T13:28:59.439Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "BUENOS TIEMPOS",
+        "artist": "DILLOM",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 26
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "3qqKoY4cQ02Qgfto8TbTi",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:05.790Z",
+        "updatedAt": "2025-08-29T13:28:59.069Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "S.O.S",
+        "artist": "TAICHU FT LALI",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 24
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "yGGYTiLUEMxFTJP9fUsgX",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:00.976Z",
+        "updatedAt": "2025-08-29T13:28:58.368Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "EN TU ORILLA",
+        "artist": "JULIETA VENEGAS",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 19
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "4ZP45bk8oPeHqxOxiIuSJA",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:58.861Z",
+        "updatedAt": "2025-08-29T13:28:57.996Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "IMAN",
+        "artist": "MARIA BECERRA",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 17
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "2gq6ishL9kv23ebEaeMg3q",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:56.905Z",
+        "updatedAt": "2025-08-29T13:28:57.655Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "PRIMER AVISO",
+        "artist": "MARIA BECERRA",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 15
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "3CxK0mk3IDdoYFMMSDKNM7",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:52.106Z",
+        "updatedAt": "2025-08-29T13:28:56.934Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "AUTOMATICO",
+        "artist": "MARIA BECERRA",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 10
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "gSAKBcTusiNByZCyvicFO",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:48.010Z",
+        "updatedAt": "2025-08-29T13:28:56.372Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "ANTES DE PERDERTE",
+        "artist": "DUKI",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 6
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "39N6J8QVeU64Hw883kQFeI",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:17.934Z",
+        "updatedAt": "2025-08-29T12:46:28.667Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 3,
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "FERNANDO RODRIGUEZ",
+        "company": "LAS LOMAS",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 36
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "3pp8DTAT6sFws7BIjtffZs",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:17.024Z",
+        "updatedAt": "2025-08-29T12:46:28.354Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 3,
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "MARIHUANA BERTOLDI",
+        "company": "SPOTIFY",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 35
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "2eQEUqzIOJUGb55Ex4N0j8",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:13.847Z",
+        "updatedAt": "2025-08-29T12:46:28.011Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 3,
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "PUNK",
+        "company": "LOLLAPALOOZA",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 32
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "L1tKhKh8t6qxhYjdPQe2s",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:28:10.642Z",
+        "updatedAt": "2025-08-29T12:46:27.654Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 3,
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "BREAST CANCER CAMPAIGN",
+        "company": "MACMA",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 29
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "5BV5MwW5bccc5MludDuwEi",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:59.906Z",
+        "updatedAt": "2025-08-29T12:46:27.291Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 3,
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "POP UP STORE",
+        "company": "LUNA ALVAREZ CASTILLO",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 18
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "2nYZe6MC7PUeD8ZMyNECLr",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:57.944Z",
+        "updatedAt": "2025-08-29T12:46:26.934Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 3,
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "MARIA BECERRA",
+        "company": "SPOTIFY",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 16
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "7ewR2T9WIKKvWGW50X3BBY",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:53.030Z",
+        "updatedAt": "2025-08-29T12:46:26.594Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 3,
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "BZRP X NEW ERA",
+        "company": "MERCADOLIBRE",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 11
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "4B0uZaWoHEDYpUEPsnG7Dw",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:51.047Z",
+        "updatedAt": "2025-08-29T12:46:26.259Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 3,
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "ERAN OTROS TIEMPOS",
+        "company": "QUILMES",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 9
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "6l24GJboWlFWgFUKwIRMtq",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:50.055Z",
+        "updatedAt": "2025-08-29T12:46:25.897Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 3,
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "project": "FASHION WEEK",
+        "company": "PUMA",
+        "thumbnail": null,
+        "vimeoId": "",
+        "videoUrl": null,
+        "order": 8
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "2K1BiRVu5DldhGBrj6mRTW",
+        "type": "Entry",
+        "createdAt": "2025-08-29T02:27:43.629Z",
+        "updatedAt": "2025-08-29T12:46:17.644Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 3,
+        "revision": 2,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "portfolioItem"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "COSAS PARA DECIRTE",
+        "artist": "CONOCIENDO RUSIA",
+        "thumbnail": null,
+        "videoUrl": null,
+        "order": 2
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "505BonkAvq6W9jl6mcybWL",
+        "type": "Entry",
+        "createdAt": "2025-06-06T18:57:44.656Z",
+        "updatedAt": "2025-06-10T20:08:52.072Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 16,
+        "revision": 6,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveSection"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "COMMERCIAL",
+        "items": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "6C0S215nRGbXcFZEGJXSfi"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "5BQTpfiKBjLocjZzArZvxd"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "2XRzPPtFBazPZFWChUPkHQ"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "1RWWBG4tv0OzmShX94EOGz"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "5zCT7vsENyWJOl28pmjrkl"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "GwN4rfk0VricW0Xhog0Rx"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "3wixjO4ocYz4XnjxMvTQ4v"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "5ZyThspvs1iyRzXSGmTCXl"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "hpgXcx5IL2aVTtNUywIGG"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "4A0wNNw1MS3G9X8wPN8BeE"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "gidfOL8BGLYYsP72CmQvW"
+            }
+          }
+        ],
+        "order": "2"
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "18nGID0IGlffzd9rg0dEjH",
+        "type": "Entry",
+        "createdAt": "2025-06-06T18:57:28.259Z",
+        "updatedAt": "2025-06-09T12:22:10.339Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 17,
+        "revision": 8,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveSection"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "MUSIC VIDEOS",
+        "items": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "4Ct9zYMmOm4Wko536nzxuK"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "1rbd3LUnWZkJ9Nq2usb5XB"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "1nCP0HKR8X0YAme04BWNYw"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "6RqaGEgQkYDBkrTiQWXRfZ"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "3vslrzgl0yXYbX7pf11N7g"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "3LM5n1OkWMNUWCiVidLyR0"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "4TixpfoIOsQKFYncReHsAO"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "lqbkwm4xUO1uNeCVZZiZL"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "38grod4x6so4UxeRK15DtV"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "5ywEbmGyhboc6ezcM94UGA"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "Aqsb559PqmFm4J67jHiZW"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "6ycek3MLn7DCBVD35E4vNv"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "5WCgc5YluUHaXxg8piQ7T7"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "3HVkSNv4j2ZDJfc32WjtSy"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "1Q7PbPX6rJBMDHMzl3xlR9"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "5x8So0FmeFeDVcZFrELIe4"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "1JOjqPd7ofcJTu8lV466KN"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "5PwDrpKeHRWndJrP8EBnAD"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "3oUXo84Xk5WjLQnKKUYvM0"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "284jOH7HZ52a2UZEpxygg2"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "2x1BjgePNzsGifDwgOuNDw"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "6OSVy43WunoSAHma6dUruC"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "3pcBnFbSqLbBip2FGJyHS0"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "2DH3mVgOOgUjjYFeYBpTgU"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "46tSMO1OMhnZ4iapCq1qC3"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "1Kjmxa4ShEfubkkds5zgTQ"
+            }
+          }
+        ],
+        "order": "1"
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "79cvQCuKuljMMeZu55HPCQ",
+        "type": "Entry",
+        "createdAt": "2025-06-06T18:58:03.792Z",
+        "updatedAt": "2025-06-09T01:37:45.585Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveSection"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "FILM",
+        "items": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "6c2yTBjcgU3dCReUeEkn0b"
+            }
+          }
+        ],
+        "order": "4"
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "3DoJpFybAmNFetlZ7gcDhT",
+        "type": "Entry",
+        "createdAt": "2025-06-06T18:57:57.684Z",
+        "updatedAt": "2025-06-09T01:37:44.142Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 3,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "archiveSection"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "SET DESIGN",
+        "items": [
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "3KPv5LCzXnnPHfRwT70kB"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "7rZXdAe1jhK1g8gSQMpKz3"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "1raOLW55iz2EwyV64Dvwfg"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "6qnjiyYSQLISsc5vh8Pvno"
+            }
+          },
+          {
+            "sys": {
+              "type": "Link",
+              "linkType": "Entry",
+              "id": "1BXc48VsO88OH6AnrwViMZ"
+            }
+          }
+        ],
+        "order": "3"
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "266rfgq1zkW7AxghI89l0J",
+        "type": "Entry",
+        "createdAt": "2025-04-07T14:58:02.002Z",
+        "updatedAt": "2025-04-07T14:58:02.002Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 6,
+        "revision": 1,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "heroSlide"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "3 Pecados Después...",
+        "client": "Milo J",
+        "image": {
+          "metadata": {
+            "tags": [],
+            "concepts": []
+          },
+          "sys": {
+            "space": {
+              "sys": {
+                "type": "Link",
+                "linkType": "Space",
+                "id": "9rdevmeb5068"
+              }
+            },
+            "id": "4S1D3ziwy9LLZFLW2VhamO",
+            "type": "Asset",
+            "createdAt": "2025-04-07T14:57:54.585Z",
+            "updatedAt": "2025-04-07T14:57:54.585Z",
+            "environment": {
+              "sys": {
+                "id": "master",
+                "type": "Link",
+                "linkType": "Environment"
+              }
+            },
+            "publishedVersion": 3,
+            "revision": 1,
+            "locale": "en-US"
+          },
+          "fields": {
+            "title": "milo j - ali oli",
+            "description": "",
+            "file": {
+              "url": "//images.ctfassets.net/9rdevmeb5068/4S1D3ziwy9LLZFLW2VhamO/80d9255a301eaf094bfe305f41a2875f/milo_j_-_ali_oli.png",
+              "details": {
+                "size": 3966200,
+                "image": {
+                  "width": 2658,
+                  "height": 1496
+                }
+              },
+              "fileName": "milo j - ali oli.png",
+              "contentType": "image/png"
+            }
+          }
+        },
+        "videoUrl": "https://www.youtube.com/watch?v=3BdTNRISww0&ab_channel=MILOJ",
+        "order": 3
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "4J25cuUsDHMTJFCJTqjM5B",
+        "type": "Entry",
+        "createdAt": "2025-04-07T14:47:16.132Z",
+        "updatedAt": "2025-04-07T14:47:16.132Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 6,
+        "revision": 1,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "heroSlide"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "Cinco horas menos",
+        "client": "Conociendo Rusia & Natalia Lafourcade",
+        "image": {
+          "metadata": {
+            "tags": [],
+            "concepts": []
+          },
+          "sys": {
+            "space": {
+              "sys": {
+                "type": "Link",
+                "linkType": "Space",
+                "id": "9rdevmeb5068"
+              }
+            },
+            "id": "7qdVbL161brpo8CEnTXSuc",
+            "type": "Asset",
+            "createdAt": "2025-04-07T14:47:06.691Z",
+            "updatedAt": "2025-04-07T14:47:06.691Z",
+            "environment": {
+              "sys": {
+                "id": "master",
+                "type": "Link",
+                "linkType": "Environment"
+              }
+            },
+            "publishedVersion": 3,
+            "revision": 1,
+            "locale": "en-US"
+          },
+          "fields": {
+            "title": "conociendo rusia & natalia lafourcade - cinco horas",
+            "description": "",
+            "file": {
+              "url": "//images.ctfassets.net/9rdevmeb5068/7qdVbL161brpo8CEnTXSuc/b205d3bac21c985319788d7565e16991/conociendo_rusia___natalia_lafourcade_-_cinco_horas.png",
+              "details": {
+                "size": 3763220,
+                "image": {
+                  "width": 2681,
+                  "height": 1496
+                }
+              },
+              "fileName": "conociendo rusia & natalia lafourcade - cinco horas.png",
+              "contentType": "image/png"
+            }
+          }
+        },
+        "videoUrl": "https://youtu.be/zkHGtxJiTtU?si=LdBwCCRK261lRrHx",
+        "order": 2
+      }
+    },
+    {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "9rdevmeb5068"
+          }
+        },
+        "id": "P7HInB5RvAX9aDwlvbtCs",
+        "type": "Entry",
+        "createdAt": "2025-04-07T14:13:08.185Z",
+        "updatedAt": "2025-04-07T14:41:31.167Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 11,
+        "revision": 4,
+        "contentType": {
+          "sys": {
+            "type": "Link",
+            "linkType": "ContentType",
+            "id": "heroSlide"
+          }
+        },
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "Sola",
+        "client": "Chita",
+        "image": {
+          "metadata": {
+            "tags": [],
+            "concepts": []
+          },
+          "sys": {
+            "space": {
+              "sys": {
+                "type": "Link",
+                "linkType": "Space",
+                "id": "9rdevmeb5068"
+              }
+            },
+            "id": "3E57tOxl2lQU0jsIVVK1AH",
+            "type": "Asset",
+            "createdAt": "2025-04-07T14:39:51.129Z",
+            "updatedAt": "2025-04-07T14:39:51.129Z",
+            "environment": {
+              "sys": {
+                "id": "master",
+                "type": "Link",
+                "linkType": "Environment"
+              }
+            },
+            "publishedVersion": 3,
+            "revision": 1,
+            "locale": "en-US"
+          },
+          "fields": {
+            "title": "chita - sola",
+            "description": "",
+            "file": {
+              "url": "//images.ctfassets.net/9rdevmeb5068/3E57tOxl2lQU0jsIVVK1AH/ff05d0aa16d77d3d6d43fab6c99bf678/chita_-_sola.png",
+              "details": {
+                "size": 3058959,
+                "image": {
+                  "width": 2669,
+                  "height": 1495
+                }
+              },
+              "fileName": "chita - sola.png",
+              "contentType": "image/png"
+            }
+          }
+        },
+        "videoUrl": "https://youtu.be/BNrKaLuLjFw?si=f8Ek_7V-HacjSPn9",
+        "order": 1
+      }
+    }
+  ],
+  "errors": [
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "1BXc48VsO88OH6AnrwViMZ"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "1JOjqPd7ofcJTu8lV466KN"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "1Kjmxa4ShEfubkkds5zgTQ"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "1Q7PbPX6rJBMDHMzl3xlR9"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "1RWWBG4tv0OzmShX94EOGz"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "1nCP0HKR8X0YAme04BWNYw"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "1raOLW55iz2EwyV64Dvwfg"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "1rbd3LUnWZkJ9Nq2usb5XB"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "284jOH7HZ52a2UZEpxygg2"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "2DH3mVgOOgUjjYFeYBpTgU"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "2XRzPPtFBazPZFWChUPkHQ"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "2x1BjgePNzsGifDwgOuNDw"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "38grod4x6so4UxeRK15DtV"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "3HVkSNv4j2ZDJfc32WjtSy"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "3KPv5LCzXnnPHfRwT70kB"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "3LM5n1OkWMNUWCiVidLyR0"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "3oUXo84Xk5WjLQnKKUYvM0"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "3pcBnFbSqLbBip2FGJyHS0"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "3vslrzgl0yXYbX7pf11N7g"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "3wixjO4ocYz4XnjxMvTQ4v"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "46tSMO1OMhnZ4iapCq1qC3"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "4A0wNNw1MS3G9X8wPN8BeE"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "4Ct9zYMmOm4Wko536nzxuK"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "4TixpfoIOsQKFYncReHsAO"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "5BQTpfiKBjLocjZzArZvxd"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "5PwDrpKeHRWndJrP8EBnAD"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "5WCgc5YluUHaXxg8piQ7T7"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "5ZyThspvs1iyRzXSGmTCXl"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "5x8So0FmeFeDVcZFrELIe4"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "5ywEbmGyhboc6ezcM94UGA"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "5zCT7vsENyWJOl28pmjrkl"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "6C0S215nRGbXcFZEGJXSfi"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "6OSVy43WunoSAHma6dUruC"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "6RqaGEgQkYDBkrTiQWXRfZ"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "6c2yTBjcgU3dCReUeEkn0b"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "6qnjiyYSQLISsc5vh8Pvno"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "6ycek3MLn7DCBVD35E4vNv"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "7rZXdAe1jhK1g8gSQMpKz3"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "Aqsb559PqmFm4J67jHiZW"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "GwN4rfk0VricW0Xhog0Rx"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "gidfOL8BGLYYsP72CmQvW"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "hpgXcx5IL2aVTtNUywIGG"
+      }
+    },
+    {
+      "sys": {
+        "id": "notResolvable",
+        "type": "error"
+      },
+      "details": {
+        "type": "Link",
+        "linkType": "Entry",
+        "id": "lqbkwm4xUO1uNeCVZZiZL"
+      }
+    }
+  ],
+  "includes": {
+    "Asset": [
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "9rdevmeb5068"
+            }
+          },
+          "id": "3E57tOxl2lQU0jsIVVK1AH",
+          "type": "Asset",
+          "createdAt": "2025-04-07T14:39:51.129Z",
+          "updatedAt": "2025-04-07T14:39:51.129Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 3,
+          "revision": 1,
+          "locale": "en-US"
+        },
+        "fields": {
+          "title": "chita - sola",
+          "description": "",
+          "file": {
+            "url": "//images.ctfassets.net/9rdevmeb5068/3E57tOxl2lQU0jsIVVK1AH/ff05d0aa16d77d3d6d43fab6c99bf678/chita_-_sola.png",
+            "details": {
+              "size": 3058959,
+              "image": {
+                "width": 2669,
+                "height": 1495
+              }
+            },
+            "fileName": "chita - sola.png",
+            "contentType": "image/png"
+          }
+        }
+      },
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "9rdevmeb5068"
+            }
+          },
+          "id": "4S1D3ziwy9LLZFLW2VhamO",
+          "type": "Asset",
+          "createdAt": "2025-04-07T14:57:54.585Z",
+          "updatedAt": "2025-04-07T14:57:54.585Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 3,
+          "revision": 1,
+          "locale": "en-US"
+        },
+        "fields": {
+          "title": "milo j - ali oli",
+          "description": "",
+          "file": {
+            "url": "//images.ctfassets.net/9rdevmeb5068/4S1D3ziwy9LLZFLW2VhamO/80d9255a301eaf094bfe305f41a2875f/milo_j_-_ali_oli.png",
+            "details": {
+              "size": 3966200,
+              "image": {
+                "width": 2658,
+                "height": 1496
+              }
+            },
+            "fileName": "milo j - ali oli.png",
+            "contentType": "image/png"
+          }
+        }
+      },
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "9rdevmeb5068"
+            }
+          },
+          "id": "7qdVbL161brpo8CEnTXSuc",
+          "type": "Asset",
+          "createdAt": "2025-04-07T14:47:06.691Z",
+          "updatedAt": "2025-04-07T14:47:06.691Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 3,
+          "revision": 1,
+          "locale": "en-US"
+        },
+        "fields": {
+          "title": "conociendo rusia & natalia lafourcade - cinco horas",
+          "description": "",
+          "file": {
+            "url": "//images.ctfassets.net/9rdevmeb5068/7qdVbL161brpo8CEnTXSuc/b205d3bac21c985319788d7565e16991/conociendo_rusia___natalia_lafourcade_-_cinco_horas.png",
+            "details": {
+              "size": 3763220,
+              "image": {
+                "width": 2681,
+                "height": 1496
+              }
+            },
+            "fileName": "conociendo rusia & natalia lafourcade - cinco horas.png",
+            "contentType": "image/png"
+          }
+        }
+      }
+    ]
+  }
+}

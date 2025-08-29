@@ -12,6 +12,30 @@ export interface HeroSlide {
   order?: number;
 }
 
+// Nuevo tipo unificado para projects
+export interface Project {
+  id: string;
+  title: string;
+  artist: string;
+  company: string;
+  thumbnail?: string;
+  videoUrl?: string;
+  vimeoId?: string;
+  youtubeUrl?: string;
+  archiveOrder: number;
+  worksGridOrder?: number;
+  year: string;
+  description: string;
+  category: string;
+  slug: string;
+  projectType: string;
+  productionCompany?: string;
+  client?: string;
+  isPublished: boolean;
+  isFeatured: boolean;
+}
+
+// Tipo legacy para compatibilidad (se mantiene temporalmente)
 export interface PortfolioItem {
   id: string;
   title: string;
@@ -25,28 +49,21 @@ export interface PortfolioItem {
   vimeoId?: string;
   youtubeUrl?: string;
   order?: number;
-  slug?: string; // Agregado para la navegación
+  slug?: string;
 }
 
-// Tipo actualizado para manejar tanto portfolioItem como archiveItem
+// Tipo legacy para compatibilidad (se mantiene temporalmente)
 export interface ArchiveItem {
-  // Para portfolioItem (tiene title + artist)
   title?: string;
   artist?: string;
-  
-  // Para archiveItem (tiene project + company)  
   project?: string;
   company?: string;
-  
-  // Campos comunes
   year: string;
   thumbnail?: string;
   vimeoId?: string;
   videoUrl?: string;
   order?: number;
-  projectType?: string; // Tipo de proyecto: music video, commercial, etc.
-  
-  // Para identificación del sistema
+  projectType?: string;
   sys?: {
     id: string;
     contentType: {
@@ -94,9 +111,9 @@ function optimizeContentfulImage(url: string, width?: number, height?: number, f
   const params = new URLSearchParams();
   if (width) params.append('w', width.toString());
   if (height) params.append('h', height.toString());
-  params.append('fm', format); // webp para mejor compresión
-  params.append('q', quality.toString()); // calidad configurable
-  params.append('fit', 'fill'); // mantener aspecto
+  params.append('fm', format);
+  params.append('q', quality.toString());
+  params.append('fit', 'fill');
   
   return url.includes('?') 
     ? `${url}&${params.toString()}` 
@@ -107,13 +124,234 @@ function optimizeContentfulImage(url: string, width?: number, height?: number, f
 function generateSlug(title: string): string {
   return title
     .toLowerCase()
-    .replace(/[^\w\s-]/g, '') // Remover caracteres especiales
-    .replace(/\s+/g, '-') // Reemplazar espacios con guiones
-    .replace(/-+/g, '-') // Reemplazar múltiples guiones con uno solo
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
     .trim();
 }
 
-// Funciones para obtener datos optimizadas para SSG
+// NUEVA FUNCIÓN: Obtener todos los proyectos del content type unificado
+export async function getProjects(): Promise<Project[]> {
+  const client = initializeContentfulClient();
+  
+  if (!client) {
+    console.log('📱 No Contentful connection');
+    return [];
+  }
+
+  try {
+    const entries = await client.getEntries({
+      content_type: 'projects',
+      order: ['fields.archiveOrder'],
+      limit: 1000,
+    });
+    
+    console.log(`✅ Fetched ${entries.items.length} projects from unified content type`);
+    
+    return entries.items.map((item: { 
+      fields: { 
+        title?: string;
+        artist?: string;
+        company?: string;
+        thumbnail?: { fields?: { file?: { url?: string } } };
+        videoUrl?: string;
+        vimeoId?: string;
+        youtubeUrl?: string;
+        archiveOrder?: number;
+        worksGridOrder?: number;
+        year?: string;
+        description?: string;
+        category?: string;
+        slug?: string;
+        projectType?: string;
+        productionCompany?: string;
+        client?: string;
+        isPublished?: boolean;
+        isFeatured?: boolean;
+      }; 
+      sys: { id: string } 
+    }) => {
+      const fields = item.fields;
+      const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
+        ? `https:${fields.thumbnail.fields.file.url}` 
+        : undefined;
+      
+      return {
+        id: item.sys.id,
+        title: fields.title || '',
+        artist: fields.artist || '',
+        company: fields.company || '',
+        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
+        videoUrl: fields.videoUrl || '',
+        vimeoId: fields.vimeoId || '',
+        youtubeUrl: fields.youtubeUrl || '',
+        archiveOrder: fields.archiveOrder || 0,
+        worksGridOrder: fields.worksGridOrder || undefined,
+        year: fields.year || '2024',
+        description: fields.description || '',
+        category: fields.category || 'MUSIC VIDEOS',
+        slug: fields.slug || generateSlug(fields.title || ''),
+        projectType: fields.projectType || 'music-video',
+        productionCompany: fields.productionCompany || '',
+        client: fields.client || '',
+        isPublished: fields.isPublished !== false,
+        isFeatured: fields.isFeatured === true,
+      };
+    });
+  } catch (error) {
+    console.error('❌ Error fetching projects from Contentful:', error);
+    return [];
+  }
+}
+
+// NUEVA FUNCIÓN: Obtener solo los 24 proyectos del WorksGrid
+export async function getWorksGridProjects(): Promise<Project[]> {
+  const client = initializeContentfulClient();
+  
+  if (!client) {
+    console.log('📱 No Contentful connection');
+    return [];
+  }
+
+  try {
+    const entries = await client.getEntries({
+      content_type: 'projects',
+      'fields.worksGridOrder[exists]': true,
+      order: ['fields.worksGridOrder'],
+      limit: 100,
+    });
+    
+    console.log(`✅ Fetched ${entries.items.length} WorksGrid projects from unified content type`);
+    
+    return entries.items.map((item: { 
+      fields: { 
+        title?: string;
+        artist?: string;
+        company?: string;
+        thumbnail?: { fields?: { file?: { url?: string } } };
+        videoUrl?: string;
+        vimeoId?: string;
+        youtubeUrl?: string;
+        archiveOrder?: number;
+        worksGridOrder?: number;
+        year?: string;
+        description?: string;
+        category?: string;
+        slug?: string;
+        projectType?: string;
+        productionCompany?: string;
+        client?: string;
+        isPublished?: boolean;
+        isFeatured?: boolean;
+      }; 
+      sys: { id: string } 
+    }) => {
+      const fields = item.fields;
+      const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
+        ? `https:${fields.thumbnail.fields.file.url}` 
+        : undefined;
+      
+      return {
+        id: item.sys.id,
+        title: fields.title || '',
+        artist: fields.artist || '',
+        company: fields.company || '',
+        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
+        videoUrl: fields.videoUrl || '',
+        vimeoId: fields.vimeoId || '',
+        youtubeUrl: fields.youtubeUrl || '',
+        archiveOrder: fields.archiveOrder || 0,
+        worksGridOrder: fields.worksGridOrder || 0,
+        year: fields.year || '2024',
+        description: fields.description || '',
+        category: fields.category || 'MUSIC VIDEOS',
+        slug: fields.slug || generateSlug(fields.title || ''),
+        projectType: fields.projectType || 'music-video',
+        productionCompany: fields.productionCompany || '',
+        client: fields.client || '',
+        isPublished: fields.isPublished !== false,
+        isFeatured: fields.isFeatured === true,
+      };
+    });
+  } catch (error) {
+    console.error('❌ Error fetching WorksGrid projects from Contentful:', error);
+    return [];
+  }
+}
+
+// NUEVA FUNCIÓN: Obtener proyectos del archivo (todos los que no están en WorksGrid)
+export async function getArchiveProjects(): Promise<Project[]> {
+  const client = initializeContentfulClient();
+  
+  if (!client) {
+    console.log('📱 No Contentful connection');
+    return [];
+  }
+
+  try {
+    const entries = await client.getEntries({
+      content_type: 'projects',
+      'fields.worksGridOrder[exists]': false,
+      order: ['fields.archiveOrder'],
+      limit: 1000,
+    });
+    
+    console.log(`✅ Fetched ${entries.items.length} archive projects from unified content type`);
+    
+    return entries.items.map((item: { 
+      fields: { 
+        title?: string;
+        artist?: string;
+        company?: string;
+        thumbnail?: { fields?: { file?: { url?: string } } };
+        videoUrl?: string;
+        vimeoId?: string;
+        youtubeUrl?: string;
+        archiveOrder?: number;
+        year?: string;
+        description?: string;
+        category?: string;
+        slug?: string;
+        projectType?: string;
+        productionCompany?: string;
+        client?: string;
+        isPublished?: boolean;
+        isFeatured?: boolean;
+      }; 
+      sys: { id: string } 
+    }) => {
+      const fields = item.fields;
+      const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
+        ? `https:${fields.thumbnail.fields.file.url}` 
+        : undefined;
+      
+      return {
+        id: item.sys.id,
+        title: fields.title || '',
+        artist: fields.artist || '',
+        company: fields.company || '',
+        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
+        videoUrl: fields.videoUrl || '',
+        vimeoId: fields.vimeoId || '',
+        youtubeUrl: fields.youtubeUrl || '',
+        archiveOrder: fields.archiveOrder || 0,
+        worksGridOrder: undefined, // No tiene worksGridOrder
+        year: fields.year || '2024',
+        description: fields.description || '',
+        category: fields.category || 'MUSIC VIDEOS',
+        slug: fields.slug || generateSlug(fields.title || ''),
+        projectType: fields.projectType || 'music-video',
+        productionCompany: fields.productionCompany || '',
+        client: fields.client || '',
+        isPublished: fields.isPublished !== false,
+        isFeatured: fields.isFeatured === true,
+      };
+    });
+  } catch (error) {
+    console.error('❌ Error fetching archive projects from Contentful:', error);
+    return [];
+  }
+}
 
 // Obtener slides del hero
 export async function getHeroSlides(): Promise<HeroSlide[]> {
@@ -128,7 +366,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
     const entries = await client.getEntries({
       content_type: 'heroSlide',
       order: ['fields.order'],
-      limit: 10, // Limitar para optimizar build
+      limit: 10,
     });
     
     if (entries.items.length === 0) {
@@ -138,8 +376,16 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
     
     console.log(`✅ Fetched ${entries.items.length} hero slides from Contentful`);
     
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return entries.items.map((item: any) => {
+    return entries.items.map((item: { 
+      fields: { 
+        title?: string;
+        client?: string;
+        image?: { fields?: { file?: { url?: string }; description?: string } };
+        videoUrl?: string;
+        order?: number;
+      }; 
+      sys: { id: string } 
+    }) => {
       const fields = item.fields;
       const imageUrl = fields.image?.fields?.file?.url 
         ? `https:${fields.image.fields.file.url}` 
@@ -162,297 +408,236 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
   }
 }
 
-// Obtener items de trabajos seleccionados
+// FUNCIONES LEGACY - Se mantienen para compatibilidad temporal
+// Obtener SOLO los 37 proyectos del archive en el orden correcto
 export async function getPortfolioItems(): Promise<PortfolioItem[]> {
-  const client = initializeContentfulClient();
+  console.log('⚠️ getPortfolioItems() is deprecated. Use getProjects() instead.');
+  const projects = await getProjects();
   
-  if (!client) {
-    console.log('📱 No Contentful connection');
-    return [];
-  }
-
-  try {
-    const entries = await client.getEntries({
-      content_type: 'portfolioItem',
-      order: ['fields.order'],
-      limit: 50, // Limitar para optimizar build
-    });
-    
-    if (entries.items.length === 0) {
-      console.log('📱 No portfolio items found in Contentful');
-      return [];
-    }
-    
-    console.log(`✅ Fetched ${entries.items.length} portfolio items from Contentful`);
-    
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return entries.items.map((item: any) => {
-      const fields = item.fields;
-      const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
-        ? `https:${fields.thumbnail.fields.file.url}` 
-        : '';
-      const fullImageUrl = fields.fullImage?.fields?.file?.url 
-        ? `https:${fields.fullImage.fields.file.url}` 
-        : '';
-      
-      // Don't optimize videos - only optimize actual images
-      const isVideoThumbnail = thumbnailUrl.includes('.mp4') || thumbnailUrl.includes('.mov') || thumbnailUrl.includes('.webm');
-      const isVideoFullImage = fullImageUrl.includes('.mp4') || thumbnailUrl.includes('.mov') || thumbnailUrl.includes('.webm');
-      
-      // Determine content type based on actual content, not just videoUrl
-      const hasVideoContent = fields.videoUrl || fields['Vimeo ID'] || fields.vimeoId || isVideoThumbnail || isVideoFullImage;
-      
-      return {
-        id: item.sys.id,
-        title: fields.title || '',
-        artist: fields.artist || '',
-        year: fields.year || '',
-        slug: fields.slug || generateSlug(fields.title || ''), // Usar slug de Contentful o generar uno
-        thumbnail: thumbnailUrl ? (isVideoThumbnail ? thumbnailUrl : optimizeContentfulImage(thumbnailUrl, 800, 450, 'webp', 85)) : '',
-        fullImage: fullImageUrl ? (isVideoFullImage ? fullImageUrl : optimizeContentfulImage(fullImageUrl, 1920, 1080, 'webp', 85)) : '',
-        contentType: hasVideoContent ? 'video' as const : 'image' as const,
-        videoUrl: fields.videoUrl || '',
-        description: fields.description || '',
-        vimeoId: fields['Vimeo ID'] ? String(fields['Vimeo ID']) : (fields.vimeoId ? String(fields.vimeoId) : ''),
-        order: fields.order,
-      };
-    });
-  } catch (error) {
-    console.error('❌ Error fetching portfolio items from Contentful:', error);
-    return [];
-  }
+  return projects.map(project => ({
+    id: project.id,
+    title: project.title,
+    artist: project.artist,
+    year: project.year,
+    thumbnail: project.thumbnail || '',
+    fullImage: project.thumbnail || '',
+    contentType: 'video' as const,
+    videoUrl: project.videoUrl || '',
+    description: project.description,
+    vimeoId: project.vimeoId || '',
+    youtubeUrl: project.youtubeUrl || '',
+    order: project.archiveOrder,
+    slug: project.slug
+  }));
 }
 
 // Obtener datos de archivo - NUEVA VERSIÓN que incluye todos los items
 export async function getArchiveData(): Promise<ArchiveSection[]> {
-  const client = initializeContentfulClient();
+  console.log('⚠️ getArchiveData() is deprecated. Use getArchiveProjects() instead.');
+  const projects = await getArchiveProjects();
   
-  if (!client) {
-    console.log('📱 No Contentful connection');
-    return [];
-  }
-
-  try {
-    // Obtener AMBOS tipos de contenido
-    const [portfolioItems, archiveItems] = await Promise.all([
-      client.getEntries({
-        content_type: 'portfolioItem',
-        order: ['fields.order'],
-        limit: 200,
-      }),
-      client.getEntries({
-        content_type: 'archiveItem', 
-        order: ['fields.order'],
-        limit: 200,
-      })
-    ]);
-
-    console.log(`✅ Fetched ${portfolioItems.items.length} portfolio items and ${archiveItems.items.length} archive items`);
-
-    // Crear una lista unificada con todos los items
-    const allItems: ArchiveItem[] = [
-      // PortfolioItems
-      ...portfolioItems.items.map((item: { 
-        fields: { 
-          thumbnail?: { fields?: { file?: { url?: string } } };
-          title?: string;
-          artist?: string;
-          year?: string;
-          vimeoId?: string;
-          videoUrl?: string;
-          order?: number;
-        }; 
-        sys: { id: string; contentType: { sys: { id: string } } } 
-      }) => {
-        const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
-          ? `https:${item.fields.thumbnail.fields.file.url}` 
-          : undefined;
-        
-        return {
-          title: item.fields.title || '',
-          artist: item.fields.artist || '',
-          year: item.fields.year || '',
-          thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
-          vimeoId: item.fields.vimeoId ? String(item.fields.vimeoId) : undefined,
-          videoUrl: item.fields.videoUrl,
-          order: item.fields.order || 0,
-          sys: {
-            id: item.sys.id,
-            contentType: {
-              sys: {
-                id: item.sys.contentType.sys.id
-              }
-            }
-          }
-        };
-      }),
-      // ArchiveItems  
-      ...archiveItems.items.map((item: { 
-        fields: { 
-          thumbnail?: { fields?: { file?: { url?: string } } };
-          project?: string;
-          company?: string;
-          year?: string;
-          vimeoId?: string;
-          videoUrl?: string;
-          order?: number;
-        }; 
-        sys: { id: string; contentType: { sys: { id: string } } } 
-      }) => {
-        const thumbnailUrl = item.fields.thumbnail?.fields?.file?.url 
-          ? `https:${item.fields.thumbnail.fields.file.url}` 
-          : undefined;
-        
-        return {
-          project: item.fields.project || '',
-          company: item.fields.company || '',
-          year: item.fields.year || '',
-          thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
-          vimeoId: item.fields.vimeoId ? String(item.fields.vimeoId) : undefined,
-          videoUrl: item.fields.videoUrl,
-          order: item.fields.order || 0,
-          sys: {
-            id: item.sys.id,
-            contentType: {
-              sys: {
-                id: item.sys.contentType.sys.id
-              }
-            }
-          }
-        };
-      })
-    ];
-
-    // Crear secciones organizadas por tipo de proyecto
-    const musicVideos = allItems.filter(item => {
-      const contentType = item.sys?.contentType?.sys?.id;
-      return contentType === 'portfolioItem' && item.title && item.artist;
-    });
-    
-    const commercials = allItems.filter(item => {
-      const contentType = item.sys?.contentType?.sys?.id;
-      return contentType === 'archiveItem' && item.project && item.company;
-    });
-    
-    const setDesign = allItems.filter(item => {
-      // Filtrar por algún criterio específico para set design
-      return item.project && item.project.toLowerCase().includes('set');
-    });
-    
-    const films = allItems.filter(item => {
-      // Filtrar por algún criterio específico para film
-      return item.project && item.project.toLowerCase().includes('film');
-    });
-
-    // Retornar secciones organizadas
-    return [
-      {
-        title: 'MUSIC VIDEOS',
-        items: musicVideos,
-        order: 1
-      },
-      {
-        title: 'COMMERCIAL',
-        items: commercials,
-        order: 2
-      },
-      {
-        title: 'SET DESIGN',
-        items: setDesign,
-        order: 3
-      },
-      {
-        title: 'FILM',
-        items: films,
-        order: 4
-      }
-    ].filter(section => section.items.length > 0); // Solo retornar secciones con items
-
-  } catch (error) {
-    console.error('❌ Error fetching archive data from Contentful:', error);
-    return [];
-  }
-}
-
-// NUEVA FUNCIÓN: Obtener un item específico por ID (para páginas dinámicas)
-export async function getArchiveItemById(id: string): Promise<ArchiveItem | null> {
-  const client = initializeContentfulClient();
-  
-  if (!client) {
-    console.log('📱 No Contentful connection');
-    return null;
-  }
-
-  try {
-    // Buscar en portfolioItem primero
-    let entry;
-    try {
-      entry = await client.getEntry(id);
-    } catch {
-      console.log(`❌ Item with ID ${id} not found`);
-      return null;
+  // Agrupar por categoría
+  const categories = projects.reduce((acc, project) => {
+    const category = project.category;
+    if (!acc[category]) {
+      acc[category] = [];
     }
-
-    console.log(`✅ Found item with ID ${id}`);
-
-    const fields = entry.fields as {
-      title?: string;
-      artist?: string;
-      project?: string;
-      company?: string;
-      year?: string;
-      thumbnail?: {
-        fields?: {
-          file?: {
-            url?: string;
-          };
-        };
-      };
-      vimeoId?: string | number;
-      videoUrl?: string;
-      order?: number;
-    };
-    const contentType = entry.sys.contentType.sys.id;
     
-    // Obtener thumbnail URL si existe
-    const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
-      ? `https:${fields.thumbnail.fields.file.url}` 
-      : undefined;
-
-    // Estructura común para ambos tipos
-    const baseItem = {
-      year: fields.year || '',
-      thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 1920, 1080, 'webp', 95) : undefined,
-      vimeoId: fields.vimeoId ? String(fields.vimeoId) : undefined,
-      videoUrl: fields.videoUrl,
-      order: fields.order || 0,
+    acc[category].push({
+      title: project.title,
+      artist: project.artist,
+      year: project.year,
+      thumbnail: project.thumbnail,
+      vimeoId: project.vimeoId,
+      videoUrl: project.videoUrl,
+      order: project.archiveOrder,
       sys: {
-        id: entry.sys.id,
+        id: project.id,
         contentType: {
           sys: {
-            id: contentType
+            id: 'projects'
           }
         }
       }
-    };
+    });
+    
+    return acc;
+  }, {} as Record<string, ArchiveItem[]>);
+  
+  return Object.entries(categories).map(([title, items]) => ({
+    title,
+    items: items.sort((a, b) => (a.order || 0) - (b.order || 0)),
+    order: 1
+  }));
+}
 
-    // Retornar según el tipo de contenido
-    if (contentType === 'portfolioItem') {
-      return {
-        ...baseItem,
-        title: fields.title || '',
-        artist: fields.artist || '',
-      };
-    } else {
-      return {
-        ...baseItem,
-        project: fields.project || '',
-        company: fields.company || '',
-      };
-    }
-
-  } catch (error) {
-    console.error(`❌ Error fetching item ${id} from Contentful:`, error);
+// NUEVA FUNCIÓN: Obtener un proyecto específico por ID
+export async function getProjectById(id: string): Promise<Project | null> {
+  const client = initializeContentfulClient();
+  
+  if (!client) {
+    console.log('📱 No Contentful connection');
     return null;
   }
+
+  try {
+    const entry = await client.getEntry(id);
+    
+    if (entry.sys.contentType.sys.id !== 'projects') {
+      console.log(`❌ Entry ${id} is not a project`);
+      return null;
+    }
+    
+    console.log(`✅ Found project with ID ${id}`);
+    
+    const fields = entry.fields as {
+      title?: string;
+      artist?: string;
+      company?: string;
+      thumbnail?: { fields?: { file?: { url?: string } } };
+      videoUrl?: string;
+      vimeoId?: string;
+      youtubeUrl?: string;
+      archiveOrder?: number;
+      worksGridOrder?: number;
+      year?: string;
+      description?: string;
+      category?: string;
+      slug?: string;
+      projectType?: string;
+      productionCompany?: string;
+      client?: string;
+      isPublished?: boolean;
+      isFeatured?: boolean;
+    };
+    const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
+      ? `https:${fields.thumbnail.fields.file.url}` 
+      : undefined;
+    
+    return {
+      id: entry.sys.id,
+      title: fields.title || '',
+      artist: fields.artist || '',
+      company: fields.company || '',
+      thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 1920, 1080, 'webp', 95) : undefined,
+      videoUrl: fields.videoUrl || '',
+      vimeoId: fields.vimeoId || '',
+      youtubeUrl: fields.youtubeUrl || '',
+      archiveOrder: fields.archiveOrder || 0,
+      worksGridOrder: fields.worksGridOrder || undefined,
+      year: fields.year || '2024',
+      description: fields.description || '',
+      category: fields.category || 'MUSIC VIDEOS',
+      slug: fields.slug || generateSlug(fields.title || ''),
+      projectType: fields.projectType || 'music-video',
+      productionCompany: fields.productionCompany || '',
+      client: fields.client || '',
+      isPublished: fields.isPublished !== false,
+      isFeatured: fields.isFeatured === true,
+    };
+  } catch (error) {
+    console.error(`❌ Error fetching project ${id} from Contentful:`, error);
+    return null;
+  }
+}
+
+// NUEVA FUNCIÓN: Obtener un proyecto por slug
+export async function getProjectBySlug(slug: string): Promise<Project | null> {
+  const client = initializeContentfulClient();
+  
+  if (!client) {
+    console.log('📱 No Contentful connection');
+    return null;
+  }
+
+  try {
+    const entries = await client.getEntries({
+      content_type: 'projects',
+      'fields.slug': slug,
+      limit: 1,
+    });
+    
+    if (entries.items.length === 0) {
+      console.log(`❌ No project found with slug: ${slug}`);
+      return null;
+    }
+    
+    const entry = entries.items[0];
+    console.log(`✅ Found project with slug: ${slug}`);
+    
+    const fields = entry.fields as {
+      title?: string;
+      artist?: string;
+      company?: string;
+      thumbnail?: { fields?: { file?: { url?: string } } };
+      videoUrl?: string;
+      vimeoId?: string;
+      youtubeUrl?: string;
+      archiveOrder?: number;
+      worksGridOrder?: number;
+      year?: string;
+      description?: string;
+      category?: string;
+      slug?: string;
+      projectType?: string;
+      productionCompany?: string;
+      client?: string;
+      isPublished?: boolean;
+      isFeatured?: boolean;
+    };
+    const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
+      ? `https:${fields.thumbnail.fields.file.url}` 
+      : undefined;
+    
+    return {
+      id: entry.sys.id,
+      title: fields.title || '',
+      artist: fields.artist || '',
+      company: fields.company || '',
+      thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 1920, 1080, 'webp', 95) : undefined,
+      videoUrl: fields.videoUrl || '',
+      vimeoId: fields.vimeoId || '',
+      youtubeUrl: fields.youtubeUrl || '',
+      archiveOrder: fields.archiveOrder || 0,
+      worksGridOrder: fields.worksGridOrder || undefined,
+      year: fields.year || '2024',
+      description: fields.description || '',
+      category: fields.category || 'MUSIC VIDEOS',
+      slug: fields.slug || generateSlug(fields.title || ''),
+      projectType: fields.projectType || 'music-video',
+      productionCompany: fields.productionCompany || '',
+      client: fields.client || '',
+      isPublished: fields.isPublished !== false,
+      isFeatured: fields.isFeatured === true,
+    };
+  } catch (error) {
+    console.error(`❌ Error fetching project with slug ${slug} from Contentful:`, error);
+    return null;
+  }
+}
+
+// Función legacy para compatibilidad (se mantiene temporalmente)
+export async function getArchiveItemById(id: string): Promise<ArchiveItem | null> {
+  console.log('⚠️ getArchiveItemById() is deprecated. Use getProjectById() instead.');
+  const project = await getProjectById(id);
+  
+  if (!project) return null;
+  
+  return {
+    title: project.title,
+    artist: project.artist,
+    year: project.year,
+    thumbnail: project.thumbnail,
+    vimeoId: project.vimeoId,
+    videoUrl: project.videoUrl,
+    order: project.archiveOrder,
+    sys: {
+      id: project.id,
+      contentType: {
+        sys: {
+          id: 'projects'
+        }
+      }
+    }
+  };
 }
