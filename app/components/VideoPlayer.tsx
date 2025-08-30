@@ -2,8 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Project } from '../../../lib/contentful';
-import { useTheme } from '../../hooks/useTheme';
+import { Project } from '../../lib/contentful';
 
 interface VideoPlayerProps {
   project: Project;
@@ -16,7 +15,6 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  const { theme } = useTheme();
 
   // Ensure component only renders on client side to prevent hydration issues
   useEffect(() => {
@@ -83,23 +81,16 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
       hasThumbnail: !!project.thumbnail
     });
 
-    // Log the iframe src that will be used
-    if (project.vimeoId) {
-      const vimeoSrc = `https://player.vimeo.com/video/${project.vimeoId}?autoplay=0&loop=1&title=0&byline=0&portrait=0&controls=0&background=1`;
-      console.log('🎬 Vimeo iframe src:', vimeoSrc);
-    }
+
 
     return (
       <div className="relative w-screen archive-page-fullscreen" style={{ height: '100vh', width: '100vw', maxWidth: '100vw' }}>
         {project.vimeoId ? (
-          <div>
-            <div className="absolute top-4 left-4 z-50 text-white bg-black bg-opacity-50 px-2 py-1 rounded text-xs">
-              Vimeo ID: {project.vimeoId}
-            </div>
+          <div className="w-full h-full">
             <iframe
               ref={iframeRef}
               src={`https://player.vimeo.com/video/${project.vimeoId}?autoplay=0&loop=1&title=0&byline=0&portrait=0&controls=0&background=1`}
-              className="w-screen h-full object-cover"
+              className="w-full h-full"
               frameBorder="0"
               allow="autoplay; fullscreen"
               allowFullScreen
@@ -109,14 +100,11 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
             />
           </div>
         ) : project.videoUrl && extractYouTubeId(project.videoUrl) ? (
-          <div>
-            <div className="absolute top-4 left-4 z-50 text-white bg-black bg-opacity-50 px-2 py-1 rounded text-xs">
-              YouTube: {extractYouTubeId(project.videoUrl)}
-            </div>
+          <div className="w-full h-full">
             <iframe
               ref={iframeRef}
               src={`https://www.youtube.com/embed/${extractYouTubeId(project.videoUrl)}?autoplay=0&loop=1&mute=0&controls=0&modestbranding=1&rel=0`}
-              className="w-screen h-full object-cover"
+              className="w-full h-full"
               frameBorder="0"
               allow="autoplay; fullscreen"
               allowFullScreen
@@ -126,10 +114,7 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
             />
           </div>
         ) : project.thumbnail ? (
-          <div>
-            <div className="absolute top-4 left-4 z-50 text-white bg-black bg-opacity-50 px-2 py-1 rounded text-xs">
-              Thumbnail only
-            </div>
+          <div className="w-full h-full">
             <Image 
               src={project.thumbnail}
               alt={displayTitle}
@@ -169,11 +154,7 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
         
         <div className="absolute top-8 right-8 z-10">
           <button 
-            className={`transition-colors ${
-              theme === 'light' 
-                ? 'text-black hover:text-black/80' 
-                : 'text-white hover:text-white/80'
-            }`}
+            className="text-white hover:text-white/80 transition-colors"
             aria-label={isPlaying ? "Pause video" : "Play video"}
             onClick={togglePlayPause}
           >

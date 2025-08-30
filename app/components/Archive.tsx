@@ -4,6 +4,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useHydration, useSafeBrowserEffect } from '../hooks/useHydration';
 import { Project } from '@/lib/contentful';
+import { generateSemanticSlug } from '@/lib/slug-utils';
 
 interface ArchiveProps {
   projects: Project[];
@@ -69,8 +70,19 @@ const Archive = ({ projects }: ArchiveProps) => {
   }, [filteredItems, isHydrated]);
 
   const handleProjectClick = (item: Project) => {
-    if (item.id) {
-      router.push(`/archive/${item.id}`);
+    console.log('=== ARCHIVE NAVIGATION DEBUG ===');
+    console.log('Project clicked:', item);
+    console.log('Title:', item.title);
+    console.log('Artist:', item.artist);
+    
+    if (item.title && item.artist) {
+      const semanticSlug = generateSemanticSlug(item.title, item.artist);
+      const url = `/work/${semanticSlug}`;
+      console.log('🚀 Generated semantic slug:', semanticSlug);
+      console.log('🚀 Navigating to WORK URL:', url);
+      router.push(url);
+    } else {
+      console.error('❌ Missing title or artist for project:', item);
     }
   };
 

@@ -4,79 +4,43 @@ import { useMemo, useState, useRef, useCallback, useEffect, useLayoutEffect } fr
 import { motion } from 'framer-motion'
 import { HeroSlide } from '@/lib/contentful'
 
-// Memoized helper function
-const getVideoSource = (slide: HeroSlide): string => {
-  // Check if it's a YouTube URL
-  if (slide.videoUrl && (slide.videoUrl.includes('youtube.com') || slide.videoUrl.includes('youtu.be'))) {
-    const youtubeId = slide.videoUrl.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&\n?#]+)/)?.[1];
-    if (youtubeId) {
-      const embedUrl = `https://www.youtube.com/embed/${youtubeId}?controls=0&modestbranding=1&rel=0&showinfo=0&autoplay=1&mute=1`;
-      return embedUrl;
+// Memoized image component
+const ImageSlide = ({ slide }: { slide: HeroSlide }) => {
+  const imageSource = useMemo(() => {
+    // Prioritize the src field (which contains the optimized image URL)
+    if (slide.src) {
+      return slide.src;
     }
-  }
-  
-  // Check if it's a Vimeo URL
-  if (slide.videoUrl && slide.videoUrl.includes('vimeo.com')) {
-    const vimeoId = slide.videoUrl.match(/vimeo\.com\/(\d+)/)?.[1];
-    if (vimeoId) {
-      const embedUrl = `https://player.vimeo.com/video/${vimeoId}?controls=0&background=1&autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`;
-      return embedUrl;
+    
+    // Fallback to videoUrl if it's an image
+    if (slide.videoUrl && (slide.videoUrl.includes('.jpg') || slide.videoUrl.includes('.jpeg') || slide.videoUrl.includes('.png') || slide.videoUrl.includes('.webp'))) {
+      return slide.videoUrl;
     }
-  }
+    
+    return '';
+  }, [slide])
   
-  // Direct video URL (MP4, etc.)
-  if (slide.videoUrl) {
-    return slide.videoUrl;
-  }
-  
-  if (slide.src) {
-    return slide.src;
-  }
-  
-  return ''
-}
-
-// Memoized video component
-const VideoSlide = ({ slide }: { slide: HeroSlide }) => {
-  const videoSource = useMemo(() => getVideoSource(slide), [slide])
-  
-  const VideoContent = useMemo(() => {
-    if (!videoSource) {
+  const ImageContent = useMemo(() => {
+    if (!imageSource) {
       return (
         <div className="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center">
-          <p className="text-gray-500 text-sm">Video no disponible</p>
+          <p className="text-gray-500 text-sm">Imagen no disponible</p>
         </div>
       )
     }
     
-    if (videoSource.includes('player.vimeo.com') || videoSource.includes('youtube.com/embed')) {
-      return (
-        <iframe
-          src={videoSource}
-          className="absolute inset-0 w-full h-full z-0"
-          frameBorder="0"
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-          title={slide.title}
-          loading="lazy"
-        />
-      )
-    }
-    
     return (
-      <video
-        src={videoSource}
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={imageSource}
+        alt={slide.alt || slide.title}
         className="absolute inset-0 w-full h-full object-cover z-0"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="metadata"
+        loading="lazy"
       />
     )
-  }, [videoSource, slide.title])
+  }, [imageSource, slide.alt, slide.title])
   
-  return VideoContent
+  return ImageContent
 }
 
 interface FeaturedProjectProps {
@@ -98,42 +62,8 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
 
   // Memoized slides to avoid recalculation
   const slides = useMemo((): HeroSlide[] => {
-    if (heroSlides && heroSlides.length > 0) {
-      return heroSlides;
-    }
-    // Fallback to local works if no heroSlides provided
-    return [
-      {
-        id: 'grid-1',
-        title: 'Tres Pecados Después',
-        client: 'Milo J',
-        src: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
-        alt: 'Videoclip para Milo J - Tres Pecados Después',
-        type: 'video' as const,
-        videoUrl: '/videos_grid/1 Milo J - Tres Pecados Despues.mp4',
-        order: 1,
-      },
-      {
-        id: 'grid-2',
-        title: 'Ali Oli',
-        client: 'Milo J',
-        src: '/videos_grid/2 Milo J - Ali Oli.mp4',
-        alt: 'Videoclip para Milo J - Ali Oli',
-        type: 'video' as const,
-        videoUrl: '/videos_grid/2 Milo J - Ali Oli.mp4',
-        order: 2,
-      },
-      {
-        id: 'grid-3',
-        title: 'Sola',
-        client: 'Chita',
-        src: '/videos_grid/3 - Chita - Sola.mp4',
-        alt: 'Videoclip para Chita - Sola',
-        type: 'video' as const,
-        videoUrl: '/videos_grid/3 - Chita - Sola.mp4',
-        order: 3,
-      }
-    ];
+    // Always use slides from Contentful (including empty array)
+    return heroSlides || [];
   }, [heroSlides])
 
   // Optimized scroll update with proper throttling
@@ -237,13 +167,13 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
     }
   }, [])
 
-  // If no slides, show a fallback message
+  // If no slides, show a loading state or empty message
   if (slides.length === 0) {
     return (
-      <section className="absolute inset-0 px-0 bg-red-600 text-white overflow-hidden flex flex-col items-center justify-center" style={{ height: '100vh', paddingTop: 0 }}>
+      <section className="absolute inset-0 px-0 bg-background text-foreground overflow-hidden flex flex-col items-center justify-center" style={{ height: '100vh', paddingTop: 0 }}>
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">No Featured Projects Available</h1>
-          <p className="text-lg">Please check your Contentful configuration or add some projects.</p>
+          <h1 className="text-xl font-medium mb-4">Cargando proyectos destacados...</h1>
+          <p className="text-sm opacity-70">Conectando con Contentful</p>
         </div>
       </section>
     );
@@ -274,8 +204,8 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
               display: none;
             }
             
-            /* Hacer que YouTube se vea más limpio */
-            iframe[src*="youtube.com/embed"] {
+            /* Estilo para las imágenes del hero */
+            img {
               border-radius: 8px;
               box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             }
@@ -311,7 +241,7 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
                       className="relative w-full"
                       style={{ paddingBottom: '56.25%' }}
                     >
-                      <VideoSlide slide={slide} />
+                      <ImageSlide slide={slide} />
                       {/* Hover overlay only on active slide */}
                       {isActive && (
                         <div className="absolute inset-0 z-20 group" aria-hidden="true">

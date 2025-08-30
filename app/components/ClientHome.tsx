@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import FeaturedProject from './FeaturedProject'
-import HomeHeroSkeleton from './HomeHeroSkeleton';
+import Loader from './Loader';
 import { HeroSlide } from '@/lib/contentful';
 import { useSplash } from '../contexts/SplashContext';
 
@@ -41,7 +41,7 @@ export default function ClientHome({ heroSlides }: ClientHomeProps) {
 
   return (
     <>
-      {isLoading && <HomeHeroSkeleton />}
+      {isLoading && <Loader />}
       <main className={`min-h-screen transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
         <FeaturedProject heroSlides={heroSlides} />
       </main>

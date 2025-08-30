@@ -1,12 +1,12 @@
 import { Suspense } from 'react';
 import { getProjects } from '@/lib/contentful';
 import Archive from '@/app/components/Archive';
-import ArchiveSkeleton from '@/app/components/ArchiveSkeleton';
+import Loader from '@/app/components/Loader';
 
 export default async function ArchivePage() {
   return (
     <main className="min-h-screen">
-      <Suspense fallback={<ArchiveSkeleton />}>
+      <Suspense fallback={<Loader />}>
         <ArchiveWrapper />
       </Suspense>
     </main>

@@ -52,5 +52,6 @@ export const useSafeBrowserEffect = (
     if (!isHydrated) return;
     
     return callback();
-  }, [isHydrated, ...deps]); // Removed callback from deps to prevent infinite loops
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHydrated, ...deps]);
 };

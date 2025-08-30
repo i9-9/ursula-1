@@ -2,45 +2,8 @@
 
 import Link from 'next/link';
 import { Project } from '@/lib/contentful';
+import { generateSemanticSlug } from '@/lib/slug-utils';
 import StaticVideoThumbnail from './StaticVideoThumbnail';
-
-// Función para generar slug limpio y legible (debe coincidir con la página [slug])
-function generateCleanSlug(title: string, artist: string): string {
-  // Limpiar y normalizar el título y artista
-  const cleanTitle = title
-    .toLowerCase()
-    .trim()
-    .replace(/[áäâà]/g, 'a')
-    .replace(/[éëêè]/g, 'e')
-    .replace(/[íïîì]/g, 'i')
-    .replace(/[óöôò]/g, 'o')
-    .replace(/[úüûù]/g, 'u')
-    .replace(/[ñ]/g, 'n')
-    .replace(/[^a-z0-9\s-]/g, '') // Solo letras, números, espacios y guiones
-    .replace(/\s+/g, '-') // Espacios a guiones
-    .replace(/-+/g, '-') // Múltiples guiones a uno solo
-    .replace(/^-|-$/g, ''); // Eliminar guiones del inicio y final
-
-  const cleanArtist = artist
-    .toLowerCase()
-    .trim()
-    .replace(/[áäâà]/g, 'a')
-    .replace(/[éëêè]/g, 'e')
-    .replace(/[íïîì]/g, 'i')
-    .replace(/[óöôò]/g, 'o')
-    .replace(/[úüûù]/g, 'u')
-    .replace(/[ñ]/g, 'n')
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-
-  // Crear slug combinando título y artista
-  const slug = cleanTitle && cleanArtist ? `${cleanTitle}-${cleanArtist}` : cleanTitle || cleanArtist || 'untitled';
-  
-  // Limitar longitud y asegurar que sea único
-  return slug.substring(0, 60);
-}
 
 interface WorksGridProps {
   works: Project[];
@@ -87,7 +50,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         {works.map((project, index) => {
           return (
             <Link
-              href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
+              href={`/work/${generateSemanticSlug(project.title || '', project.artist || '')}`}
               key={project.id}
               className="block cursor-pointer group relative"
               aria-label={`Ver ${project.title} by ${project.artist}`}
@@ -132,7 +95,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         {works.map((project, index) => {
           return (
             <Link
-              href={`/work/${generateCleanSlug(project.title || '', project.artist || '')}`}
+              href={`/work/${generateSemanticSlug(project.title || '', project.artist || '')}`}
               key={project.id}
               className={`block cursor-pointer group relative col-span-6 lg:col-span-3 ${
                 index % 4 === 0 ? 'section-title section-title-delay-1' : 
@@ -156,7 +119,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                     src={getVideoSource(project)}
                     poster={project.thumbnail || ''}
                     alt={project.title}
-                    className="w-full h-auto"
+                    className="w-full"
                   />
                 </div>
               </div>
