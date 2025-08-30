@@ -140,13 +140,31 @@ export async function getProjects(): Promise<Project[]> {
   }
 
   try {
-    const entries = await client.getEntries({
+    // First try to get from the new 'projects' content type
+    let entries = await client.getEntries({
       content_type: 'projects',
       order: ['fields.archiveOrder'],
       limit: 1000,
     });
     
-    console.log(`✅ Fetched ${entries.items.length} projects from unified content type`);
+    console.log(`✅ Fetched ${entries.items.length} projects from 'projects' content type`);
+    
+    // If no projects found, try the legacy 'portfolioItem' content type
+    if (entries.items.length === 0) {
+      console.log('📱 No projects found in new content type, trying legacy portfolioItem...');
+      entries = await client.getEntries({
+        content_type: 'portfolioItem',
+        order: ['fields.order'],
+        limit: 1000,
+      });
+      console.log(`✅ Fetched ${entries.items.length} projects from legacy 'portfolioItem' content type`);
+    }
+    
+    // If still no projects, return empty array
+    if (entries.items.length === 0) {
+      console.log('❌ No projects found in any content type');
+      return [];
+    }
     
     return entries.items.map((item: { 
       fields: { 
@@ -168,6 +186,7 @@ export async function getProjects(): Promise<Project[]> {
         client?: string;
         isPublished?: boolean;
         isFeatured?: boolean;
+        order?: number; // Legacy field
       }; 
       sys: { id: string } 
     }) => {
@@ -185,7 +204,7 @@ export async function getProjects(): Promise<Project[]> {
         videoUrl: fields.videoUrl || '',
         vimeoId: fields.vimeoId || '',
         youtubeUrl: fields.youtubeUrl || '',
-        archiveOrder: fields.archiveOrder || 0,
+        archiveOrder: fields.archiveOrder || fields.order || 0,
         worksGridOrder: fields.worksGridOrder || undefined,
         year: fields.year || '2024',
         description: fields.description || '',
@@ -532,10 +551,31 @@ export async function getProjectById(id: string): Promise<Project | null> {
   }
 
   try {
-    const entry = await client.getEntry(id);
+    // First try to get from the new 'projects' content type
+    let entry;
+    try {
+      entry = await client.getEntry(id);
+    } catch (error) {
+      console.log(`📱 Project ${id} not found in 'projects' content type, trying legacy 'portfolioItem'...`);
+      // Try to get from portfolioItem content type
+      const entries = await client.getEntries({
+        content_type: 'portfolioItem',
+        'sys.id': id,
+        limit: 1,
+      });
+      
+      if (entries.items.length > 0) {
+        entry = entries.items[0];
+        console.log(`✅ Found project ${id} in legacy 'portfolioItem' content type`);
+      } else {
+        console.log(`❌ Project ${id} not found in any content type`);
+        return null;
+      }
+    }
     
-    if (entry.sys.contentType.sys.id !== 'projects') {
-      console.log(`❌ Entry ${id} is not a project`);
+    // Check if it's a valid project content type
+    if (entry.sys.contentType.sys.id !== 'projects' && entry.sys.contentType.sys.id !== 'portfolioItem') {
+      console.log(`❌ Entry ${id} is not a project or portfolioItem`);
       return null;
     }
     
@@ -560,7 +600,9 @@ export async function getProjectById(id: string): Promise<Project | null> {
       client?: string;
       isPublished?: boolean;
       isFeatured?: boolean;
+      order?: number; // Legacy field
     };
+    
     const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
       ? `https:${fields.thumbnail.fields.file.url}` 
       : undefined;
@@ -574,7 +616,7 @@ export async function getProjectById(id: string): Promise<Project | null> {
       videoUrl: fields.videoUrl || '',
       vimeoId: fields.vimeoId || '',
       youtubeUrl: fields.youtubeUrl || '',
-      archiveOrder: fields.archiveOrder || 0,
+      archiveOrder: fields.archiveOrder || fields.order || 0,
       worksGridOrder: fields.worksGridOrder || undefined,
       year: fields.year || '2024',
       description: fields.description || '',

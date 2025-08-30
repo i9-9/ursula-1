@@ -52,5 +52,5 @@ export const useSafeBrowserEffect = (
     if (!isHydrated) return;
     
     return callback();
-  }, [isHydrated, ...deps]);
+  }, [isHydrated, ...deps]); // Removed callback from deps to prevent infinite loops
 };

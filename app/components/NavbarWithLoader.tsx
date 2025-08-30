@@ -1,5 +1,6 @@
 'use client';
 
+import HydrationSafe from './HydrationSafe';
 import Navbar from './Navbar';
 import { useSplash } from '../contexts/SplashContext';
 
@@ -15,5 +16,10 @@ export default function NavbarWithLoader() {
   }
 
   console.log('NavbarWithLoader: Showing navbar');
-  return <Navbar />;
+  
+  return (
+    <HydrationSafe fallback={null}>
+      <Navbar />
+    </HydrationSafe>
+  );
 }

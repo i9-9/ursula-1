@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import { useHydration, useSafeBrowserEffect } from '../hooks/useHydration';
 
 interface ThemeContextType {
@@ -60,7 +60,7 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     if (!isHydrated) return;
 
     const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -77,7 +77,7 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
     } catch (error) {
       console.warn('Error saving theme:', error);
     }
-  };
+  }, [theme, isHydrated]);
 
   const value: ThemeContextType = {
     theme,

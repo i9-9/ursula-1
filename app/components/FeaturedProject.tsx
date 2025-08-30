@@ -4,14 +4,6 @@ import { useMemo, useState, useRef, useCallback, useEffect, useLayoutEffect } fr
 import { motion } from 'framer-motion'
 import { HeroSlide } from '@/lib/contentful'
 
-const localWorks: Array<{
-  title?: string
-  vimeoId?: string
-  youtubeUrl?: string
-}> = [
-  // Simulated local works data
-]
-
 // Memoized helper function
 const getVideoSource = (slide: HeroSlide): string => {
   // Check if it's a YouTube URL
@@ -39,21 +31,6 @@ const getVideoSource = (slide: HeroSlide): string => {
   
   if (slide.src) {
     return slide.src;
-  }
-  const localWork = localWorks.find(work => 
-    work.title?.toLowerCase().includes(slide.title.toLowerCase()) ||
-    slide.title.toLowerCase().includes(work.title?.toLowerCase() || '')
-  )
-  
-  if (localWork?.vimeoId) {
-    return `https://player.vimeo.com/video/${localWork.vimeoId}?controls=0&background=1&autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0`
-  }
-  
-  if (localWork?.youtubeUrl) {
-    const youtubeId = localWork.youtubeUrl.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&\n?#]+)/)?.[1]
-    if (youtubeId) {
-      return `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&rel=0`
-    }
   }
   
   return ''

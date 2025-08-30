@@ -1,41 +1,31 @@
 import { notFound } from 'next/navigation';
 import { getProjects } from '../../../lib/contentful';
+import { findProjectBySlug, generateAllSlugs } from '../../../lib/slug-utils';
 import VideoPlayer from './VideoPlayer';
 import Script from 'next/script';
 
 interface PageProps {
   params: Promise<{
-    id: string;
+    slug: string;
   }>;
 }
 
 export default async function ArchiveProjectPage({ params }: PageProps) {
-  const { id } = await params;
-  console.log('🔍 Looking for project with ID:', id);
+  const { slug } = await params;
+  console.log('🔍 Looking for project with slug:', slug);
   
   // Fetch projects from Contentful
   const projects = await getProjects();
   console.log('📋 Total projects fetched:', projects.length);
-  console.log('📋 Available project IDs from Contentful:', projects.map(p => p.id));
-  console.log('📋 Sample project structure:', projects[0] ? {
-    id: projects[0].id,
-    title: projects[0].title,
-    artist: projects[0].artist,
-    vimeoId: projects[0].vimeoId,
-    videoUrl: projects[0].videoUrl,
-    thumbnail: projects[0].thumbnail
-  } : 'No projects found');
   
-  // Find project by ID
-  const project = projects.find(p => p.id === id);
+  // Find project by semantic slug using utility function
+  const project = findProjectBySlug(projects, slug);
+  
   console.log('📦 Project found:', project);
-  console.log('📦 Project type check:', typeof project);
-  console.log('📦 Project keys:', project ? Object.keys(project) : 'No project');
 
   if (!project) {
-    console.log('❌ Project not found in Contentful');
-    console.log('❌ Available IDs:', projects.map(p => p.id));
-    console.log('❌ Requested ID:', id);
+    console.log('❌ Project not found with slug:', slug);
+    console.log('❌ Available slugs:', generateAllSlugs(projects).map(p => p.slug));
     notFound();
   }
 
@@ -53,7 +43,7 @@ export default async function ArchiveProjectPage({ params }: PageProps) {
   }
 
   // Find the project index
-  const currentIndex = projects.findIndex(p => p.id === id);
+  const currentIndex = projects.findIndex(p => p.id === project.id);
   const displayIndex = currentIndex >= 0 ? currentIndex + 1 : 1;
   console.log('📍 Project index:', displayIndex);
 
@@ -100,26 +90,26 @@ export default async function ArchiveProjectPage({ params }: PageProps) {
   );
 }
 
-// Generate static routes at build time using Contentful data
+// Generate static routes at build time using semantic slugs
 export async function generateStaticParams() {
   try {
-    console.log('🏗️ Generating static params for archive projects...');
+    console.log('🏗️ Generating static params for archive projects with semantic URLs...');
     const projects = await getProjects();
     
     console.log(`📋 Total projects available: ${projects.length}`);
     
-    // Generate routes for ALL projects (not just published ones) for testing
-    const allProjects = projects;
+    // Generate routes for projects with title and artist using utility function
+    const slugsWithProjects = generateAllSlugs(projects);
     
-    console.log(`✅ Generated ${allProjects.length} static routes for archive projects`);
+    console.log(`✅ Generated ${slugsWithProjects.length} static routes with semantic URLs`);
     
     // Log the first few routes being generated
-    allProjects.slice(0, 5).forEach((project, index) => {
-      console.log(`  ${index + 1}. /archive/${project.id} - ${project.title} by ${project.artist}`);
+    slugsWithProjects.slice(0, 5).forEach(({ project, slug }, index) => {
+      console.log(`  ${index + 1}. /archive/${slug} - ${project.title} by ${project.artist}`);
     });
     
-    return allProjects.map((project) => ({
-      id: project.id,
+    return slugsWithProjects.map(({ slug }) => ({
+      slug,
     }));
   } catch (error) {
     console.error('❌ Error generating static params:', error);
