@@ -555,7 +555,7 @@ export async function getProjectById(id: string): Promise<Project | null> {
     let entry;
     try {
       entry = await client.getEntry(id);
-    } catch (error) {
+    } catch {
       console.log(`📱 Project ${id} not found in 'projects' content type, trying legacy 'portfolioItem'...`);
       // Try to get from portfolioItem content type
       const entries = await client.getEntries({

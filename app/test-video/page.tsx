@@ -1,5 +1,5 @@
 import { getProjects } from '../../lib/contentful';
-import VideoPlayer from '../archive/[id]/VideoPlayer';
+import VideoPlayer from '../archive/[slug]/VideoPlayer';
 
 export default async function TestVideoPage() {
   const projects = await getProjects();
@@ -15,7 +15,7 @@ export default async function TestVideoPage() {
         <div className="mt-4">
           <h2 className="text-lg font-semibold mb-2">Available Projects:</h2>
           <div className="space-y-2">
-            {projects.slice(0, 10).map((project, index) => (
+            {projects.slice(0, 10).map((project) => (
               <div key={project.id} className="p-3 bg-gray-100 rounded">
                 <strong>{project.title}</strong> by {project.artist}
                 <br />
@@ -55,7 +55,7 @@ export default async function TestVideoPage() {
         
         <div className="mb-4">
           <h2 className="text-lg font-semibold">Direct Vimeo Test:</h2>
-          <p>If the VideoPlayer doesn't work, here's a direct Vimeo embed:</p>
+          <p>If the VideoPlayer doesn&apos;t work, here&apos;s a direct Vimeo embed:</p>
           <div className="mt-2 w-full h-64 bg-gray-200 rounded overflow-hidden">
             <iframe
               src={`https://player.vimeo.com/video/${projectWithVideo.vimeoId}?autoplay=0&loop=1&title=0&byline=0&portrait=0&controls=1&background=0`}
