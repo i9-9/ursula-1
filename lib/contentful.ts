@@ -386,7 +386,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
     let entries = await client.getEntries({
       content_type: 'heroSlide',
       order: ['fields.order'],
-      limit: 10,
+      limit: 20, // Aumentado para incluir todos los slides actuales y futuros
     });
     
     if (entries.items.length > 0) {
