@@ -72,7 +72,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
       </div>
       
       {/* Mobile/Tablet Layout - Vertical Stack with more padding */}
-      <div className="lg:hidden space-y-8 px-6">
+      <div className="lg:hidden space-y-16 px-6">
         {works.map((project, index) => {
           return (
             <Link
@@ -83,33 +83,33 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               onMouseEnter={() => setHoveredProject(project.id)}
               onMouseLeave={() => setHoveredProject(null)}
             >
-              {/* Project container for mobile/tablet */}
-              <div className="relative">
+              {/* Project container for mobile/tablet - same structure as desktop */}
+              <div className="flex flex-col justify-between min-h-0">
                 {/* Project number - positioned consistently with desktop */}
-                <div className="absolute -top-12 right-0 z-10">
+                <div className="flex justify-end mb-3 flex-shrink-0">
                   <span className="text-xs font-normal text-foreground">
                     {project.archiveOrder ? project.archiveOrder.toString().padStart(2, '0') : (index + 1).toString().padStart(2, '0')}
                   </span>
                 </div>
                 
-                {/* Video container - smaller width on mobile/tablet with padding */}
-                <div className="relative w-full max-w-sm mx-auto">
-                  <StaticVideoThumbnail
-                    src={getVideoSource(project)}
-                    poster={project.thumbnail || ''}
-                    alt={project.title}
-                    className="w-full h-auto"
-                  />
-                  
-                  {/* En mobile solo thumbnails, no videos */}
+                {/* Thumbnail container - centered like desktop */}
+                <div className="flex-1 flex items-center justify-center min-h-0">
+                  <div className="relative w-full max-w-sm mx-auto">
+                    <StaticVideoThumbnail
+                      src={getVideoSource(project)}
+                      poster={project.thumbnail || ''}
+                      alt={project.title}
+                      className="w-full h-auto"
+                    />
+                  </div>
                 </div>
-              </div>
-              
-              {/* Title - positioned below image, left-aligned like desktop */}
-              <div className="mt-2">
-                <p className="text-base font-normal uppercase tracking-wide text-foreground">
-                  {project.title}, {project.artist}
-                </p>
+                
+                {/* Title - same positioning as desktop */}
+                <div className="mt-3 flex-shrink-0">
+                  <p className="text-sm md:text-base font-normal uppercase tracking-wide text-foreground">
+                    {project.title}, {project.artist}
+                  </p>
+                </div>
               </div>
             </Link>
           );
@@ -118,7 +118,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
 
       {/* Desktop Layout - Grid (only on large screens) */}
       <div 
-        className="hidden lg:grid w-full grid-cols-4 gap-x-12 gap-y-20 mx-auto max-w-6xl"
+        className="hidden lg:grid w-full grid-cols-4 gap-x-12 gap-y-20 mx-auto"
         style={{ gridAutoRows: '1fr' }}
         role="grid"
         aria-label="Projects grid"
@@ -147,14 +147,12 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               />
             </div>
             
-            {/* Título abajo */}
-            <div className="mt-3 flex-shrink-0">
-              <p className={`text-sm md:text-base font-normal uppercase tracking-wide transition-opacity duration-300 text-foreground ${
-                hoveredProject === project.id ? 'opacity-100' : 'opacity-0'
-              }`}>
-                {project.title}, {project.artist}
-              </p>
-            </div>
+                    {/* Título abajo de la imagen */}
+        <div className="mt-3 flex-shrink-0">
+          <p className="text-sm md:text-base font-normal uppercase tracking-wide text-foreground">
+            {project.title}, {project.artist}
+          </p>
+        </div>
           </div>
         ))}
       </div>
