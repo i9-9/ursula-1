@@ -35,7 +35,6 @@ const OptimizedProjectItem = ({
   // Hook para lazy loading con preload al acercarse (solo desktop)
   const {
     elementRef,
-    isHovering,
     hasApproached,
     handleMouseEnter,
     handleMouseLeave
@@ -62,7 +61,7 @@ const OptimizedProjectItem = ({
   return (
     <Link
       ref={elementRef}
-      href={`/work/${generateSemanticSlug(project.slug, project.title, project.artist)}`}
+      href={`/work/${generateSemanticSlug(project.title, project.artist)}`}
       className={`group relative transition-all duration-500 hover:scale-105 ${
         index % 4 === 0 ? 'section-title section-title-delay-1' : 
         index % 4 === 1 ? 'section-title section-title-delay-2' : 
@@ -97,7 +96,6 @@ const OptimizedProjectItem = ({
               {isVideoProject(project) && project.videoThumbnail && (
                 <VideoHover
                   videoUrl={project.videoThumbnail}
-                  projectTitle={`${project.title}, ${project.artist}`}
                   isVisible={hoveredProject === project.id}
                   onMouseEnter={() => setHoveredProject(project.id)}
                   onMouseLeave={() => setHoveredProject(null)}

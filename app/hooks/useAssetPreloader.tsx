@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { Project } from '@/lib/contentful';
 
 interface UseAssetPreloaderProps {
@@ -45,7 +45,7 @@ export const useAssetPreloader = ({
   };
 
   // Función para precargar un proyecto completo
-  const preloadProject = (project: Project) => {
+  const preloadProject = useCallback((project: Project) => {
     // En mobile, no precargar assets de hover para optimizar performance
     if (isMobile) return;
     
@@ -60,7 +60,7 @@ export const useAssetPreloader = ({
     } else if (project.images && project.images.length > 0) {
       preloadImages(project.images);
     }
-  };
+  }, [isMobile]);
 
   // Efecto para precargar los primeros proyectos
   useEffect(() => {
@@ -74,7 +74,7 @@ export const useAssetPreloader = ({
     });
 
     console.log(`🚀 Preloading assets for first ${projectsToPreload.length} projects (desktop only)`);
-  }, [projects, preloadCount, isMobile]);
+  }, [projects, preloadCount, isMobile, preloadProject]);
 
   // Función para precargar un proyecto específico (para lazy loading)
   const preloadProjectAsync = (project: Project) => {

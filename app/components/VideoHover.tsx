@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface VideoHoverProps {
   videoUrl: string;
-  projectTitle: string;
   isVisible: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
@@ -13,7 +12,6 @@ interface VideoHoverProps {
 
 const VideoHover = ({ 
   videoUrl, 
-  projectTitle, 
   isVisible, 
   onMouseEnter, 
   onMouseLeave 
@@ -34,10 +32,11 @@ const VideoHover = ({
 
   // Limpiar video al desmontar
   useEffect(() => {
+    const video = videoRef.current;
     return () => {
-      if (videoRef.current) {
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
       }
     };
   }, []);

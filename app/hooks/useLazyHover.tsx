@@ -11,7 +11,7 @@ export const useLazyHover = ({
   threshold = 100, 
   onApproach 
 }: UseLazyHoverProps = {}) => {
-  const elementRef = useRef<HTMLElement>(null);
+  const elementRef = useRef<HTMLAnchorElement>(null);
   const [hasApproached, setHasApproached] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
