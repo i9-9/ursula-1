@@ -7,7 +7,6 @@ type Props = {
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
   className?: string;
-  fit?: 'contain' | 'cover';
 };
 
 export default function VideoHover({ 
@@ -15,8 +14,7 @@ export default function VideoHover({
   isVisible, 
   onMouseEnter, 
   onMouseLeave, 
-  className = '', 
-  fit = 'contain' 
+  className = '' 
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
 

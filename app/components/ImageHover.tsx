@@ -6,8 +6,7 @@ type Props = {
   hoverImages?: string[];
   isVisible: boolean; 
   projectTitle: string;
-  className?: string; 
-  fit?: 'contain' | 'cover';
+  className?: string;
 };
 
 export default function ImageHover({ 
@@ -15,8 +14,7 @@ export default function ImageHover({
   hoverImages, 
   isVisible, 
   projectTitle, 
-  className = '', 
-  fit = 'contain' 
+  className = '' 
 }: Props) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
