@@ -116,7 +116,9 @@ function optimizeContentfulImage(url: string, width?: number, height?: number, f
   if (height) params.append('h', height.toString());
   params.append('fm', format);
   params.append('q', quality.toString());
-  params.append('fit', 'fill');
+  if (width && height) {
+    params.append('fit', 'pad'); // Mantiene aspect ratio, rellena con fondo si es necesario
+  }
   
   return url.includes('?') 
     ? `${url}&${params.toString()}` 
@@ -232,7 +234,7 @@ export async function getProjects(): Promise<Project[]> {
         title: fields.title || '',
         artist: fields.artist || '',
         company: fields.company || '',
-        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
+        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, undefined, undefined, 'webp', 95) : undefined,
         images: images.length > 0 ? images : undefined,
         hoverImages: hoverImages.length > 0 ? hoverImages : undefined,
         videoUrl: fields.videoUrl || '',
@@ -329,7 +331,7 @@ export async function getWorksGridProjects(): Promise<Project[]> {
         title: fields.title || '',
         artist: fields.artist || '',
         company: fields.company || '',
-        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
+        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, undefined, undefined, 'webp', 95) : undefined,
         images: images.length > 0 ? images : undefined,
         hoverImages: hoverImages.length > 0 ? hoverImages : undefined,
         videoUrl: fields.videoUrl || '',
@@ -406,7 +408,7 @@ export async function getArchiveProjects(): Promise<Project[]> {
         title: fields.title || '',
         artist: fields.artist || '',
         company: fields.company || '',
-        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
+        thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, undefined, undefined, 'webp', 95) : undefined,
         videoUrl: fields.videoUrl || '',
         vimeoId: fields.vimeoId || '',
         youtubeUrl: fields.youtubeUrl || '',

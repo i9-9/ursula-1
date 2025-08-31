@@ -1,16 +1,23 @@
 'use client';
+import React, { useState, useEffect } from 'react';
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-
-interface ImageHoverProps {
+type Props = { 
   images: string[];
-  hoverImages?: string[]; // Imágenes optimizadas para hover
-  isVisible: boolean;
+  hoverImages?: string[];
+  isVisible: boolean; 
   projectTitle: string;
-}
+  className?: string; 
+  fit?: 'contain' | 'cover';
+};
 
-const ImageHover = ({ images, hoverImages, isVisible, projectTitle }: ImageHoverProps) => {
+export default function ImageHover({ 
+  images, 
+  hoverImages, 
+  isVisible, 
+  projectTitle, 
+  className = '', 
+  fit = 'contain' 
+}: Props) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Usar imágenes optimizadas para hover si están disponibles, sino usar las normales
@@ -28,24 +35,26 @@ const ImageHover = ({ images, hoverImages, isVisible, projectTitle }: ImageHover
     return () => clearInterval(interval);
   }, [isVisible, imagesToUse.length]);
 
-  if (!isVisible || imagesToUse.length === 0) return null;
+  if (!imagesToUse.length) return null;
+
+  const currentSrc = imagesToUse[currentImageIndex];
+  if (!currentSrc) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      className="absolute inset-0 w-full h-full"
+    <div
+      className={`absolute inset-0 transition-opacity duration-300 ease-out pointer-events-none z-10 overflow-hidden ${
+        isVisible ? 'opacity-100' : 'opacity-0'
+      } ${className}`}
+      aria-hidden
     >
-      <img
-        src={imagesToUse[currentImageIndex]}
-        alt={`${projectTitle} - Image ${currentImageIndex + 1}`}
-        className="w-full h-full object-cover"
-        style={{ aspectRatio: 'inherit' }}
+      <img 
+        src={currentSrc} 
+        alt={`${projectTitle} - Image ${currentImageIndex + 1}`} 
+        className="w-full h-full block object-cover"
+        style={{ objectPosition: 'center center' }}
+        loading="lazy"
+        decoding="async"
       />
-    </motion.div>
+    </div>
   );
-};
-
-export default ImageHover;
+}

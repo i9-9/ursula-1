@@ -1,36 +1,38 @@
 'use client';
+import React, { useRef, useEffect } from 'react';
 
-import { useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-interface VideoHoverProps {
+type Props = {
   videoUrl: string;
   isVisible: boolean;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-}
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  className?: string;
+  fit?: 'contain' | 'cover';
+};
 
-const VideoHover = ({ 
+export default function VideoHover({ 
   videoUrl, 
   isVisible, 
   onMouseEnter, 
-  onMouseLeave 
-}: VideoHoverProps) => {
+  onMouseLeave, 
+  className = '', 
+  fit = 'contain' 
+}: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Reproducir video cuando se hace hover
+  // Reproducir/pausar video basado en visibilidad
   useEffect(() => {
     if (isVisible && videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.play().catch(() => {
-        // Fallback silencioso si no se puede reproducir automáticamente
+        // Autoplay failed silently
       });
     } else if (videoRef.current) {
       videoRef.current.pause();
     }
   }, [isVisible]);
 
-  // Limpiar video al desmontar
+  // Limpiar al desmontar
   useEffect(() => {
     const video = videoRef.current;
     return () => {
@@ -42,39 +44,33 @@ const VideoHover = ({
   }, []);
 
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
-          className="absolute inset-0 z-50 overflow-hidden"
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-        >
-          {/* Video Player - Solo video, sin overlays */}
-          <video
-            ref={videoRef}
-            className="w-full h-full object-cover"
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            onEnded={() => {
-              if (videoRef.current) {
-                videoRef.current.currentTime = 0;
-                videoRef.current.play();
-              }
-            }}
-          >
-            <source src={videoUrl} type="video/webm" />
-            <source src={videoUrl.replace('.webm', '.mp4')} type="video/mp4" />
-          </video>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div
+      className={`absolute inset-0 transition-opacity duration-300 ease-out pointer-events-none z-10 overflow-hidden ${
+        isVisible ? 'opacity-100' : 'opacity-0'
+      } ${className}`}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      aria-hidden
+    >
+      <video
+        ref={videoRef}
+        src={videoUrl}
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        className="w-full h-full block object-cover"
+        style={{ objectPosition: 'center center' }}
+        onEnded={() => {
+          if (videoRef.current) {
+            videoRef.current.currentTime = 0;
+            videoRef.current.play();
+          }
+        }}
+      >
+        <source src={videoUrl} type="video/webm" />
+        <source src={videoUrl.replace('.webm', '.mp4')} type="video/mp4" />
+      </video>
+    </div>
   );
-};
-
-export default VideoHover;
+}

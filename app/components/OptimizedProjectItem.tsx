@@ -62,7 +62,7 @@ const OptimizedProjectItem = ({
     <Link
       ref={elementRef}
       href={`/work/${generateSemanticSlug(project.title, project.artist)}`}
-      className={`group relative transition-all duration-500 hover:scale-105 ${
+      className={`group relative ${
         index % 4 === 0 ? 'section-title section-title-delay-1' : 
         index % 4 === 1 ? 'section-title section-title-delay-2' : 
         index % 4 === 2 ? 'section-title section-title-delay-3' : 'section-title section-title-delay-4'
@@ -73,23 +73,18 @@ const OptimizedProjectItem = ({
     >
       {/* Project container */}
       <div className="relative">
-        {/* Project number */}
-        <div className="absolute -top-12 right-0 z-10">
-          <span className="text-xs font-normal text-foreground">
-            {project.archiveOrder ? project.archiveOrder.toString().padStart(2, '0') : (index + 1).toString().padStart(2, '0')}
-          </span>
-        </div>
+
         
-        {/* Video container */}
+        {/* Media box (define la altura de la celda) */}
         <div className="relative w-full">
           <StaticVideoThumbnail
             src={getVideoSource(project)}
             poster={project.thumbnail || ''}
             alt={project.title}
-            className="w-full"
+            className="w-full h-auto block"
           />
           
-          {/* Solo renderizar hovers en desktop y si el proyecto ya se ha "approached" o está en los primeros 6 */}
+          {/* Overlays: opacity only (no ocultan el thumbnail) */}
           {!isMobile && (hasApproached || index < 6) && (
             <>
               {/* Video Hover para proyectos de video con videoThumbnail */}
@@ -99,16 +94,20 @@ const OptimizedProjectItem = ({
                   isVisible={hoveredProject === project.id}
                   onMouseEnter={() => setHoveredProject(project.id)}
                   onMouseLeave={() => setHoveredProject(null)}
+                  className="z-10"
+
                 />
               )}
 
               {/* Image Hover para proyectos de imagen con múltiples imágenes */}
-              {isImageProject(project) && (
+              {isImageProject(project) && project.images && project.images.length > 0 && (
                 <ImageHover
-                  images={project.images!}
+                  images={project.images}
                   hoverImages={project.hoverImages}
                   isVisible={hoveredProject === project.id}
                   projectTitle={`${project.title}, ${project.artist}`}
+                  className="z-10"
+
                 />
               )}
             </>
@@ -116,11 +115,7 @@ const OptimizedProjectItem = ({
         </div>
       </div>
       
-      <div className="mt-2">
-        <p className="text-sm md:text-base font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          {project.title}, {project.artist}
-        </p>
-      </div>
+
     </Link>
   );
 };

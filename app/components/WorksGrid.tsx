@@ -118,23 +118,43 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
 
       {/* Desktop Layout - Grid (only on large screens) */}
       <div 
-        className="hidden lg:grid w-full grid-cols-12 gap-y-20 gap-x-24 md:gap-x-32 mx-auto"
+        className="hidden lg:grid w-full grid-cols-4 gap-x-12 gap-y-20 mx-auto max-w-6xl"
+        style={{ gridAutoRows: '1fr' }}
         role="grid"
         aria-label="Projects grid"
       >
         {works.map((project, index) => (
-          <div key={project.id} className="col-span-6 lg:col-span-3">
-            <OptimizedProjectItem
-              project={project}
-              index={index}
-              hoveredProject={hoveredProject}
-              setHoveredProject={setHoveredProject}
-              onPreloadProject={preloadProjectAsync}
-              getVideoSource={getVideoSource}
-              isVideoProject={isVideoProject}
-              isImageProject={isImageProject}
-              isMobile={isMobile || false}
-            />
+          <div key={project.id} className="flex flex-col justify-between min-h-0">
+            {/* Número arriba */}
+            <div className="flex justify-end mb-3 flex-shrink-0">
+              <span className="text-xs font-normal text-foreground">
+                {project.archiveOrder ? project.archiveOrder.toString().padStart(2, '0') : (index + 1).toString().padStart(2, '0')}
+              </span>
+            </div>
+            
+            {/* Thumbnail - área flexible */}
+            <div className="flex-1 flex items-center justify-center min-h-0">
+              <OptimizedProjectItem
+                project={project}
+                index={index}
+                hoveredProject={hoveredProject}
+                setHoveredProject={setHoveredProject}
+                onPreloadProject={preloadProjectAsync}
+                getVideoSource={getVideoSource}
+                isVideoProject={isVideoProject}
+                isImageProject={isImageProject}
+                isMobile={isMobile || false}
+              />
+            </div>
+            
+            {/* Título abajo */}
+            <div className="mt-3 flex-shrink-0">
+              <p className={`text-sm md:text-base font-normal uppercase tracking-wide transition-opacity duration-300 text-foreground ${
+                hoveredProject === project.id ? 'opacity-100' : 'opacity-0'
+              }`}>
+                {project.title}, {project.artist}
+              </p>
+            </div>
           </div>
         ))}
       </div>
