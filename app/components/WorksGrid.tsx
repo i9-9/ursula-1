@@ -1,15 +1,31 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { Project } from '@/lib/contentful';
 import { generateSemanticSlug } from '@/lib/slug-utils';
 import StaticVideoThumbnail from './StaticVideoThumbnail';
+import { useAssetPreloader } from '@/app/hooks/useAssetPreloader';
+import { useIsMobile } from '@/app/hooks/useIsMobile';
+import OptimizedProjectItem from './OptimizedProjectItem';
 
 interface WorksGridProps {
   works: Project[];
 }
 
 const WorksGrid = ({ works = [] }: WorksGridProps) => {
+  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+  
+  // Detectar si estamos en mobile
+  const isMobile = useIsMobile(1024); // lg breakpoint
+  
+  // Hook para precargar assets críticos (solo en desktop)
+  const { preloadProjectAsync } = useAssetPreloader({ 
+    projects: works, 
+    preloadCount: 6, // Precargar los primeros 6 proyectos
+    isMobile: isMobile || false // No precargar en mobile
+  });
+
   // Helper function to get video source
   const getVideoSource = (project: Project) => {
     // Solo usar videoUrl si es una URL de video directa (archivo)
@@ -27,6 +43,16 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   // Helper function to check if URL is a direct video file
   const isVideoFile = (url: string) => {
     return url.includes('.mp4') || url.includes('.mov') || url.includes('.webm') || url.includes('.avi');
+  };
+
+  // Helper function to determine if project is a video project
+  const isVideoProject = (project: Project) => {
+    return !!(project.videoUrl || project.vimeoId || project.youtubeUrl || project.videoThumbnail);
+  };
+
+  // Helper function to determine if project is an image project
+  const isImageProject = (project: Project) => {
+    return !!(project.images && project.images.length > 0);
   };
 
   // Si no hay proyectos de Contentful, mostrar mensaje o componente vacío
@@ -54,6 +80,8 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               key={project.id}
               className="block cursor-pointer group relative"
               aria-label={`Ver ${project.title} by ${project.artist}`}
+              onMouseEnter={() => setHoveredProject(project.id)}
+              onMouseLeave={() => setHoveredProject(null)}
             >
               {/* Project container for mobile/tablet */}
               <div className="relative">
@@ -72,12 +100,14 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                     alt={project.title}
                     className="w-full h-auto"
                   />
+                  
+                  {/* En mobile solo thumbnails, no videos */}
                 </div>
               </div>
               
-              {/* Title - centered below image */}
-              <div className="mt-4 text-center">
-                <p className="text-base font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              {/* Title - positioned below image, left-aligned like desktop */}
+              <div className="mt-2">
+                <p className="text-base font-normal uppercase tracking-wide text-foreground">
                   {project.title}, {project.artist}
                 </p>
               </div>
@@ -92,46 +122,21 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         role="grid"
         aria-label="Projects grid"
       >
-        {works.map((project, index) => {
-          return (
-            <Link
-              href={`/work/${generateSemanticSlug(project.title || '', project.artist || '')}`}
-              key={project.id}
-              className={`block cursor-pointer group relative col-span-6 lg:col-span-3 ${
-                index % 4 === 0 ? 'section-title section-title-delay-1' : 
-                index % 4 === 1 ? 'section-title section-title-delay-2' : 
-                index % 4 === 2 ? 'section-title section-title-delay-3' : 'section-title section-title-delay-4'
-              }`}
-              aria-label={`Ver ${project.title} by ${project.artist}`}
-            >
-              {/* Project container */}
-              <div className="relative">
-                {/* Project number */}
-                <div className="absolute -top-12 right-0 z-10">
-                  <span className="text-xs font-normal text-foreground">
-                    {project.archiveOrder ? project.archiveOrder.toString().padStart(2, '0') : (index + 1).toString().padStart(2, '0')}
-                  </span>
-                </div>
-                
-                {/* Video container */}
-                <div className="relative w-full">
-                  <StaticVideoThumbnail
-                    src={getVideoSource(project)}
-                    poster={project.thumbnail || ''}
-                    alt={project.title}
-                    className="w-full"
-                  />
-                </div>
-              </div>
-              
-              <div className="mt-2">
-                <p className="text-sm md:text-base font-normal uppercase tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {project.title}, {project.artist}
-                </p>
-              </div>
-            </Link>
-          );
-        })}
+        {works.map((project, index) => (
+          <div key={project.id} className="col-span-6 lg:col-span-3">
+            <OptimizedProjectItem
+              project={project}
+              index={index}
+              hoveredProject={hoveredProject}
+              setHoveredProject={setHoveredProject}
+              onPreloadProject={preloadProjectAsync}
+              getVideoSource={getVideoSource}
+              isVideoProject={isVideoProject}
+              isImageProject={isImageProject}
+              isMobile={isMobile || false}
+            />
+          </div>
+        ))}
       </div>
     </section>
   );

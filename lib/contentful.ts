@@ -19,8 +19,10 @@ export interface Project {
   artist: string;
   company: string;
   thumbnail?: string;
-  images?: string[]; // Array de URLs de imágenes del proyecto
+  images?: string[]; // Array de URLs de imágenes del proyecto (alta calidad)
+  hoverImages?: string[]; // Array de URLs optimizadas para hover (menor peso)
   videoUrl?: string;
+  videoThumbnail?: string; // Campo para videos optimizados de Contentful
   vimeoId?: string;
   youtubeUrl?: string;
   archiveOrder: number;
@@ -121,6 +123,16 @@ function optimizeContentfulImage(url: string, width?: number, height?: number, f
     : `${url}?${params.toString()}`;
 }
 
+// Función específica para optimizar imágenes de hover (tamaño reducido para performance)
+export function optimizeHoverImage(url: string): string {
+  return optimizeContentfulImage(url, 800, 600, 'webp', 80); // Menor calidad y tamaño para hovers
+}
+
+// Función específica para optimizar imágenes de galería completa
+export function optimizeGalleryImage(url: string): string {
+  return optimizeContentfulImage(url, 1920, 1080, 'webp', 95); // Alta calidad para galerías
+}
+
 // Función helper para generar slug desde el título si no existe
 function generateSlug(title: string): string {
   return title
@@ -175,6 +187,7 @@ export async function getProjects(): Promise<Project[]> {
         thumbnail?: { fields?: { file?: { url?: string } } };
         images?: { fields?: { file?: { url?: string } } }[]; // Array de imágenes
         videoUrl?: string;
+        videoThumbnail?: { fields?: { file?: { url?: string } } }; // Video optimizado
         vimeoId?: string;
         youtubeUrl?: string;
         archiveOrder?: number;
@@ -197,11 +210,22 @@ export async function getProjects(): Promise<Project[]> {
         ? `https:${fields.thumbnail.fields.file.url}` 
         : undefined;
       
-      // Procesar array de imágenes
+      // Procesar array de imágenes (alta calidad para galerías)
       const images = fields.images?.map(img => {
         const imageUrl = img.fields?.file?.url;
-        return imageUrl ? optimizeContentfulImage(`https:${imageUrl}`, 1920, 1080, 'webp', 95) : null;
+        return imageUrl ? optimizeGalleryImage(`https:${imageUrl}`) : null;
       }).filter((url): url is string => url !== null) || [];
+      
+      // Procesar imágenes optimizadas para hover (menor calidad/tamaño)
+      const hoverImages = fields.images?.map(img => {
+        const imageUrl = img.fields?.file?.url;
+        return imageUrl ? optimizeHoverImage(`https:${imageUrl}`) : null;
+      }).filter((url): url is string => url !== null) || [];
+      
+      // Procesar videoThumbnail (video optimizado)
+      const videoThumbnailUrl = fields.videoThumbnail?.fields?.file?.url 
+        ? `https:${fields.videoThumbnail.fields.file.url}` 
+        : undefined;
       
       return {
         id: item.sys.id,
@@ -210,7 +234,9 @@ export async function getProjects(): Promise<Project[]> {
         company: fields.company || '',
         thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
         images: images.length > 0 ? images : undefined,
+        hoverImages: hoverImages.length > 0 ? hoverImages : undefined,
         videoUrl: fields.videoUrl || '',
+        videoThumbnail: videoThumbnailUrl,
         vimeoId: fields.vimeoId || '',
         youtubeUrl: fields.youtubeUrl || '',
         archiveOrder: fields.archiveOrder || fields.order || 0,
@@ -257,7 +283,9 @@ export async function getWorksGridProjects(): Promise<Project[]> {
         artist?: string;
         company?: string;
         thumbnail?: { fields?: { file?: { url?: string } } };
+        images?: { fields?: { file?: { url?: string } } }[]; // Array de imágenes
         videoUrl?: string;
+        videoThumbnail?: { fields?: { file?: { url?: string } } }; // Video optimizado
         vimeoId?: string;
         youtubeUrl?: string;
         archiveOrder?: number;
@@ -279,13 +307,33 @@ export async function getWorksGridProjects(): Promise<Project[]> {
         ? `https:${fields.thumbnail.fields.file.url}` 
         : undefined;
       
+      // Procesar array de imágenes (alta calidad para galerías) - FIXED
+      const images = fields.images?.map(img => {
+        const imageUrl = img.fields?.file?.url;
+        return imageUrl ? optimizeGalleryImage(`https:${imageUrl}`) : null;
+      }).filter((url): url is string => url !== null) || [];
+      
+      // Procesar imágenes optimizadas para hover (menor calidad/tamaño) - FIXED
+      const hoverImages = fields.images?.map(img => {
+        const imageUrl = img.fields?.file?.url;
+        return imageUrl ? optimizeHoverImage(`https:${imageUrl}`) : null;
+      }).filter((url): url is string => url !== null) || [];
+      
+      // Procesar videoThumbnail (video optimizado) - FIXED
+      const videoThumbnailUrl = fields.videoThumbnail?.fields?.file?.url 
+        ? `https:${fields.videoThumbnail.fields.file.url}` 
+        : undefined;
+      
       return {
         id: item.sys.id,
         title: fields.title || '',
         artist: fields.artist || '',
         company: fields.company || '',
         thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
+        images: images.length > 0 ? images : undefined,
+        hoverImages: hoverImages.length > 0 ? hoverImages : undefined,
         videoUrl: fields.videoUrl || '',
+        videoThumbnail: videoThumbnailUrl,
         vimeoId: fields.vimeoId || '',
         youtubeUrl: fields.youtubeUrl || '',
         archiveOrder: fields.archiveOrder || 0,
