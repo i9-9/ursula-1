@@ -147,9 +147,11 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               />
             </div>
             
-                    {/* Título abajo de la imagen */}
+                    {/* Título abajo de la imagen - solo visible en hover */}
         <div className="mt-3 flex-shrink-0">
-          <p className="text-sm md:text-base font-normal uppercase tracking-wide text-foreground">
+          <p className={`text-sm md:text-base font-normal uppercase tracking-wide transition-opacity duration-300 text-foreground ${
+            hoveredProject === project.id ? 'opacity-100' : 'opacity-0'
+          }`}>
             {project.title}, {project.artist}
           </p>
         </div>
