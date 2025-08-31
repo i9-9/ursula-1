@@ -19,6 +19,7 @@ export interface Project {
   artist: string;
   company: string;
   thumbnail?: string;
+  images?: string[]; // Array de URLs de imágenes del proyecto
   videoUrl?: string;
   vimeoId?: string;
   youtubeUrl?: string;
@@ -130,7 +131,7 @@ function generateSlug(title: string): string {
     .trim();
 }
 
-// NUEVA FUNCIÓN: Obtener todos los proyectos del content type unificado
+      // NUEVA FUNCIÓN: Obtener todos los proyectos del content type unificado
 export async function getProjects(): Promise<Project[]> {
   const client = initializeContentfulClient();
   
@@ -172,6 +173,7 @@ export async function getProjects(): Promise<Project[]> {
         artist?: string;
         company?: string;
         thumbnail?: { fields?: { file?: { url?: string } } };
+        images?: { fields?: { file?: { url?: string } } }[]; // Array de imágenes
         videoUrl?: string;
         vimeoId?: string;
         youtubeUrl?: string;
@@ -195,12 +197,19 @@ export async function getProjects(): Promise<Project[]> {
         ? `https:${fields.thumbnail.fields.file.url}` 
         : undefined;
       
+      // Procesar array de imágenes
+      const images = fields.images?.map(img => {
+        const imageUrl = img.fields?.file?.url;
+        return imageUrl ? optimizeContentfulImage(`https:${imageUrl}`, 1920, 1080, 'webp', 95) : null;
+      }).filter((url): url is string => url !== null) || [];
+      
       return {
         id: item.sys.id,
         title: fields.title || '',
         artist: fields.artist || '',
         company: fields.company || '',
         thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 800, 600, 'webp', 95) : undefined,
+        images: images.length > 0 ? images : undefined,
         videoUrl: fields.videoUrl || '',
         vimeoId: fields.vimeoId || '',
         youtubeUrl: fields.youtubeUrl || '',

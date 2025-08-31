@@ -33,8 +33,8 @@ const Archive = ({ projects }: ArchiveProps) => {
       filtered = filtered.filter(project => project.category === 'COMMERCIAL');
     } else if (selectedFilter === 'set-design') {
       filtered = filtered.filter(project => project.category === 'SET DESIGN');
-    } else if (selectedFilter === 'film') {
-      filtered = filtered.filter(project => project.category === 'FILM');
+    } else if (selectedFilter === 'narrative') {
+      filtered = filtered.filter(project => project.category === 'NARRATIVE');
     }
 
     return filtered.map((project, index) => ({ 
@@ -106,7 +106,7 @@ const Archive = ({ projects }: ArchiveProps) => {
               <option value="music-videos">Music Videos</option>
               <option value="commercial">Commercial</option>
               <option value="set-design">Set Design</option>
-              <option value="film">Film</option>
+              <option value="narrative">Narrative</option>
             </select>
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
               <svg className="w-3 h-3 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -134,7 +134,7 @@ const Archive = ({ projects }: ArchiveProps) => {
               <option value="music-videos">Music Videos</option>
               <option value="commercial">Commercial</option>
               <option value="set-design">Set Design</option>
-              <option value="film">Film</option>
+              <option value="narrative">Narrative</option>
             </select>
             <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
               <svg className="w-3 h-3 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">

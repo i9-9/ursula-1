@@ -90,6 +90,10 @@ export default function RootLayout({
                 <div className="min-h-screen bg-background text-foreground">
                   <NavbarWithLoader />
                   {children}
+                  {/* Copyright - Aparece en todas las páginas */}
+                  <div className="fixed bottom-8 right-8 z-40 text-xs text-foreground">
+                    © 2025
+                  </div>
                 </div>
               </ChunkErrorBoundary>
             </ClientWrapper>
