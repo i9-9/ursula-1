@@ -21,7 +21,7 @@ const Navbar = () => {
           <div className="col-span-4 flex items-baseline justify-start">
             <Link
               href="/"
-              className="text-foreground hover:opacity-60 transition-opacity duration-200"
+              className="text-foreground hover:opacity-60 transition-opacity duration-200 flex items-baseline"
               style={{ fontSize: '13px', fontFamily: 'Suisse BP INTL' }}
               aria-label="Home"
             >
@@ -33,7 +33,7 @@ const Navbar = () => {
           <div className="col-span-4 flex items-baseline justify-center space-x-6">
             <Link
               href="/work"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
+              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
                 pathname === "/work" ? "opacity-100" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
@@ -45,7 +45,7 @@ const Navbar = () => {
 
             <Link
               href="/archive"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
+              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
                 pathname === "/archive" ? "opacity-100" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
@@ -58,7 +58,7 @@ const Navbar = () => {
 
             <Link
               href="/about"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
+              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
                 pathname === "/about" ? "opacity-100" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
@@ -71,7 +71,9 @@ const Navbar = () => {
 
           {/* Columnas 9-12: Área del toggle */}
           <div className="col-span-4 flex items-baseline justify-end">
-            <ThemeToggle />
+            <div className="flex items-baseline">
+              <ThemeToggle />
+            </div>
           </div>
         </div>
       </div>
@@ -82,7 +84,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link
             href="/"
-            className="text-foreground hover:opacity-60 transition-opacity duration-200"
+            className="text-foreground hover:opacity-60 transition-opacity duration-200 flex items-baseline"
             style={{ fontSize: '12px', fontFamily: 'Suisse BP INTL' }}
             aria-label="Home"
           >
@@ -93,7 +95,7 @@ const Navbar = () => {
           <div className="flex items-baseline space-x-2">
             <Link
               href="/work"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
+              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
                 pathname === "/work" ? "opacity-100" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
@@ -105,7 +107,7 @@ const Navbar = () => {
 
             <Link
               href="/archive"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
+              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
                 pathname === "/archive" ? "opacity-100" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
@@ -118,7 +120,7 @@ const Navbar = () => {
 
             <Link
               href="/about"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 ${
+              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
                 pathname === "/about" ? "opacity-100" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
@@ -128,7 +130,7 @@ const Navbar = () => {
               ABOUT
             </Link>
 
-            <div className="ml-3">
+            <div className="ml-3 flex items-baseline">
               <ThemeToggle />
             </div>
           </div>

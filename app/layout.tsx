@@ -9,6 +9,7 @@ import ThemeProvider from './components/ThemeProvider';
 import ChunkErrorBoundary from './components/ChunkErrorBoundary';
 import { SplashProvider } from './contexts/SplashContext';
 
+
 export const metadata: Metadata = {
   title: 'Ursula Benavidez - Portfolio',
   description: 'Portfolio profesional de Ursula Benavidez, Art Director y Set Designer.',

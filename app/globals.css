@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* HTML - Control de scroll global */
+html {
+  /* Prevenir scroll negativo y bounce en iOS */
+  overscroll-behavior: none;
+  /* Asegurar que el scroll sea suave y controlado */
+  scroll-behavior: smooth;
+  /* Prevenir zoom en iOS al hacer doble tap */
+  touch-action: manipulation;
+}
+
 /* Font Family */
 @font-face {
   font-family: 'Suisse BP INTL';
@@ -94,6 +104,10 @@ body {
   line-height: 1.5;
   color: var(--foreground);
   background-color: var(--background);
+  /* Prevenir scroll negativo */
+  overscroll-behavior-y: none;
+  /* Asegurar que el scroll no vaya más allá del contenido */
+  min-height: 100vh;
 }
 
 /* Headings */
@@ -259,6 +273,35 @@ p {
 
 .alignment-grid__content {
   /* Contenido alineado */
+}
+
+/* ===== NAVBAR SCROLL PREVENTION ===== */
+/* Prevenir scroll en el navbar */
+nav[data-navbar] {
+  /* Prevenir scroll horizontal y vertical en el navbar */
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  /* Asegurar que el navbar no tenga scroll interno */
+  position: relative;
+  /* Prevenir que el contenido del navbar cause scroll */
+  max-height: 100vh;
+  /* Prevenir scroll horizontal específicamente */
+  max-width: 100vw;
+  width: 100%;
+}
+
+/* Prevenir scroll en todos los elementos dentro del navbar */
+nav[data-navbar] * {
+  /* Prevenir scroll horizontal y vertical en elementos internos */
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  /* Asegurar que no haya scroll interno */
+  max-height: none;
+  /* Prevenir desbordamiento horizontal */
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* ===== ARCHIVE SPECIFIC STYLES ===== */
@@ -582,6 +625,35 @@ p {
 
 .archive-page-fullscreen * {
   max-width: 100vw !important;
+  box-sizing: border-box;
+}
+
+/* ===== NAVBAR SCROLL PREVENTION ===== */
+/* Prevenir scroll en el navbar */
+nav[data-navbar] {
+  /* Prevenir scroll horizontal y vertical en el navbar */
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  /* Asegurar que el navbar no tenga scroll interno */
+  position: relative;
+  /* Prevenir que el contenido del navbar cause scroll */
+  max-height: 100vh;
+  /* Prevenir scroll horizontal específicamente */
+  max-width: 100vw;
+  width: 100%;
+}
+
+/* Prevenir scroll en todos los elementos dentro del navbar */
+nav[data-navbar] * {
+  /* Prevenir scroll horizontal y vertical en elementos internos */
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  /* Asegurar que no haya scroll interno */
+  max-height: none;
+  /* Prevenir desbordamiento horizontal */
+  max-width: 100%;
   box-sizing: border-box;
 }
 

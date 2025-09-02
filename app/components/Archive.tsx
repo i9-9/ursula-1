@@ -221,10 +221,7 @@ const Archive = ({ projects }: ArchiveProps) => {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="fixed bottom-8 right-8">
-        <span className="text-xs text-black">© 2025</span>
-      </footer>
+
     </div>
   );
 };

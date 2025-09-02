@@ -87,7 +87,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               <div className="flex flex-col justify-between min-h-0">
                 {/* Project number - positioned consistently with desktop */}
                 <div className="flex justify-end mb-3 flex-shrink-0">
-                  <span className="text-xs font-normal text-foreground">
+                  <span className="text-[11px] font-normal text-foreground">
                     {project.archiveOrder ? project.archiveOrder.toString().padStart(2, '0') : (index + 1).toString().padStart(2, '0')}
                   </span>
                 </div>
@@ -106,7 +106,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 
                 {/* Title - same positioning as desktop */}
                 <div className="mt-3 flex-shrink-0">
-                  <p className="text-sm md:text-base font-normal uppercase tracking-wide text-foreground">
+                  <p className="text-[14px] font-normal uppercase tracking-wide text-foreground">
                     {project.title}, {project.artist}
                   </p>
                 </div>
@@ -118,7 +118,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
 
       {/* Desktop Layout - Grid (only on large screens) */}
       <div 
-        className="hidden lg:grid w-full grid-cols-4 gap-x-12 gap-y-20 mx-auto"
+        className="hidden lg:grid w-full grid-cols-4 gap-x-12 gap-y-12 mx-auto"
         style={{ gridAutoRows: '1fr' }}
         role="grid"
         aria-label="Projects grid"
@@ -127,7 +127,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
           <div key={project.id} className="flex flex-col justify-between min-h-0">
             {/* Número arriba */}
             <div className="flex justify-end mb-3 flex-shrink-0">
-              <span className="text-xs font-normal text-foreground">
+              <span className="text-[9px] font-normal text-foreground">
                 {project.archiveOrder ? project.archiveOrder.toString().padStart(2, '0') : (index + 1).toString().padStart(2, '0')}
               </span>
             </div>
@@ -149,7 +149,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             
                     {/* Título abajo de la imagen - solo visible en hover */}
         <div className="mt-3 flex-shrink-0">
-          <p className={`text-sm md:text-base font-normal uppercase tracking-wide transition-opacity duration-300 text-foreground ${
+          <p className={`text-[12px] font-normal uppercase tracking-wide transition-opacity duration-300 text-foreground ${
             hoveredProject === project.id ? 'opacity-100' : 'opacity-0'
           }`}>
             {project.title}, {project.artist}

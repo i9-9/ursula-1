@@ -76,46 +76,44 @@ const OptimizedProjectItem = ({
 
         
         {/* Media box (define la altura de la celda) */}
-        <div className="relative w-full">
-          <StaticVideoThumbnail
-            src={getVideoSource(project)}
-            poster={project.thumbnail || ''}
-            alt={project.title}
-            className="w-full h-auto block"
-          />
-          
-          {/* Overlays: opacity only (no ocultan el thumbnail) */}
-          {!isMobile && (hasApproached || index < 6) && (
-            <>
-              {/* Video Hover para proyectos de video con videoThumbnail */}
-              {isVideoProject(project) && project.videoThumbnail && (
-                <VideoHover
-                  videoUrl={project.videoThumbnail}
-                  isVisible={hoveredProject === project.id}
-                  onMouseEnter={() => setHoveredProject(project.id)}
-                  onMouseLeave={() => setHoveredProject(null)}
-                  className="z-10"
+        <div className="relative w-full flex justify-center">
+          <div className="relative w-3/4 max-w-xs">
+            <StaticVideoThumbnail
+              src={getVideoSource(project)}
+              poster={project.thumbnail || ''}
+              alt={project.title}
+              className="w-full h-auto block"
+            />
+            
+            {/* Overlays: positioned relative to the image container */}
+            {!isMobile && (hasApproached || index < 6) && (
+              <>
+                {/* Video Hover para proyectos de video con videoThumbnail */}
+                {isVideoProject(project) && project.videoThumbnail && (
+                  <VideoHover
+                    videoUrl={project.videoThumbnail}
+                    isVisible={hoveredProject === project.id}
+                    onMouseEnter={() => setHoveredProject(project.id)}
+                    onMouseLeave={() => setHoveredProject(null)}
+                    className="absolute inset-0 z-10"
+                  />
+                )}
 
-                />
-              )}
-
-              {/* Image Hover para proyectos de imagen con múltiples imágenes */}
-              {isImageProject(project) && project.images && project.images.length > 0 && (
-                <ImageHover
-                  images={project.images}
-                  hoverImages={project.hoverImages}
-                  isVisible={hoveredProject === project.id}
-                  projectTitle={`${project.title}, ${project.artist}`}
-                  className="z-10"
-
-                />
-              )}
-            </>
-          )}
+                {/* Image Hover para proyectos de imagen con múltiples imágenes */}
+                {isImageProject(project) && project.images && project.images.length > 0 && (
+                  <ImageHover
+                    images={project.images}
+                    hoverImages={project.hoverImages}
+                    isVisible={hoveredProject === project.id}
+                    projectTitle={`${project.title}, ${project.artist}`}
+                    className="absolute inset-0 z-10"
+                  />
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
-      
-
     </Link>
   );
 };

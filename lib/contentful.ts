@@ -39,23 +39,6 @@ export interface Project {
 }
 
 // Tipo legacy para compatibilidad (se mantiene temporalmente)
-export interface PortfolioItem {
-  id: string;
-  title: string;
-  artist: string;
-  year: string;
-  thumbnail: string;
-  fullImage: string;
-  contentType: 'image' | 'video';
-  videoUrl?: string;
-  description: string;
-  vimeoId?: string;
-  youtubeUrl?: string;
-  order?: number;
-  slug?: string;
-}
-
-// Tipo legacy para compatibilidad (se mantiene temporalmente)
 export interface ArchiveItem {
   title?: string;
   artist?: string;
@@ -156,7 +139,7 @@ export async function getProjects(): Promise<Project[]> {
 
   try {
     // First try to get from the new 'projects' content type
-    let entries = await client.getEntries({
+    const entries = await client.getEntries({
       content_type: 'projects',
       order: ['fields.archiveOrder'],
       limit: 1000,
@@ -164,16 +147,7 @@ export async function getProjects(): Promise<Project[]> {
     
     console.log(`✅ Fetched ${entries.items.length} projects from 'projects' content type`);
     
-    // If no projects found, try the legacy 'portfolioItem' content type
-    if (entries.items.length === 0) {
-      console.log('📱 No projects found in new content type, trying legacy portfolioItem...');
-      entries = await client.getEntries({
-        content_type: 'portfolioItem',
-        order: ['fields.order'],
-        limit: 1000,
-      });
-      console.log(`✅ Fetched ${entries.items.length} projects from legacy 'portfolioItem' content type`);
-    }
+
     
     // If still no projects, return empty array
     if (entries.items.length === 0) {
@@ -442,7 +416,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
 
   try {
     // First try to get heroSlide content type
-    let entries = await client.getEntries({
+    const entries = await client.getEntries({
       content_type: 'heroSlide',
       order: ['fields.order'],
       limit: 20, // Aumentado para incluir todos los slides actuales y futuros
@@ -479,85 +453,13 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
       });
     }
     
-    // Fallback: Get featured projects from portfolioItem content type
-    console.log('📱 No hero slides found, falling back to featured portfolio items');
-    entries = await client.getEntries({
-      content_type: 'portfolioItem',
-      'fields.isFeatured': true,
-      order: ['fields.order'],
-      limit: 3,
-    });
-    
-    if (entries.items.length === 0) {
-      // If no featured items, get the first 3 items
-      entries = await client.getEntries({
-        content_type: 'portfolioItem',
-        order: ['fields.order'],
-        limit: 3,
-      });
-    }
-    
-    if (entries.items.length > 0) {
-      console.log(`✅ Fetched ${entries.items.length} portfolio items for hero`);
-      
-      return entries.items.map((item: { 
-        fields: { 
-          title?: string;
-          artist?: string;
-          thumbnail?: { fields?: { file?: { url?: string } } };
-          videoUrl?: string;
-          order?: number;
-        }; 
-        sys: { id: string } 
-      }) => {
-        const fields = item.fields;
-        const imageUrl = fields.thumbnail?.fields?.file?.url 
-          ? `https:${fields.thumbnail.fields.file.url}` 
-          : '';
-        
-        return {
-          id: item.sys.id,
-          title: fields.title || '',
-          client: fields.artist || '',
-          src: imageUrl ? optimizeContentfulImage(imageUrl, 1920, 1080, 'webp', 85) : '',
-          alt: fields.title || '',
-          type: fields.videoUrl ? 'video' as const : 'image' as const,
-          videoUrl: fields.videoUrl,
-          order: fields.order,
-        };
-      });
-    }
-    
-    console.log('📱 No portfolio items found either');
+    console.log('📱 No hero slides found');
     return [];
     
   } catch (error) {
     console.error('❌ Error fetching hero slides from Contentful:', error);
     return [];
   }
-}
-
-// FUNCIONES LEGACY - Se mantienen para compatibilidad temporal
-// Obtener SOLO los 37 proyectos del archive en el orden correcto
-export async function getPortfolioItems(): Promise<PortfolioItem[]> {
-  console.log('⚠️ getPortfolioItems() is deprecated. Use getProjects() instead.');
-  const projects = await getProjects();
-  
-  return projects.map(project => ({
-    id: project.id,
-    title: project.title,
-    artist: project.artist,
-    year: project.year,
-    thumbnail: project.thumbnail || '',
-    fullImage: project.thumbnail || '',
-    contentType: 'video' as const,
-    videoUrl: project.videoUrl || '',
-    description: project.description,
-    vimeoId: project.vimeoId || '',
-    youtubeUrl: project.youtubeUrl || '',
-    order: project.archiveOrder,
-    slug: project.slug
-  }));
 }
 
 // Obtener datos de archivo - NUEVA VERSIÓN que incluye todos los items
@@ -615,26 +517,13 @@ export async function getProjectById(id: string): Promise<Project | null> {
     try {
       entry = await client.getEntry(id);
     } catch {
-      console.log(`📱 Project ${id} not found in 'projects' content type, trying legacy 'portfolioItem'...`);
-      // Try to get from portfolioItem content type
-      const entries = await client.getEntries({
-        content_type: 'portfolioItem',
-        'sys.id': id,
-        limit: 1,
-      });
-      
-      if (entries.items.length > 0) {
-        entry = entries.items[0];
-        console.log(`✅ Found project ${id} in legacy 'portfolioItem' content type`);
-      } else {
-        console.log(`❌ Project ${id} not found in any content type`);
-        return null;
-      }
+      console.log(`❌ Project ${id} not found in 'projects' content type`);
+      return null;
     }
     
     // Check if it's a valid project content type
-    if (entry.sys.contentType.sys.id !== 'projects' && entry.sys.contentType.sys.id !== 'portfolioItem') {
-      console.log(`❌ Entry ${id} is not a project or portfolioItem`);
+    if (entry.sys.contentType.sys.id !== 'projects') {
+      console.log(`❌ Entry ${id} is not a project`);
       return null;
     }
     

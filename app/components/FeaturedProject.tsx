@@ -98,16 +98,21 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
   useLayoutEffect(() => {
     if (!isHydrated) return
     
-    const middleIndex = Math.floor(slides.length / 2)
-    setCurrentIndex(middleIndex)
+    const firstIndex = 0 // Always start at slide 1 (index 0)
+    setCurrentIndex(firstIndex)
 
     const container = scrollContainerRef.current
-    const target = slideRefs.current[middleIndex]
+    const target = slideRefs.current[firstIndex]
     if (!container || !target) return
 
+    // Ensure we start at the first slide (slide 1)
     const previousBehavior = container.style.scrollBehavior
     container.style.scrollBehavior = 'auto'
+    
+    // Force scroll to the first slide
+    container.scrollLeft = 0
     target.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' })
+    
     container.style.scrollBehavior = previousBehavior
   }, [slides.length, isHydrated])
 
@@ -242,17 +247,6 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
                       style={{ paddingBottom: '56.25%' }}
                     >
                       <ImageSlide slide={slide} />
-                      {/* Hover overlay only on active slide */}
-                      {isActive && (
-                        <div className="absolute inset-0 z-20 group" aria-hidden="true">
-                          <div className="pointer-events-none absolute inset-0 flex items-end p-3 md:p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <div className="bg-background/70 text-white px-2 py-1">
-                              <div className="text-sm md:text-base font-medium uppercase leading-tight text-white">{slide.title}</div>
-                              <div className="text-xs md:text-sm opacity-80 uppercase text-white">{slide.client}{slide.order ? ` · ${slide.order}` : ''}</div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </motion.div>
                   </div>
                 </div>
