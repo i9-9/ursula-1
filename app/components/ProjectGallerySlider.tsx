@@ -249,7 +249,7 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
           className="w-full overflow-x-auto overflow-y-hidden px-0 snap-x snap-mandatory touch-pan-x"
           aria-label="Project gallery slider"
           style={{ 
-            scrollPaddingInline: 'calc((100vw - 72vw)/2)',
+            scrollPaddingInline: 'calc((100vw - 60vw)/2)',
             scrollbarWidth: 'none',
             msOverflowStyle: 'none'
           }}
@@ -267,7 +267,7 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
           `}</style>
           <div className="flex items-center justify-start gap-0 w-max" style={{ minHeight: '0' }}>
             {/* Left spacer to allow first slide to center */}
-            <div className="flex-shrink-0" style={{ width: 'calc((100vw - 72vw)/2)' }} aria-hidden="true" />
+            <div className="flex-shrink-0" style={{ width: 'calc((100vw - 60vw)/2)' }} aria-hidden="true" />
             
             {images.map((imageUrl, index) => {
               // Solo aplicar efectos visuales después de la hidratación para evitar diferencias SSR
@@ -278,7 +278,7 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
                   key={`${project.id}-image-${index}`}
                   ref={(el) => { if (el) slideRefs.current[index] = el }}
                   className="group flex-shrink-0 snap-center"
-                  style={{ width: '72vw' }}
+                  style={{ width: '60vw' }}
                   role="group"
                   aria-roledescription="slide"
                   aria-label={`${project.title} - Imagen ${index + 1}`}
@@ -313,7 +313,7 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
             })}
             
             {/* Right spacer to allow last slide to center */}
-            <div className="flex-shrink-0" style={{ width: 'calc((100vw - 72vw)/2)' }} aria-hidden="true" />
+            <div className="flex-shrink-0" style={{ width: 'calc((100vw - 60vw)/2)' }} aria-hidden="true" />
           </div>
         </div>
       </div>

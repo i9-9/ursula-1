@@ -77,7 +77,7 @@ const OptimizedProjectItem = ({
         
         {/* Media box (define la altura de la celda) */}
         <div className="relative w-full flex justify-center">
-          <div className="relative w-3/4 max-w-xs">
+          <div className="relative w-3/4 max-w-[240px]">
             <StaticVideoThumbnail
               src={getVideoSource(project)}
               poster={project.thumbnail || ''}

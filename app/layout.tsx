@@ -7,6 +7,7 @@ import ClientWrapper from './components/ClientWrapper';
 import ScrollbarStyles from './components/ScrollbarStyles';
 import ThemeProvider from './components/ThemeProvider';
 import ChunkErrorBoundary from './components/ChunkErrorBoundary';
+import HydrationSafe from './components/HydrationSafe';
 import { SplashProvider } from './contexts/SplashContext';
 
 
@@ -92,9 +93,11 @@ export default function RootLayout({
                   <NavbarWithLoader />
                   {children}
                   {/* Copyright - Aparece en todas las páginas */}
-                  <div className="fixed bottom-8 right-8 z-40 text-xs text-foreground">
-                    © 2025
-                  </div>
+                  <HydrationSafe fallback={null}>
+                    <div className="fixed bottom-8 right-8 z-40 text-xs text-foreground">
+                      © 2025
+                    </div>
+                  </HydrationSafe>
                 </div>
               </ChunkErrorBoundary>
             </ClientWrapper>
