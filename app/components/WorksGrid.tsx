@@ -1,10 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Project } from '@/lib/contentful';
-import { generateSemanticSlug } from '@/lib/slug-utils';
-import StaticVideoThumbnail from './StaticVideoThumbnail';
 import { useAssetPreloader } from '@/app/hooks/useAssetPreloader';
 import { useIsMobile } from '@/app/hooks/useIsMobile';
 import OptimizedProjectItem from './OptimizedProjectItem';
@@ -12,6 +9,98 @@ import OptimizedProjectItem from './OptimizedProjectItem';
 interface WorksGridProps {
   works: Project[];
 }
+
+// Componente memoizado para cada proyecto individual
+const ProjectItem = memo(({ 
+  project, 
+  globalIndex, 
+  projectNumber, 
+  orientation, 
+  hoveredProject, 
+  setHoveredProject, 
+  preloadProjectAsync, 
+  getVideoSource, 
+  isVideoProject, 
+  isImageProject 
+}: {
+  project: Project;
+  globalIndex: number;
+  projectNumber: string;
+  orientation: 'portrait' | 'landscape' | 'square';
+  hoveredProject: string | null;
+  setHoveredProject: (id: string | null) => void;
+  preloadProjectAsync: (project: Project) => void;
+  getVideoSource: (project: Project) => string;
+  isVideoProject: (project: Project) => boolean;
+  isImageProject: (project: Project) => boolean;
+}) => {
+  // Debug: Log específico para proyecto 28 - clases CSS
+  if (project.archiveOrder === 28) {
+    console.log('🎨 CLASES CSS PROYECTO 28:');
+    console.log('  - Orientación detectada:', orientation);
+    console.log('  - Clases de imagen (OptimizedProjectItem):', 
+      orientation === 'portrait' ? 'w-1/2 mx-auto' : 
+      orientation === 'landscape' ? 'w-full' : 'w-5/6 mx-auto');
+    console.log('  - Clases de número:', 
+      orientation === 'portrait' ? 'w-full flex justify-end' : 
+      orientation === 'landscape' ? 'w-full flex justify-end' : 'w-5/6 flex justify-end');
+    console.log('  - Clases de título:', 
+      orientation === 'portrait' ? 'w-1/2' : 
+      orientation === 'landscape' ? 'w-full' : 'w-5/6');
+    console.log('  - Contenedor principal:', 'w-5/6 max-w-[380px]');
+    console.log('  - Altura del contenedor de imagen:', 'h-[300px]');
+  }
+
+  return (
+    <div key={project.id} className="flex justify-center">
+      {/* Contenedor principal - ancho completo en mobile, más ancho en desktop */}
+      <div className="relative w-full lg:w-3/4 lg:max-w-[500px]">
+        
+        {/* Número - alineado con el borde derecho de la imagen */}
+        <div className="absolute -top-4 left-0 w-full flex justify-center z-30">
+          <div className="w-full lg:w-5/6 flex justify-end">
+            <span className="font-normal text-foreground text-[9px]">
+              {projectNumber}
+            </span>
+          </div>
+        </div>
+        
+        {/* Contenedor de imagen con altura fija y centrado vertical */}
+        <div className="flex items-center justify-center h-[300px]">
+          <OptimizedProjectItem
+            project={project}
+            index={globalIndex}
+            hoveredProject={hoveredProject}
+            setHoveredProject={setHoveredProject}
+            onPreloadProject={preloadProjectAsync}
+            getVideoSource={getVideoSource}
+            isVideoProject={isVideoProject}
+            isImageProject={isImageProject}
+            isMobile={false}
+            showNumber={false}
+            showTitle={false}
+            projectNumber=""
+            skipContainer={true}
+          />
+        </div>
+        
+        {/* Título - alineado con el borde izquierdo de la imagen */}
+        <div className="absolute -bottom-4 left-0 w-full flex justify-center">
+          <div className="w-full lg:w-5/6">
+            <p className={`font-normal uppercase tracking-wide text-foreground text-left leading-tight text-[12px] transition-opacity duration-300 ${
+              hoveredProject === project.id ? 'opacity-100' : 'opacity-0'
+            }`}>
+              {project.title}, {project.artist}
+            </p>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  );
+});
+
+ProjectItem.displayName = 'ProjectItem';
 
 const WorksGrid = ({ works = [] }: WorksGridProps) => {
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
@@ -55,6 +144,8 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
     return !!(project.images && project.images.length > 0);
   };
 
+
+
   // Si no hay proyectos de Contentful, mostrar mensaje o componente vacío
   if (works.length === 0) {
     return (
@@ -67,7 +158,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   }
 
   return (
-    <section className="py-12 md:py-16 px-4 md:px-[15px] fade-in">
+    <section className="py-12 md:py- px-4 md:px-[15px] fade-in">
       <div className="mb-6 md:mb-8">
       </div>
       
@@ -75,65 +166,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
       <div className="lg:hidden space-y-16 px-6">
         {works.map((project, index) => {
           return (
-            <Link
-              href={`/work/${generateSemanticSlug(project.title || '', project.artist || '')}`}
-              key={project.id}
-              className="block cursor-pointer group relative"
-              aria-label={`Ver ${project.title} by ${project.artist}`}
-              onMouseEnter={() => setHoveredProject(project.id)}
-              onMouseLeave={() => setHoveredProject(null)}
-            >
-              {/* Project container for mobile/tablet - same structure as desktop */}
-              <div className="flex flex-col justify-between min-h-0">
-                {/* Project number - positioned consistently with desktop */}
-                <div className="flex justify-end mb-3 flex-shrink-0">
-                  <span className="text-[11px] font-normal text-foreground">
-                    {project.archiveOrder ? project.archiveOrder.toString().padStart(2, '0') : (index + 1).toString().padStart(2, '0')}
-                  </span>
-                </div>
-                
-                {/* Thumbnail container - centered like desktop */}
-                <div className="flex-1 flex items-center justify-center min-h-0">
-                  <div className="relative w-full max-w-sm mx-auto">
-                    <StaticVideoThumbnail
-                      src={getVideoSource(project)}
-                      poster={project.thumbnail || ''}
-                      alt={project.title}
-                      className="w-full h-auto"
-                    />
-                  </div>
-                </div>
-                
-                {/* Title - same positioning as desktop */}
-                <div className="mt-3 flex-shrink-0">
-                  <p className="text-[14px] font-normal uppercase tracking-wide text-foreground">
-                    {project.title}, {project.artist}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Desktop Layout - Grid (only on large screens) */}
-      <div 
-        className="hidden lg:grid w-full grid-cols-4 gap-x-12 gap-y-12 mx-auto"
-        style={{ gridAutoRows: '1fr' }}
-        role="grid"
-        aria-label="Projects grid"
-      >
-        {works.map((project, index) => (
-          <div key={project.id} className="flex flex-col justify-between min-h-0">
-            {/* Número arriba */}
-            <div className="flex justify-end mb-3 flex-shrink-0">
-              <span className="text-[9px] font-normal text-foreground">
-                {project.archiveOrder ? project.archiveOrder.toString().padStart(2, '0') : (index + 1).toString().padStart(2, '0')}
-              </span>
-            </div>
-            
-            {/* Thumbnail - área flexible */}
-            <div className="flex-1 flex items-center justify-center min-h-0">
+            <div key={project.id} className="flex justify-center">
               <OptimizedProjectItem
                 project={project}
                 index={index}
@@ -143,20 +176,56 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                 getVideoSource={getVideoSource}
                 isVideoProject={isVideoProject}
                 isImageProject={isImageProject}
-                isMobile={isMobile || false}
+                isMobile={true}
+                showNumber={true}
+                showTitle={true}
+                projectNumber={project.archiveOrder ? project.archiveOrder.toString().padStart(2, '0') : (index + 1).toString().padStart(2, '0')}
               />
             </div>
-            
-                    {/* Título abajo de la imagen - solo visible en hover */}
-        <div className="mt-3 flex-shrink-0">
-          <p className={`text-[12px] font-normal uppercase tracking-wide transition-opacity duration-300 text-foreground ${
-            hoveredProject === project.id ? 'opacity-100' : 'opacity-0'
-          }`}>
-            {project.title}, {project.artist}
-          </p>
-        </div>
-          </div>
-        ))}
+          );
+        })}
+      </div>
+
+      {/* Desktop Layout - Contenedor unificado por proyecto */}
+      <div className="hidden lg:block px-6">
+        {Array.from({ length: Math.ceil(works.length / 4) }, (_, rowIndex) => {
+          const startIndex = rowIndex * 4;
+          const endIndex = Math.min(startIndex + 4, works.length);
+          const projectsInRow = works.slice(startIndex, endIndex);
+          
+          return (
+            <div 
+              key={rowIndex} 
+              className="grid grid-cols-4 mb-16 gap-8"
+            >
+              {projectsInRow.map((project, index) => {
+                const globalIndex = startIndex + index;
+                const projectNumber = project.archiveOrder 
+                  ? project.archiveOrder.toString().padStart(2, '0') 
+                  : (globalIndex + 1).toString().padStart(2, '0');
+                
+                // Todos los proyectos usan la misma orientación
+                const orientation = 'square';
+                
+                return (
+                  <ProjectItem
+                    key={project.id}
+                    project={project}
+                    globalIndex={globalIndex}
+                    projectNumber={projectNumber}
+                    orientation={orientation}
+                    hoveredProject={hoveredProject}
+                    setHoveredProject={setHoveredProject}
+                    preloadProjectAsync={preloadProjectAsync}
+                    getVideoSource={getVideoSource}
+                    isVideoProject={isVideoProject}
+                    isImageProject={isImageProject}
+                  />
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
     </section>
   );

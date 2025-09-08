@@ -24,7 +24,7 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
   // Don't render anything until client-side hydration is complete
   if (!isClient) {
     return (
-      <div className="relative w-screen archive-page-fullscreen" style={{ height: '100vh', width: '100vw', maxWidth: '100vw' }}>
+      <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - 36px)', width: '100vw', maxWidth: '100vw' }}>
         <div className="w-screen h-full flex items-center justify-center text-white bg-black">
           <span className="text-sm">Loading...</span>
         </div>
@@ -84,7 +84,7 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
 
 
     return (
-      <div className="relative w-screen archive-page-fullscreen" style={{ height: '100vh', width: '100vw', maxWidth: '100vw' }}>
+      <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - 36px)', width: '100vw', maxWidth: '100vw' }}>
         {project.vimeoId ? (
           <div className="w-full h-full">
             <iframe
@@ -135,26 +135,26 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
           </div>
         )}
         
-        <div className="absolute top-8 left-8 z-50 text-white md:text-white text-black">
+        <div className="absolute top-8 left-8 z-50 text-foreground">
           <div className="space-y-2 text-sm font-light tracking-wide">
             <div className="flex items-center space-x-4">
-              <span className="text-xs text-black md:text-white opacity-100">{String(displayIndex).padStart(2, '0')}</span>
-              <span className="text-xs text-black md:text-white opacity-100 uppercase">{displayTitle}</span>
-              <span className="text-xs text-black md:text-white opacity-100 uppercase">{displayCreator}</span>
+              <span className="text-xs text-foreground opacity-100">{String(project.archiveOrder || displayIndex).padStart(2, '0')}</span>
+              <span className="text-xs text-foreground opacity-100 uppercase">TITLE: {project.title}</span>
+              <span className="text-xs text-foreground opacity-100 uppercase">CLIENT: {project.artist}</span>
             </div>
-            <div className="flex items-center space-x-4 text-xs text-black md:text-white opacity-100">
+            <div className="flex items-center space-x-4 text-xs text-foreground opacity-100">
               <span>YEAR: {project.year || '2024'}</span>
-              <span>TYPE OF PROJECT: {project.projectType?.toUpperCase() || 'MUSIC VIDEO'}</span>
+              <span>TYPE OF PROJECT: {project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}</span>
             </div>
-            <div className="text-xs text-black md:text-white opacity-100">
-              <span>PRODUCTION COMPANY: {project.productionCompany || project.company || displayCreator || 'ARENA COLLECTIVE'}</span>
+            <div className="text-xs text-foreground opacity-100">
+              <span>PRODUCTION COMPANY: {project.company || 'ARENA COLLECTIVE'}</span>
             </div>
           </div>
         </div>
         
         <div className="absolute top-8 right-8 z-10">
           <button 
-            className="text-white hover:text-white/80 transition-colors"
+            className="text-foreground hover:text-foreground/80 transition-colors"
             aria-label={isPlaying ? "Pause video" : "Play video"}
             onClick={togglePlayPause}
           >
@@ -174,7 +174,7 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
   } catch (error) {
     console.error('Error rendering VideoPlayer:', error);
     return (
-      <div className="relative w-screen archive-page-fullscreen" style={{ height: '100vh', width: '100vw', maxWidth: '100vw' }}>
+      <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - 36px)', width: '100vw', maxWidth: '100vw' }}>
         <div className="w-screen h-full flex items-center justify-center text-white bg-black">
           <span className="text-sm">Error loading video player.</span>
         </div>

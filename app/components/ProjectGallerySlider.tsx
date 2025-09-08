@@ -187,15 +187,15 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
         <div className="space-y-2 text-sm font-light tracking-wide">
           <div className="flex items-center space-x-4">
             <span className="text-xs text-foreground opacity-100">{String(project.archiveOrder || 0).padStart(2, '0')}</span>
-            <span className="text-xs text-foreground opacity-100 uppercase">{project.title}</span>
-            <span className="text-xs text-foreground opacity-100 uppercase">{project.artist}</span>
+            <span className="text-xs text-foreground opacity-100 uppercase">TITLE: {project.title}</span>
+            <span className="text-xs text-foreground opacity-100 uppercase">CLIENT: {project.artist}</span>
           </div>
           <div className="flex items-center space-x-4 text-xs text-foreground opacity-100">
             <span>YEAR: {project.year || '2024'}</span>
-            <span>TYPE OF PROJECT: {project.projectType?.toUpperCase() || 'MUSIC VIDEO'}</span>
+            <span>TYPE OF PROJECT: {project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}</span>
           </div>
           <div className="text-xs text-foreground opacity-100">
-            <span>PRODUCTION COMPANY: {project.productionCompany || project.company || project.artist || 'ARENA COLLECTIVE'}</span>
+            <span>PRODUCTION COMPANY: {project.company || 'ARENA COLLECTIVE'}</span>
           </div>
         </div>
       </div>
