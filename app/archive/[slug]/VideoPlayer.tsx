@@ -159,7 +159,7 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
             </div>
             <div className="flex items-center space-x-4 text-xs text-black md:text-white opacity-100">
               <span>YEAR: {project.year || '2024'}</span>
-              <span>TYPE OF PROJECT: {project.projectType?.toUpperCase() || 'MUSIC VIDEO'}</span>
+              <span>TYPE: {project.projectType?.toUpperCase() || 'MUSIC VIDEO'}</span>
             </div>
             <div className="text-xs text-black md:text-white opacity-100">
               <span>PRODUCTION COMPANY: {project.productionCompany || project.company || displayCreator || 'ARENA COLLECTIVE'}</span>

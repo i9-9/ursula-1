@@ -44,6 +44,18 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       notFound();
     }
 
+    // Debug: Log the found project data
+    console.log('🎯 Found project for slug:', slug, {
+      id: project.id,
+      title: project.title,
+      artist: project.artist,
+      vimeoId: project.vimeoId,
+      videoUrl: project.videoUrl,
+      youtubeUrl: project.youtubeUrl,
+      thumbnail: project.thumbnail,
+      images: project.images?.length || 0
+    });
+
 
 
     return (

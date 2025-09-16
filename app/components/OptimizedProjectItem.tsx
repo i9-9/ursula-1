@@ -22,6 +22,7 @@ interface OptimizedProjectItemProps {
   showTitle?: boolean;
   projectNumber: string;
   skipContainer?: boolean; // Nueva prop para saltar el contenedor w-3/4
+  imageOrientation?: 'portrait' | 'landscape' | 'square'; // Nueva prop para orientación
 }
 
 const OptimizedProjectItem = ({
@@ -37,7 +38,8 @@ const OptimizedProjectItem = ({
   showNumber = false,
   showTitle = false,
   projectNumber,
-  skipContainer = false
+  skipContainer = false,
+  imageOrientation = 'square'
 }: OptimizedProjectItemProps) => {
   
   // Hook para lazy loading con preload al acercarse (solo desktop)
@@ -70,8 +72,14 @@ const OptimizedProjectItem = ({
   const getImageClasses = () => {
     if (!skipContainer) return 'w-full'; // Mobile mantiene ancho completo
     
-    // Todos los proyectos usan el mismo ancho en desktop
-    return 'w-5/6 mx-auto'; // 83% del contenedor, centrado
+    switch(imageOrientation) {
+      case 'portrait':
+        return 'w-2/3 h-auto'; // 67% del ancho para imágenes verticales (un poco más anchas)
+      case 'landscape':
+        return 'w-full h-auto'; // 100% del contenedor, altura automática
+      default:
+        return 'w-5/6 h-auto'; // 83% del contenedor, alineado a la izquierda (sin mx-auto)
+    }
   };
 
   // Si skipContainer es true, renderizar solo el contenido sin contenedores adicionales
@@ -165,7 +173,7 @@ const OptimizedProjectItem = ({
         
         {/* Media box (define la altura de la celda) */}
         <div className="relative w-full flex justify-center">
-          <div className="relative w-3/4 max-w-[240px]">
+          <div className={`relative ${isMobile ? 'w-11/12 max-w-[320px]' : 'w-3/4 max-w-[240px]'}`}>
             <StaticVideoThumbnail
               src={getVideoSource(project)}
               poster={project.thumbnail || ''}

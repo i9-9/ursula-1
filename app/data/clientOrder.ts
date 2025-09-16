@@ -2,7 +2,7 @@
 // CATEGORIA,LINK,ARTISTA,NOMBRE_DEL_TEMA,AÑO,PRODUCTION_COMPANY
 
 export interface ClientOrderItem {
-  category: 'MUSIC VIDEOS' | 'COMMERCIAL' | 'SET DESIGN' | 'FILM';
+  category: 'MUSIC VIDEO' | 'COMMERCIAL' | 'SET DESIGN' | 'FILM';
   link: string;
   artist: string;
   projectName: string;
@@ -12,33 +12,33 @@ export interface ClientOrderItem {
 }
 
 export const clientOrderData: ClientOrderItem[] = [
-  // MUSIC VIDEOS
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/307361595?share=copy', artist: 'ALOE', projectName: 'CUANDO SERA', year: '2021', productionCompany: 'PANTERA', order: 1 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/358550924?share=copy', artist: 'CONOCIENDO RUSIA', projectName: 'COSAS PARA DECIRTE', year: '2021', productionCompany: 'PANTERA', order: 2 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/755400480?share=copy', artist: 'DUKI & DE LA GHETTO & QUEVEDO', projectName: 'SI QUIEREN FRONTEAR', year: '2022', productionCompany: 'ANESTESIA', order: 3 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/822866131?share=copy', artist: 'DUKI', projectName: 'ANTES DE PERDERTE', year: '2022', productionCompany: 'ANESTESIA', order: 4 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/763820558?share=copy', artist: 'DILLOM', projectName: 'PELOTUDA', year: '2022', productionCompany: 'BOHEMIAN GROOVE CORP', order: 5 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/465368190?share=copy', artist: 'LOUTA', projectName: 'NO ME ESTAS HACIENDO UN FAVOR', year: '2022', productionCompany: 'JAIME JAMES', order: 6 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/843940271?share=copy', artist: 'MARIA BECERRA', projectName: 'OJALA', year: '2022', productionCompany: 'ASALTO', order: 7 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/849201595?share=copy', artist: 'MARIA BECERRA & PRINCE ROYCE', projectName: 'TE ESPERO', year: '2022', productionCompany: 'ASALTO', order: 8 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/845088941?share=copy', artist: 'MARIA BECERRA', projectName: 'AUTOMATICO', year: '2022', productionCompany: 'ASALTO', order: 9 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/846342325?share=copy', artist: 'MARIA BECERRA', projectName: 'CORAZON VACIO', year: '2023', productionCompany: 'ASALTO', order: 10 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/920687890?share=copy', artist: 'MARIA BECERRA', projectName: 'PRIMER AVISO', year: '2024', productionCompany: 'ASALTO', order: 11 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/949347671?share=copy', artist: 'MARIA BECERRA', projectName: 'IMAN', year: '2024', productionCompany: 'ASALTO', order: 12 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/949273720?share=copy', artist: 'JULIETA VENEGAS', projectName: 'EN TU ORILLA', year: '2022', productionCompany: 'LA CASA DE AL LADO', order: 13 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/697182102?share=copy', artist: 'JULIETA VENEGAS', projectName: 'MISMO AMOR', year: '2022', productionCompany: 'LA CASA DE AL LADO', order: 14 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/948835251?share=copy', artist: 'CONOCIENDO RUSIA & NATALIA LAFOURCADE', projectName: 'CINCO HORAS MENOS', year: '2024', productionCompany: 'MAMAHUNGARA', order: 15 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/998984993?share=copy', artist: 'SWAGGERBOYS & DILLOM', projectName: 'EL MOROCHO EL RUBIO Y EL COLO', year: '2024', productionCompany: 'THE MOVEMENT / LANDIA', order: 16 },
-  { category: 'MUSIC VIDEOS', link: 'https://youtu.be/BNrKaLuLjFw?si=krPdVfmkPt3a6lLn', artist: 'CHITA', projectName: 'SOLA', year: '2024', productionCompany: 'THE MOVEMENT / LANDIA', order: 17 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/954556710?share=copy', artist: 'SARAMALACARA', projectName: 'MAS FELIZ', year: '2024', productionCompany: 'CASTADIVA', order: 18 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/954548653?share=copy', artist: 'TAICHU FT. LALI', projectName: 'S.O.S', year: '2024', productionCompany: 'CASTADIVA', order: 19 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/976712517?share=copy', artist: 'DILLOM', projectName: 'BUENOS TIEMPOS', year: '2024', productionCompany: 'POSTER', order: 20 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/1056379987?share=copy', artist: 'DILLOM', projectName: 'CIRUGIA', year: '2024', productionCompany: 'POSTER', order: 21 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/1004203470', artist: 'MILO J', projectName: 'ALI OLI', year: '2024', productionCompany: 'ARENA COLLECTIVE', order: 22 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/1004201478', artist: 'MILO J', projectName: 'TRES PECADOS DESPUES', year: '2024', productionCompany: 'ARENA COLLECTIVE', order: 23 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/1088054650?share=copy', artist: 'BLAIR', projectName: 'BAR SCORPIOS', year: '2025', productionCompany: 'POSTER', order: 24 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/1068952865?share=copy', artist: 'SEBASTIAN YATRA', projectName: 'LA PELIROJA', year: '2025', productionCompany: 'THE MOVEMENT / LANDIA', order: 25 },
-  { category: 'MUSIC VIDEOS', link: 'https://vimeo.com/1085539087?share=copy', artist: 'SEBASTIAN YATRA', projectName: 'TEMPLO DE PICEAS', year: '2025', productionCompany: 'THE MOVEMENT / LANDIA', order: 26 },
+  // MUSIC VIDEO
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/307361595?share=copy', artist: 'ALOE', projectName: 'CUANDO SERA', year: '2021', productionCompany: 'PANTERA', order: 1 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/358550924?share=copy', artist: 'CONOCIENDO RUSIA', projectName: 'COSAS PARA DECIRTE', year: '2021', productionCompany: 'PANTERA', order: 2 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/755400480?share=copy', artist: 'DUKI & DE LA GHETTO & QUEVEDO', projectName: 'SI QUIEREN FRONTEAR', year: '2022', productionCompany: 'ANESTESIA', order: 3 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/822866131?share=copy', artist: 'DUKI', projectName: 'ANTES DE PERDERTE', year: '2022', productionCompany: 'ANESTESIA', order: 4 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/763820558?share=copy', artist: 'DILLOM', projectName: 'PELOTUDA', year: '2022', productionCompany: 'BOHEMIAN GROOVE CORP', order: 5 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/465368190?share=copy', artist: 'LOUTA', projectName: 'NO ME ESTAS HACIENDO UN FAVOR', year: '2022', productionCompany: 'JAIME JAMES', order: 6 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/843940271?share=copy', artist: 'MARIA BECERRA', projectName: 'OJALA', year: '2022', productionCompany: 'ASALTO', order: 7 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/849201595?share=copy', artist: 'MARIA BECERRA & PRINCE ROYCE', projectName: 'TE ESPERO', year: '2022', productionCompany: 'ASALTO', order: 8 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/845088941?share=copy', artist: 'MARIA BECERRA', projectName: 'AUTOMATICO', year: '2022', productionCompany: 'ASALTO', order: 9 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/846342325?share=copy', artist: 'MARIA BECERRA', projectName: 'CORAZON VACIO', year: '2023', productionCompany: 'ASALTO', order: 10 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/920687890?share=copy', artist: 'MARIA BECERRA', projectName: 'PRIMER AVISO', year: '2024', productionCompany: 'ASALTO', order: 11 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/949347671?share=copy', artist: 'MARIA BECERRA', projectName: 'IMAN', year: '2024', productionCompany: 'ASALTO', order: 12 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/949273720?share=copy', artist: 'JULIETA VENEGAS', projectName: 'EN TU ORILLA', year: '2022', productionCompany: 'LA CASA DE AL LADO', order: 13 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/697182102?share=copy', artist: 'JULIETA VENEGAS', projectName: 'MISMO AMOR', year: '2022', productionCompany: 'LA CASA DE AL LADO', order: 14 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/948835251?share=copy', artist: 'CONOCIENDO RUSIA & NATALIA LAFOURCADE', projectName: 'CINCO HORAS MENOS', year: '2024', productionCompany: 'MAMAHUNGARA', order: 15 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/998984993?share=copy', artist: 'SWAGGERBOYS & DILLOM', projectName: 'EL MOROCHO EL RUBIO Y EL COLO', year: '2024', productionCompany: 'THE MOVEMENT / LANDIA', order: 16 },
+  { category: 'MUSIC VIDEO', link: 'https://youtu.be/BNrKaLuLjFw?si=krPdVfmkPt3a6lLn', artist: 'CHITA', projectName: 'SOLA', year: '2024', productionCompany: 'THE MOVEMENT / LANDIA', order: 17 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/954556710?share=copy', artist: 'SARAMALACARA', projectName: 'MAS FELIZ', year: '2024', productionCompany: 'CASTADIVA', order: 18 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/954548653?share=copy', artist: 'TAICHU FT. LALI', projectName: 'S.O.S', year: '2024', productionCompany: 'CASTADIVA', order: 19 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/976712517?share=copy', artist: 'DILLOM', projectName: 'BUENOS TIEMPOS', year: '2024', productionCompany: 'POSTER', order: 20 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/1056379987?share=copy', artist: 'DILLOM', projectName: 'CIRUGIA', year: '2024', productionCompany: 'POSTER', order: 21 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/1004203470', artist: 'MILO J', projectName: 'ALI OLI', year: '2024', productionCompany: 'ARENA COLLECTIVE', order: 22 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/1004201478', artist: 'MILO J', projectName: 'TRES PECADOS DESPUES', year: '2024', productionCompany: 'ARENA COLLECTIVE', order: 23 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/1088054650?share=copy', artist: 'BLAIR', projectName: 'BAR SCORPIOS', year: '2025', productionCompany: 'POSTER', order: 24 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/1068952865?share=copy', artist: 'SEBASTIAN YATRA', projectName: 'LA PELIROJA', year: '2025', productionCompany: 'THE MOVEMENT / LANDIA', order: 25 },
+  { category: 'MUSIC VIDEO', link: 'https://vimeo.com/1085539087?share=copy', artist: 'SEBASTIAN YATRA', projectName: 'TEMPLO DE PICEAS', year: '2025', productionCompany: 'THE MOVEMENT / LANDIA', order: 26 },
   
   // COMMERCIAL
   { category: 'COMMERCIAL', link: 'https://vimeo.com/847094947?share=copy', artist: 'CERVEZA QUILMES', projectName: 'SON OTROS TIEMPOS', year: '2024', productionCompany: 'THE MOVEMENT / LANDIA', order: 27 },
@@ -75,7 +75,7 @@ export const getProjectOrder = (artist: string, projectName: string): number => 
 
 // Función para obtener categorías en el orden correcto
 export const getCategoriesInOrder = (): string[] => {
-  const categories = ['MUSIC VIDEOS', 'COMMERCIAL', 'SET DESIGN', 'FILM'];
+  const categories = ['MUSIC VIDEO', 'COMMERCIAL', 'SET DESIGN', 'FILM'];
   return categories;
 };
 

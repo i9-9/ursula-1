@@ -71,7 +71,7 @@ const Navbar = () => {
 
           {/* Columnas 9-12: Área del toggle */}
           <div className="col-span-4 flex items-baseline justify-end">
-            <div className="flex items-baseline">
+            <div className="flex items-baseline space-x-4">
               <ThemeToggle />
             </div>
           </div>
@@ -88,7 +88,7 @@ const Navbar = () => {
             style={{ fontSize: '12px', fontFamily: 'Suisse BP INTL' }}
             aria-label="Home"
           >
-            <UrsulaLogo className="h-4 w-auto" title="Ursula" />
+            <UrsulaLogo className="h-3.5 w-auto" title="Ursula" />
           </Link>
 
           {/* Nav items con menos espacio */}
@@ -130,7 +130,7 @@ const Navbar = () => {
               ABOUT
             </Link>
 
-            <div className="ml-3 flex items-baseline">
+            <div className="ml-3 flex items-baseline space-x-2">
               <ThemeToggle />
             </div>
           </div>

@@ -1,4 +1,6 @@
 import { createClient } from 'contentful';
+import { generateSemanticSlug, generateTitleSlug } from './slug-utils';
+import { clientOrderData } from '../app/data/clientOrder';
 
 // Tipos para los datos de Contentful
 export interface HeroSlide {
@@ -10,6 +12,9 @@ export interface HeroSlide {
   type: 'image' | 'video';
   videoUrl?: string;
   order?: number;
+  // Nueva propiedad para referenciar proyecto individual
+  projectSlug?: string; // Slug del proyecto al que debe navegar
+  projectId?: string; // ID del proyecto en Contentful (opcional, para validación)
 }
 
 // Nuevo tipo unificado para projects
@@ -36,6 +41,7 @@ export interface Project {
   client?: string;
   isPublished: boolean;
   isFeatured: boolean;
+  isVertical?: boolean; // Campo para determinar si la imagen es vertical (solo para WorksGrid)
 }
 
 // Tipo legacy para compatibilidad (se mantiene temporalmente)
@@ -90,6 +96,20 @@ function initializeContentfulClient() {
   return client;
 }
 
+// Función para extraer Vimeo ID de un link
+function extractVimeoIdFromUrl(url: string): string | null {
+  if (!url || !url.includes('vimeo.com')) return null;
+  const match = url.match(/vimeo\.com\/(\d+)/);
+  return match ? match[1] : null;
+}
+
+// Función para extraer YouTube ID de un link
+function extractYouTubeIdFromUrl(url: string): string | null {
+  if (!url || !url.includes('youtu')) return null;
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+  return match ? match[1] : null;
+}
+
 // Función helper para optimizar URLs de imágenes de Contentful
 function optimizeContentfulImage(url: string, width?: number, height?: number, format: string = 'webp', quality: number = 95): string {
   if (!url) return url;
@@ -118,14 +138,9 @@ export function optimizeGalleryImage(url: string): string {
   return optimizeContentfulImage(url, 1920, 1080, 'webp', 95); // Alta calidad para galerías
 }
 
-// Función helper para generar slug desde el título si no existe
+// Función helper para generar slug desde el título si no existe (DEPRECATED - usar generateTitleSlug)
 function generateSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim();
+  return generateTitleSlug(title);
 }
 
       // NUEVA FUNCIÓN: Obtener todos los proyectos del content type unificado
@@ -203,6 +218,28 @@ export async function getProjects(): Promise<Project[]> {
         ? `https:${fields.videoThumbnail.fields.file.url}` 
         : undefined;
       
+      // Buscar datos adicionales en clientOrder.ts
+      const clientOrderItem = clientOrderData.find(item => 
+        item.artist.toLowerCase() === (fields.artist || '').toLowerCase() && 
+        item.projectName.toLowerCase() === (fields.title || '').toLowerCase()
+      );
+
+      // Extraer IDs de video de clientOrder si existe
+      let vimeoId = fields.vimeoId || '';
+      let youtubeUrl = fields.youtubeUrl || '';
+      
+      if (clientOrderItem?.link) {
+        const vimeoIdFromClient = extractVimeoIdFromUrl(clientOrderItem.link);
+        const youtubeIdFromClient = extractYouTubeIdFromUrl(clientOrderItem.link);
+        
+        if (vimeoIdFromClient) {
+          vimeoId = vimeoIdFromClient;
+        }
+        if (youtubeIdFromClient) {
+          youtubeUrl = `https://youtu.be/${youtubeIdFromClient}`;
+        }
+      }
+
       return {
         id: item.sys.id,
         title: fields.title || '',
@@ -213,14 +250,14 @@ export async function getProjects(): Promise<Project[]> {
         hoverImages: hoverImages.length > 0 ? hoverImages : undefined,
         videoUrl: fields.videoUrl || '',
         videoThumbnail: videoThumbnailUrl,
-        vimeoId: fields.vimeoId || '',
-        youtubeUrl: fields.youtubeUrl || '',
+        vimeoId: vimeoId,
+        youtubeUrl: youtubeUrl,
         archiveOrder: fields.archiveOrder || fields.order || 0,
         worksGridOrder: fields.worksGridOrder || undefined,
         year: fields.year || '2024',
         description: fields.description || '',
-        category: fields.category || 'MUSIC VIDEOS',
-        slug: fields.slug || generateSlug(fields.title || ''),
+        category: fields.category || 'MUSIC VIDEO',
+        slug: fields.slug || generateSemanticSlug(fields.title || '', fields.artist || ''),
         projectType: fields.projectType || 'music-video',
         productionCompany: fields.productionCompany || '',
         client: fields.client || '',
@@ -275,6 +312,7 @@ export async function getWorksGridProjects(): Promise<Project[]> {
         client?: string;
         isPublished?: boolean;
         isFeatured?: boolean;
+        isVertical?: boolean; // Campo para imágenes verticales
       }; 
       sys: { id: string } 
     }) => {
@@ -316,13 +354,14 @@ export async function getWorksGridProjects(): Promise<Project[]> {
         worksGridOrder: fields.worksGridOrder || 0,
         year: fields.year || '2024',
         description: fields.description || '',
-        category: fields.category || 'MUSIC VIDEOS',
-        slug: fields.slug || generateSlug(fields.title || ''),
+        category: fields.category || 'MUSIC VIDEO',
+        slug: fields.slug || generateSemanticSlug(fields.title || '', fields.artist || ''),
         projectType: fields.projectType || 'music-video',
         productionCompany: fields.productionCompany || '',
         client: fields.client || '',
         isPublished: fields.isPublished !== false,
         isFeatured: fields.isFeatured === true,
+        isVertical: fields.isVertical === true, // Por defecto false si no está definido
       };
     });
   } catch (error) {
@@ -390,8 +429,8 @@ export async function getArchiveProjects(): Promise<Project[]> {
         worksGridOrder: undefined, // No tiene worksGridOrder
         year: fields.year || '2024',
         description: fields.description || '',
-        category: fields.category || 'MUSIC VIDEOS',
-        slug: fields.slug || generateSlug(fields.title || ''),
+        category: fields.category || 'MUSIC VIDEO',
+        slug: fields.slug || generateSemanticSlug(fields.title || '', fields.artist || ''),
         projectType: fields.projectType || 'music-video',
         productionCompany: fields.productionCompany || '',
         client: fields.client || '',
@@ -432,6 +471,15 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
           image?: { fields?: { file?: { url?: string }; description?: string } };
           videoUrl?: string;
           order?: number;
+          // Nuevos campos para referencia al proyecto (opcional)
+          project?: { 
+            fields?: { 
+              slug?: string;
+              title?: string;
+              artist?: string;
+            };
+            sys?: { id: string };
+          };
         }; 
         sys: { id: string } 
       }) => {
@@ -439,6 +487,26 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
         const imageUrl = fields.image?.fields?.file?.url 
           ? `https:${fields.image.fields.file.url}` 
           : '';
+        
+        // Debug: Log image URL
+        console.log(`Hero slide "${fields.title}": imageUrl =`, imageUrl);
+        
+        // Generar slug del proyecto referenciado si existe
+        let projectSlug: string | undefined;
+        let projectId: string | undefined;
+        
+        if (fields.project?.fields) {
+          projectId = fields.project.sys?.id;
+          // Siempre generar slug usando título + artista para mantener consistencia con Archive/WorksGrid
+          if (fields.project.fields.title && fields.project.fields.artist) {
+            projectSlug = generateSemanticSlug(fields.project.fields.title, fields.project.fields.artist);
+            console.log(`Hero slide "${fields.title}": generated consistent slug =`, projectSlug, 'from title:', fields.project.fields.title, 'artist:', fields.project.fields.artist);
+          } else {
+            console.log(`Hero slide "${fields.title}": missing title or artist in project reference`);
+          }
+        } else {
+          console.log(`Hero slide "${fields.title}": no project reference`);
+        }
         
         return {
           id: item.sys.id,
@@ -449,6 +517,8 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
           type: fields.videoUrl ? 'video' as const : 'image' as const,
           videoUrl: fields.videoUrl,
           order: fields.order,
+          projectSlug,
+          projectId,
         };
       });
     }

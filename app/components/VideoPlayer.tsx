@@ -7,11 +7,10 @@ import { Project } from '../../lib/contentful';
 interface VideoPlayerProps {
   project: Project;
   displayTitle: string;
-  displayCreator: string;
   displayIndex: number;
 }
 
-export default function VideoPlayer({ project, displayTitle, displayCreator, displayIndex }: VideoPlayerProps) {
+export default function VideoPlayer({ project, displayTitle, displayIndex }: VideoPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -25,8 +24,10 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
   if (!isClient) {
     return (
       <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - 36px)', width: '100vw', maxWidth: '100vw' }}>
-        <div className="w-screen h-full flex items-center justify-center text-white bg-black">
-          <span className="text-sm">Loading...</span>
+        <div className="w-full h-full flex items-center justify-center p-8">
+          <div className="relative w-[500px] aspect-video bg-black overflow-hidden shadow-2xl flex items-center justify-center">
+            <span className="text-sm text-white">Loading...</span>
+          </div>
         </div>
       </div>
     );
@@ -81,61 +82,62 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
       hasThumbnail: !!project.thumbnail
     });
 
-
-
     return (
       <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - 36px)', width: '100vw', maxWidth: '100vw' }}>
-        {project.vimeoId ? (
-          <div className="w-full h-full">
-            <iframe
-              ref={iframeRef}
-              src={`https://player.vimeo.com/video/${project.vimeoId}?autoplay=0&loop=1&title=0&byline=0&portrait=0&controls=0&background=1`}
-              className="w-full h-full"
-              frameBorder="0"
-              allow="autoplay; fullscreen"
-              allowFullScreen
-              title={displayTitle}
-              onLoad={() => console.log('🎬 Vimeo iframe loaded successfully')}
-              onError={(e) => console.error('🎬 Vimeo iframe error:', e)}
-            />
+        <div className="w-full h-full flex items-center justify-center p-8">
+          <div className="relative w-[1000px] aspect-video bg-black overflow-hidden shadow-2xl">
+            {project.vimeoId ? (
+              <div className="w-full h-full">
+                <iframe
+                  ref={iframeRef}
+                  src={`https://player.vimeo.com/video/${project.vimeoId}?autoplay=0&loop=1&title=0&byline=0&portrait=0&controls=0&background=1`}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen"
+                  allowFullScreen
+                  title={displayTitle}
+                  onLoad={() => console.log('🎬 Vimeo iframe loaded successfully')}
+                  onError={(e) => console.error('🎬 Vimeo iframe error:', e)}
+                />
+              </div>
+            ) : project.videoUrl && extractYouTubeId(project.videoUrl) ? (
+              <div className="w-full h-full">
+                <iframe
+                  ref={iframeRef}
+                  src={`https://www.youtube.com/embed/${extractYouTubeId(project.videoUrl)}?autoplay=0&loop=1&mute=0&controls=0&modestbranding=1&rel=0`}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen"
+                  allowFullScreen
+                  title={displayTitle}
+                  onLoad={() => console.log('🎬 YouTube iframe loaded successfully')}
+                  onError={(e) => console.error('🎬 YouTube iframe error:', e)}
+                />
+              </div>
+            ) : project.thumbnail ? (
+              <div className="w-full h-full">
+                <Image 
+                  src={project.thumbnail}
+                  alt={displayTitle}
+                  fill
+                  className="object-cover w-full h-full"
+                  priority
+                />
+              </div>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-white bg-black">
+                <div className="text-center">
+                  <span className="text-sm block mb-2">No content available</span>
+                  <span className="text-xs opacity-75">
+                    Project: {project.title} | Artist: {project.artist}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
-        ) : project.videoUrl && extractYouTubeId(project.videoUrl) ? (
-          <div className="w-full h-full">
-            <iframe
-              ref={iframeRef}
-              src={`https://www.youtube.com/embed/${extractYouTubeId(project.videoUrl)}?autoplay=0&loop=1&mute=0&controls=0&modestbranding=1&rel=0`}
-              className="w-full h-full"
-              frameBorder="0"
-              allow="autoplay; fullscreen"
-              allowFullScreen
-              title={displayTitle}
-              onLoad={() => console.log('🎬 YouTube iframe loaded successfully')}
-              onError={(e) => console.error('🎬 YouTube iframe error:', e)}
-            />
-          </div>
-        ) : project.thumbnail ? (
-          <div className="w-full h-full">
-            <Image 
-              src={project.thumbnail}
-              alt={displayTitle}
-              fill
-              className="object-cover w-screen h-full"
-              priority
-              style={{ width: '100vw', height: '100%' }}
-            />
-          </div>
-        ) : (
-          <div className="w-screen h-full flex items-center justify-center text-white bg-black">
-            <div className="text-center">
-              <span className="text-sm block mb-2">No content available</span>
-              <span className="text-xs opacity-75">
-                Project: {project.title} | Artist: {project.artist}
-              </span>
-            </div>
-          </div>
-        )}
+        </div>
         
-        <div className="absolute top-8 left-8 z-50 text-foreground">
+        <div className="absolute top-4 left-8 z-50 text-foreground">
           <div className="space-y-2 text-sm font-light tracking-wide">
             <div className="flex items-center space-x-4">
               <span className="text-xs text-foreground opacity-100">{String(project.archiveOrder || displayIndex).padStart(2, '0')}</span>
@@ -144,23 +146,24 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
             </div>
             <div className="flex items-center space-x-4 text-xs text-foreground opacity-100">
               <span>YEAR: {project.year || '2024'}</span>
-              <span>TYPE OF PROJECT: {project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}</span>
+              <span>TYPE: {project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}</span>
             </div>
             <div className="text-xs text-foreground opacity-100">
               <span>PRODUCTION COMPANY: {project.company || 'ARENA COLLECTIVE'}</span>
             </div>
           </div>
         </div>
-        
-        <div className="absolute top-8 right-8 z-10">
-          <button 
-            className="text-foreground hover:text-foreground/80 transition-colors"
-            aria-label={isPlaying ? "Pause video" : "Play video"}
+
+        {/* Play/Pause Button - Solo para Vimeo */}
+        {project.vimeoId && (
+          <button
             onClick={togglePlayPause}
+            className="absolute top-4 right-8 z-50 text-black bg-white/20 backdrop-blur-sm rounded-full p-3 transition-all duration-300 hover:bg-white/30 hover:scale-105"
+            aria-label={isPlaying ? 'Pause video' : 'Play video'}
           >
             {isPlaying ? (
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
               </svg>
             ) : (
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -168,15 +171,22 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
               </svg>
             )}
           </button>
-        </div>
+        )}
       </div>
     );
   } catch (error) {
-    console.error('Error rendering VideoPlayer:', error);
+    console.error('❌ VideoPlayer error:', error);
     return (
       <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - 36px)', width: '100vw', maxWidth: '100vw' }}>
-        <div className="w-screen h-full flex items-center justify-center text-white bg-black">
-          <span className="text-sm">Error loading video player.</span>
+        <div className="w-full h-full flex items-center justify-center p-8">
+          <div className="relative w-[1000px] aspect-video bg-black overflow-hidden shadow-2xl flex items-center justify-center">
+            <div className="text-center text-white">
+              <span className="text-sm block mb-2">Error loading video</span>
+              <span className="text-xs opacity-75">
+                Project: {project.title} | Artist: {project.artist}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     );

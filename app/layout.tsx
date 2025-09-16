@@ -7,8 +7,9 @@ import ClientWrapper from './components/ClientWrapper';
 import ScrollbarStyles from './components/ScrollbarStyles';
 import ThemeProvider from './components/ThemeProvider';
 import ChunkErrorBoundary from './components/ChunkErrorBoundary';
-import HydrationSafe from './components/HydrationSafe';
 import { SplashProvider } from './contexts/SplashContext';
+import Copyright from './components/Copyright';
+import SplashScreen from './components/SplashScreen';
 
 
 export const metadata: Metadata = {
@@ -90,14 +91,11 @@ export default function RootLayout({
             <ClientWrapper>
               <ChunkErrorBoundary>
                 <div className="min-h-screen bg-background text-foreground">
+                  <SplashScreen />
                   <NavbarWithLoader />
                   {children}
-                  {/* Copyright - Aparece en todas las páginas */}
-                  <HydrationSafe fallback={null}>
-                    <div className="fixed bottom-8 right-8 z-40 text-xs text-foreground">
-                      © 2025
-                    </div>
-                  </HydrationSafe>
+                  {/* Copyright - Aparece en todas las páginas excepto durante el loader */}
+                  <Copyright />
                 </div>
               </ChunkErrorBoundary>
             </ClientWrapper>

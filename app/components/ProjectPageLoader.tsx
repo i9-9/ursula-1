@@ -10,9 +10,28 @@ interface ProjectPageLoaderProps {
 }
 
 export default function ProjectPageLoader({ project, currentIndex = 0 }: ProjectPageLoaderProps) {
+  // Debug: Log project data
+  console.log('🔍 ProjectPageLoader - Project data:', {
+    id: project.id,
+    title: project.title,
+    artist: project.artist,
+    vimeoId: project.vimeoId,
+    videoUrl: project.videoUrl,
+    youtubeUrl: project.youtubeUrl,
+    thumbnail: project.thumbnail,
+    images: project.images?.length || 0
+  });
+
   // Determinar si el proyecto tiene video o solo imágenes
   const hasVideo = project.vimeoId || project.videoUrl || project.youtubeUrl;
   const hasImages = (project.images && project.images.length > 0) || project.thumbnail;
+
+  console.log('🎬 ProjectPageLoader - Content detection:', {
+    hasVideo,
+    hasImages,
+    willShowVideo: hasVideo,
+    willShowImages: !hasVideo && hasImages
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -21,7 +40,6 @@ export default function ProjectPageLoader({ project, currentIndex = 0 }: Project
         <VideoPlayer
           project={project}
           displayTitle={project.title}
-          displayCreator={project.artist}
           displayIndex={currentIndex + 1}
         />
       ) : hasImages ? (

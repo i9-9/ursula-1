@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useHydration, useSafeBrowserEffect } from '../hooks/useHydration';
 import { Project } from '@/lib/contentful';
@@ -28,7 +28,7 @@ const Archive = ({ projects }: ArchiveProps) => {
     });
     
     if (selectedFilter === 'music-videos') {
-      filtered = filtered.filter(project => project.category === 'MUSIC VIDEOS');
+      filtered = filtered.filter(project => project.category === 'MUSIC VIDEO');
     } else if (selectedFilter === 'commercial') {
       filtered = filtered.filter(project => project.category === 'COMMERCIAL');
     } else if (selectedFilter === 'set-design') {
@@ -43,31 +43,25 @@ const Archive = ({ projects }: ArchiveProps) => {
     })).sort((a, b) => a.displayOrder - b.displayOrder);
   }, [projects, selectedFilter]);
 
-  // Reset animation when filter changes
-  useEffect(() => {
-    setVisibleItems(new Set());
-    setAnimationKey(prev => prev + 1);
-  }, [selectedFilter]);
-
-  // Animation logic - only run after hydration
+  // Animation logic - handles both initial load and filter changes
   useSafeBrowserEffect(() => {
     if (filteredItems.length === 0) return;
 
     // Reset animation state - hide all items immediately
     setVisibleItems(new Set());
+    setAnimationKey(prev => prev + 1);
 
-    // Force a re-render to ensure all items are hidden
+    // Start animation sequence after a brief delay
     const resetTimer = setTimeout(() => {
-      // Start animation sequence after reset is complete
       filteredItems.forEach((_, index) => {
         setTimeout(() => {
           setVisibleItems(prev => new Set(prev).add(index));
-        }, index * 80);
+        }, index * 40); // 40ms delay between each item
       });
-    }, 100); // Reduced delay for faster reset
+    }, 50); // 50ms delay before starting animation
 
     return () => clearTimeout(resetTimer);
-  }, [filteredItems, isHydrated]);
+  }, [filteredItems, selectedFilter, isHydrated]);
 
   const handleProjectClick = (item: Project) => {
     console.log('=== ARCHIVE NAVIGATION DEBUG ===');
@@ -165,7 +159,7 @@ const Archive = ({ projects }: ArchiveProps) => {
                         : 'opacity-0 transform translate-y-4'
                     }`}
                     style={{
-                      transitionDelay: `${(item.displayOrder || index) * 80}ms`
+                      transitionDelay: `${index * 40}ms`
                     }}
                     onClick={() => handleProjectClick(item)}
                   >
@@ -199,7 +193,7 @@ const Archive = ({ projects }: ArchiveProps) => {
                     : 'opacity-0 transform translate-y-4'
                 }`}
                 style={{
-                  transitionDelay: `${(item.displayOrder || index) * 80}ms`
+                  transitionDelay: `${index * 80}ms`
                 }}
                 onClick={() => handleProjectClick(item)}
               >

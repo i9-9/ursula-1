@@ -2,21 +2,27 @@
 
 import { useMemo, useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { HeroSlide } from '@/lib/contentful'
 
 // Memoized image component
 const ImageSlide = ({ slide }: { slide: HeroSlide }) => {
   const imageSource = useMemo(() => {
+    console.log('ImageSlide: slide data:', { title: slide.title, src: slide.src, videoUrl: slide.videoUrl });
+    
     // Prioritize the src field (which contains the optimized image URL)
     if (slide.src) {
+      console.log('ImageSlide: Using src field:', slide.src);
       return slide.src;
     }
     
     // Fallback to videoUrl if it's an image
     if (slide.videoUrl && (slide.videoUrl.includes('.jpg') || slide.videoUrl.includes('.jpeg') || slide.videoUrl.includes('.png') || slide.videoUrl.includes('.webp'))) {
+      console.log('ImageSlide: Using videoUrl as image:', slide.videoUrl);
       return slide.videoUrl;
     }
     
+    console.log('ImageSlide: No image source found');
     return '';
   }, [slide])
   
@@ -48,6 +54,7 @@ interface FeaturedProjectProps {
 }
 
 const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
+  const router = useRouter()
   const [currentIndex, setCurrentIndex] = useState(0)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const slideRefs = useRef<HTMLDivElement[]>([])
@@ -60,9 +67,21 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
     setIsHydrated(true)
   }, [])
 
+  // Función para manejar click en slide
+  const handleSlideClick = useCallback((slide: HeroSlide) => {
+    if (slide.projectSlug) {
+      const url = `/work/${slide.projectSlug}`;
+      console.log('FeaturedProject: Navigating to:', url, 'for slide:', slide.title);
+      router.push(url);
+    } else {
+      console.log('FeaturedProject: No projectSlug for slide:', slide.title);
+    }
+  }, [router])
+
   // Memoized slides to avoid recalculation
   const slides = useMemo((): HeroSlide[] => {
     // Always use slides from Contentful (including empty array)
+    console.log('FeaturedProject: heroSlides received:', heroSlides);
     return heroSlides || [];
   }, [heroSlides])
 
@@ -217,26 +236,36 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
           `}</style>
           <div className="flex items-center justify-start gap-0 w-max" style={{ minHeight: '0' }}>
             {/* Left spacer to allow first slide to center */}
-            <div className="flex-shrink-0" style={{ width: 'calc((100vw - 72vw)/2)' }} aria-hidden="true" />
+            <div className="flex-shrink-0" style={{ width: 'calc((100vw - 60vw)/2)' }} aria-hidden="true" />
             
             {slides.map((slide, index) => {
               const isActive = isHydrated && index === currentIndex
+              const isClickable = Boolean(slide.projectSlug)
               
               return (
                 <div
                   key={slide.id}
                   ref={(el) => { if (el) slideRefs.current[index] = el }}
-                  className="group flex-shrink-0 snap-center"
-                  style={{ width: '72vw' }}
+                  className={`group flex-shrink-0 snap-center ${isClickable ? 'cursor-pointer' : ''}`}
+                  style={{ width: isActive ? '60vw' : 'calc(60vw + 120px)' }}
                   role="group"
                   aria-roledescription="slide"
                   aria-label={`${slide.title} by ${slide.client}`}
+                  onClick={() => isClickable && handleSlideClick(slide)}
+                  onKeyDown={(e) => {
+                    if (isClickable && (e.key === 'Enter' || e.key === ' ')) {
+                      e.preventDefault()
+                      handleSlideClick(slide)
+                    }
+                  }}
+                  tabIndex={isClickable ? 0 : -1}
                 >
                   <div
-                    className={`transition-all duration-300 ease-out will-change-transform ${isActive ? 'filter-none' : 'filter blur-[1px]'}`}
+                    className="transition-all duration-300 ease-out will-change-transform"
                     style={{ 
-                      transform: `scale(${isActive ? 1 : 0.68})`,
-                      opacity: isActive ? 1 : 0.2
+                      clipPath: isActive 
+                        ? 'none' 
+                        : 'inset(0 60px 0 60px)' // Show 60px peek on each side
                     }}
                   >
                     <motion.div
@@ -244,7 +273,7 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.35, ease: 'easeOut' }}
                       className="relative w-full"
-                      style={{ paddingBottom: '56.25%' }}
+                      style={{ paddingBottom: isActive ? '56.25%' : '40%' }}
                     >
                       <ImageSlide slide={slide} />
                     </motion.div>
@@ -254,7 +283,7 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
             })}
             
             {/* Right spacer to allow last slide to center */}
-            <div className="flex-shrink-0" style={{ width: 'calc((100vw - 72vw)/2)' }} aria-hidden="true" />
+            <div className="flex-shrink-0" style={{ width: 'calc((100vw - 60vw)/2)' }} aria-hidden="true" />
           </div>
         </div>
       </div>
