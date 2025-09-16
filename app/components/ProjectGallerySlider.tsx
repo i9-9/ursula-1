@@ -6,7 +6,7 @@ import { Project } from '@/lib/contentful';
 import { useHydration } from '../hooks/useHydration';
 
 // Componente de imagen optimizado con manejo inteligente de aspect ratios
-const ProjectImage = ({ imageUrl, title, isActive }: { imageUrl: string; title: string; isActive: boolean }) => {
+const ProjectImage = ({ imageUrl, title }: { imageUrl: string; title: string }) => {
   if (!imageUrl) {
     return (
       <div className="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
@@ -303,8 +303,6 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
             <div className="flex-shrink-0 w-[calc((100vw-85vw)/2)] sm:w-[calc((100vw-75vw)/2)]" aria-hidden="true" />
             
             {images.map((imageUrl, index) => {
-              const isActive = isHydrated && index === currentIndex;
-              
               return (
                 <div
                   key={`${project.id}-image-${index}`}
@@ -322,7 +320,7 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
                       transition={{ duration: 0.35, ease: 'easeOut' }}
                       className="relative w-full h-[500px] sm:h-[550px]"
                     >
-                      <ProjectImage imageUrl={imageUrl} title={project.title} isActive={isActive} />
+                      <ProjectImage imageUrl={imageUrl} title={project.title} />
                     </motion.div>
                   </div>
                 </div>
