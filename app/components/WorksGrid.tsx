@@ -117,13 +117,13 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   }
 
   return (
-    <section className="py-12 md:py- px-4 md:px-[15px] fade-in">
+    <section className="py-2 px-4 md:px-[15px] fade-in">
       <div className="mb-6 md:mb-8"></div>
 
       {/* Mobile/Tablet Layout - Vertical Stack with moderate padding */}
       <div className="lg:hidden px-4">
         {works.map((project, index) => {
-          // Determinar orientación basada en el campo isVertical (igual que desktop)
+          // Determinar orientación basada en el campo isVertical  (igual que desktop)
           const orientation = project.isVertical ? "portrait" : "square"
           
           return (

@@ -23,17 +23,8 @@ interface SplashProviderProps {
 }
 
 export const SplashProvider: React.FC<SplashProviderProps> = ({ children }) => {
-  // Start with splash visible on home page to show immediately
-  const [isSplashVisible, setIsSplashVisible] = useState(() => {
-    // Only run on client side
-    if (typeof window === 'undefined') return false;
-    
-    const isHomePage = window.location.pathname === '/';
-    const splashShown = sessionStorage.getItem('splashShown');
-    
-    // Show splash immediately on home page if not shown before
-    return isHomePage && splashShown !== 'true';
-  });
+  // Start with splash hidden to ensure consistent SSR/client hydration
+  const [isSplashVisible, setIsSplashVisible] = useState(false);
 
   const hideSplash = useCallback(() => {
     console.log('SplashContext: hideSplash called');
@@ -50,6 +41,17 @@ export const SplashProvider: React.FC<SplashProviderProps> = ({ children }) => {
     // Remove from sessionStorage to allow splash to show again
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem('splashShown');
+    }
+  }, []);
+
+  // Check if splash should be shown after hydration
+  useEffect(() => {
+    const isHomePage = window.location.pathname === '/';
+    const splashShown = sessionStorage.getItem('splashShown');
+    
+    // Show splash on home page if not shown before
+    if (isHomePage && splashShown !== 'true') {
+      setIsSplashVisible(true);
     }
   }, []);
 

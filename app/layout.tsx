@@ -10,6 +10,7 @@ import ChunkErrorBoundary from './components/ChunkErrorBoundary';
 import { SplashProvider } from './contexts/SplashContext';
 import Copyright from './components/Copyright';
 import SplashScreen from './components/SplashScreen';
+import MainContentWrapper from './components/MainContentWrapper';
 
 
 export const metadata: Metadata = {
@@ -92,10 +93,12 @@ export default function RootLayout({
               <ChunkErrorBoundary>
                 <div className="min-h-screen bg-background text-foreground">
                   <SplashScreen />
-                  <NavbarWithLoader />
-                  {children}
-                  {/* Copyright - Aparece en todas las páginas excepto durante el loader */}
-                  <Copyright />
+                  <MainContentWrapper>
+                    <NavbarWithLoader />
+                    {children}
+                    {/* Copyright - Aparece en todas las páginas excepto durante el loader */}
+                    <Copyright />
+                  </MainContentWrapper>
                 </div>
               </ChunkErrorBoundary>
             </ClientWrapper>

@@ -2,6 +2,7 @@
 
 import { useSplash } from '../contexts/SplashContext';
 import Loader from './Loader';
+import HydrationSafe from './HydrationSafe';
 
 export default function SplashScreen() {
   const { isSplashVisible } = useSplash();
@@ -14,5 +15,9 @@ export default function SplashScreen() {
   }
 
   console.log('SplashScreen: Rendering Loader component');
-  return <Loader />;
+  return (
+    <HydrationSafe>
+      <Loader />
+    </HydrationSafe>
+  );
 }
