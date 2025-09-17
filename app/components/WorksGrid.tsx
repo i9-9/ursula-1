@@ -10,7 +10,6 @@ interface WorksGridProps {
   works: Project[]
 }
 
-// Componente memoizado para cada proyecto individual
 const ProjectItem = memo(
   ({
     project,
@@ -33,10 +32,8 @@ const ProjectItem = memo(
     isVideoProject: (project: Project) => boolean
     isImageProject: (project: Project) => boolean
   }) => {
-    // Layout unificado para todos los proyectos (verticales y normales)
     return (
       <div key={project.id} className="flex flex-col justify-center h-full">
-        {/* Imagen - alineada a la izquierda del contenedor */}
         <div className="flex-shrink-0">
           <OptimizedProjectItem
             project={project}
@@ -82,30 +79,21 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
     if (project.videoUrl && isVideoFile(project.videoUrl)) {
       return project.videoUrl
     }
-
-    // No usar vimeoId o youtubeUrl como src para el elemento video
-    // Estos necesitan ser manejados de manera diferente
-
-    // Default to thumbnail
     return project.thumbnail || ""
   }
 
-  // Helper function to check if URL is a direct video file
   const isVideoFile = (url: string) => {
     return url.includes(".mp4") || url.includes(".mov") || url.includes(".webm") || url.includes(".avi")
   }
 
-  // Helper function to determine if project is a video project
   const isVideoProject = (project: Project) => {
     return !!(project.videoUrl || project.vimeoId || project.youtubeUrl || project.videoThumbnail)
   }
 
-  // Helper function to determine if project is an image project
   const isImageProject = (project: Project) => {
     return !!(project.images && project.images.length > 0)
   }
 
-  // Si no hay proyectos de Contentful, mostrar mensaje o componente vacío
   if (works.length === 0) {
     return (
       <section className="py-6 md:py-8 px-2.5 md:px-[15px] fade-in">
@@ -123,7 +111,6 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
       {/* Mobile/Tablet Layout - Vertical Stack with moderate padding */}
       <div className="lg:hidden px-4">
         {works.map((project, index) => {
-          // Determinar orientación basada en el campo isVertical  (igual que desktop)
           const orientation = project.isVertical ? "portrait" : "square"
           
           return (
@@ -161,18 +148,20 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
 
           return (
             <div key={rowIndex} className="mb-16">
-              {/* Fila de números alineados horizontalmente */}
-              <div className="grid grid-cols-4 gap-8 mb-2">
+              {/* Fila de números alineados con el margen derecho de las imágenes */}
+              <div className="grid grid-cols-4 gap-8">
                 {projectsInRow.map((project, index) => {
                   const globalIndex = startIndex + index
                   const projectNumber = project.archiveOrder
                     ? project.archiveOrder.toString().padStart(2, "0")
                     : (globalIndex + 1).toString().padStart(2, "0")
 
+                  const orientation = project.isVertical ? "portrait" : "square"
+
                   return (
-                    <div key={`number-${project.id}`} className="flex justify-center">
+                    <div key={`number-${project.id}`} className="flex justify-start">
+                      {/* Ambos tipos usan el mismo ancho para mantener alineación vertical consistente */}
                       <div className="w-5/6 flex justify-end">
-                        {/* Mostrar número para TODOS los proyectos */}
                         <span className="font-normal text-foreground text-[9px]">{projectNumber}</span>
                       </div>
                     </div>
