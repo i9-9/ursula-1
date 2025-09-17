@@ -86,7 +86,7 @@ function initializeContentfulClient() {
         environment: process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'master'
       });
     }
-  } catch (error) {
+  } catch {
     // Contentful client initialization failed
   }
   
@@ -258,7 +258,7 @@ export async function getProjects(): Promise<Project[]> {
         isFeatured: fields.isFeatured === true,
       };
     });
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -353,7 +353,7 @@ export async function getWorksGridProjects(): Promise<Project[]> {
         isVertical: fields.isVertical === true, // Por defecto false si no está definido
       };
     });
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -423,7 +423,7 @@ export async function getArchiveProjects(): Promise<Project[]> {
         isFeatured: fields.isFeatured === true,
       };
     });
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -501,7 +501,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
     
     return [];
     
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -614,7 +614,7 @@ export async function getProjectById(id: string): Promise<Project | null> {
       isPublished: fields.isPublished !== false,
       isFeatured: fields.isFeatured === true,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -685,7 +685,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       isPublished: fields.isPublished !== false,
       isFeatured: fields.isFeatured === true,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }

@@ -35,11 +35,6 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
 
   // Wrap the entire component logic in a try-catch to prevent crashes
   try {
-      youtubeUrl: project.youtubeUrl,
-      thumbnail: project.thumbnail,
-      title: project.title,
-      artist: project.artist
-    });
 
     const togglePlayPause = () => {
       if (iframeRef.current) {
@@ -63,16 +58,13 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
     };
 
     // Determinar qué contenido mostrar
-    let contentType = 'none';
-    if (project.vimeoId) contentType = 'vimeo';
-    else if (project.videoUrl && extractYouTubeId(project.videoUrl)) contentType = 'youtube';
-    else if (project.thumbnail) contentType = 'image';
-      youtubeUrl: project.youtubeUrl,
-      thumbnail: project.thumbnail,
-      hasVimeo: !!project.vimeoId,
-      hasYouTube: !!(project.videoUrl && extractYouTubeId(project.videoUrl)),
-      hasThumbnail: !!project.thumbnail
-    });
+    if (project.vimeoId) {
+      // Vimeo content
+    } else if (project.videoUrl && extractYouTubeId(project.videoUrl)) {
+      // YouTube content
+    } else if (project.thumbnail) {
+      // Image content
+    }
 
     return (
       <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - 36px)', width: '100vw', maxWidth: '100vw' }}>
@@ -88,7 +80,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                   allow="autoplay; fullscreen"
                   allowFullScreen
                   title={displayTitle}
-                  onError={(e) => {}}
+                  onError={() => {}}
                 />
               </div>
             ) : project.videoUrl && extractYouTubeId(project.videoUrl) ? (
@@ -101,7 +93,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                   allow="autoplay; fullscreen"
                   allowFullScreen
                   title={displayTitle}
-                  onError={(e) => {}}
+                  onError={() => {}}
                 />
               </div>
             ) : project.thumbnail ? (
@@ -164,7 +156,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
         )}
       </div>
     );
-  } catch (error) {
+  } catch {
     return (
       <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - 36px)', width: '100vw', maxWidth: '100vw' }}>
         <div className="w-full h-full flex items-center justify-center p-8">

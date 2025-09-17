@@ -36,11 +36,6 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
 
   // Wrap the entire component logic in a try-catch to prevent crashes
   try {
-      youtubeUrl: project.youtubeUrl,
-      thumbnail: project.thumbnail,
-      title: project.title,
-      artist: project.artist
-    });
 
     const togglePlayPause = () => {
       if (iframeRef.current) {
@@ -64,21 +59,17 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
     };
 
     // Determinar qué contenido mostrar
-    let contentType = 'none';
-    if (project.vimeoId) contentType = 'vimeo';
-    else if (project.videoUrl && extractYouTubeId(project.videoUrl)) contentType = 'youtube';
-    else if (project.thumbnail) contentType = 'image';
-    
-      youtubeUrl: project.youtubeUrl,
-      thumbnail: project.thumbnail,
-      hasVimeo: !!project.vimeoId,
-      hasYouTube: !!(project.videoUrl && extractYouTubeId(project.videoUrl)),
-      hasThumbnail: !!project.thumbnail
-    });
+    if (project.vimeoId) {
+      // Vimeo content
+    } else if (project.videoUrl && extractYouTubeId(project.videoUrl)) {
+      // YouTube content
+    } else if (project.thumbnail) {
+      // Image content
+    }
 
     // Log the iframe src that will be used
     if (project.vimeoId) {
-      const vimeoSrc = `https://player.vimeo.com/video/${project.vimeoId}?autoplay=0&loop=1&title=0&byline=0&portrait=0&controls=0&background=1`;
+      // const vimeoSrc = `https://player.vimeo.com/video/${project.vimeoId}?autoplay=0&loop=1&title=0&byline=0&portrait=0&controls=0&background=1`;
     }
 
     return (
@@ -96,7 +87,7 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
               allow="autoplay; fullscreen"
               allowFullScreen
               title={displayTitle}
-              onError={(e) => {}}
+              onError={() => {}}
             />
           </div>
         ) : project.videoUrl && extractYouTubeId(project.videoUrl) ? (
@@ -112,7 +103,7 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
               allow="autoplay; fullscreen"
               allowFullScreen
               title={displayTitle}
-              onError={(e) => {}}
+              onError={() => {}}
             />
           </div>
         ) : project.thumbnail ? (
@@ -180,7 +171,7 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
         </div>
       </div>
     );
-  } catch (error) {
+  } catch {
     return (
       <div className="relative w-screen archive-page-fullscreen" style={{ height: '100vh', width: '100vw', maxWidth: '100vw' }}>
         <div className="w-screen h-full flex items-center justify-center text-white bg-black">

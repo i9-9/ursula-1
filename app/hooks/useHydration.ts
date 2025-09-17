@@ -31,7 +31,7 @@ export const useSafeBrowserValue = <T>(
   
   try {
     return getValue();
-  } catch (error) {
+  } catch {
     return defaultValue;
   }
 };

@@ -21,7 +21,7 @@ export async function generateStaticParams() {
     return slugsWithProjects.map(({ slug }) => ({
       slug,
     }));
-  } catch (error) {
+  } catch {
     // Fallback: no generar rutas si hay error
     return [];
   }
@@ -42,22 +42,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     }
 
     // Debug: Log the found project data
-      artist: project.artist,
-      vimeoId: project.vimeoId,
-      videoUrl: project.videoUrl,
-      youtubeUrl: project.youtubeUrl,
-      thumbnail: project.thumbnail,
-      images: project.images?.length || 0
-    });
-
-
 
     return (
       <ProjectPageLoader 
         project={project}
       />
     );
-  } catch (error) {
+  } catch {
     notFound();
   }
 }

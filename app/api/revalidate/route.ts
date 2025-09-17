@@ -6,9 +6,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     
     // Log para debugging
-      action: body.sys?.type,
-      timestamp: new Date().toISOString()
-    });
     
     // En SSG, no necesitamos revalidar paths
     // Solo confirmamos que recibimos el webhook
@@ -21,7 +18,7 @@ export async function POST(request: NextRequest) {
       contentType: body.sys?.contentType?.sys?.id || 'unknown'
     });
     
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Error processing webhook' }, 
       { status: 500 }

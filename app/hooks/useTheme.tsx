@@ -33,7 +33,7 @@ export const useTheme = () => {
       if (!savedTheme) {
         localStorage.setItem('theme', initialTheme);
       }
-    } catch (error) {
+    } catch {
       setTheme('light');
     }
   }, [isHydrated]);
@@ -52,7 +52,7 @@ export const useTheme = () => {
       } else {
         document.documentElement.classList.remove('dark');
       }
-    } catch (error) {
+    } catch {
       // Error saving theme
     }
   };

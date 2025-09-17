@@ -49,7 +49,7 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
         if (!savedTheme) {
           localStorage.setItem('theme', initialTheme);
         }
-      } catch (error) {
+      } catch {
         // Keep default theme to avoid hydration mismatch
       }
     };
@@ -73,7 +73,7 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
       } else {
         document.documentElement.classList.remove('dark');
       }
-    } catch (error) {
+    } catch {
       // Error saving theme
     }
   }, [theme, isHydrated]);

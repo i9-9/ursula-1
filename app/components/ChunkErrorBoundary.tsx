@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component, ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
@@ -22,10 +22,10 @@ class ChunkErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(_error: Error) {
     
     // Check if it's a chunk loading error
-    if (error.message.includes('ChunkLoadError') || error.message.includes('Loading chunk')) {
+    if (_error.message.includes('ChunkLoadError') || _error.message.includes('Loading chunk')) {
       // Force page reload to resolve chunk loading issues
       setTimeout(() => {
         window.location.reload();

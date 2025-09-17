@@ -156,7 +156,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                     ? project.archiveOrder.toString().padStart(2, "0")
                     : (globalIndex + 1).toString().padStart(2, "0")
 
-                  const orientation = project.isVertical ? "portrait" : "square"
+                  // const orientation = project.isVertical ? "portrait" : "square"
 
                   return (
                     <div key={`number-${project.id}`} className="flex justify-start">
