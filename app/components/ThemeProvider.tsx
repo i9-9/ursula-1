@@ -50,7 +50,6 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
           localStorage.setItem('theme', initialTheme);
         }
       } catch (error) {
-        console.warn('Error initializing theme:', error);
         // Keep default theme to avoid hydration mismatch
       }
     };
@@ -75,7 +74,7 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
         document.documentElement.classList.remove('dark');
       }
     } catch (error) {
-      console.warn('Error saving theme:', error);
+      // Error saving theme
     }
   }, [theme, isHydrated]);
 

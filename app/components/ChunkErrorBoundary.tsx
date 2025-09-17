@@ -23,7 +23,6 @@ class ChunkErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ChunkErrorBoundary caught an error:', error, errorInfo);
     
     // Check if it's a chunk loading error
     if (error.message.includes('ChunkLoadError') || error.message.includes('Loading chunk')) {

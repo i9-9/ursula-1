@@ -73,7 +73,6 @@ export const useAssetPreloader = ({
       preloadProject(project);
     });
 
-    console.log(`🚀 Preloading assets for first ${projectsToPreload.length} projects (desktop only)`);
   }, [projects, preloadCount, isMobile, preloadProject]);
 
   // Función para precargar un proyecto específico (para lazy loading)

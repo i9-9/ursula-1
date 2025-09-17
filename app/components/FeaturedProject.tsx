@@ -8,21 +8,16 @@ import { HeroSlide } from '@/lib/contentful'
 // Memoized image component
 const ImageSlide = ({ slide }: { slide: HeroSlide }) => {
   const imageSource = useMemo(() => {
-    console.log('ImageSlide: slide data:', { title: slide.title, src: slide.src, videoUrl: slide.videoUrl });
-    
     // Prioritize the src field (which contains the optimized image URL)
     if (slide.src) {
-      console.log('ImageSlide: Using src field:', slide.src);
       return slide.src;
     }
     
     // Fallback to videoUrl if it's an image
     if (slide.videoUrl && (slide.videoUrl.includes('.jpg') || slide.videoUrl.includes('.jpeg') || slide.videoUrl.includes('.png') || slide.videoUrl.includes('.webp'))) {
-      console.log('ImageSlide: Using videoUrl as image:', slide.videoUrl);
       return slide.videoUrl;
     }
     
-    console.log('ImageSlide: No image source found');
     return '';
   }, [slide])
   
@@ -71,17 +66,13 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
   const handleSlideClick = useCallback((slide: HeroSlide) => {
     if (slide.projectSlug) {
       const url = `/work/${slide.projectSlug}`;
-      console.log('FeaturedProject: Navigating to:', url, 'for slide:', slide.title);
       router.push(url);
-    } else {
-      console.log('FeaturedProject: No projectSlug for slide:', slide.title);
     }
   }, [router])
 
   // Memoized slides to avoid recalculation
   const slides = useMemo((): HeroSlide[] => {
     // Always use slides from Contentful (including empty array)
-    console.log('FeaturedProject: heroSlides received:', heroSlides);
     return heroSlides || [];
   }, [heroSlides])
 

@@ -10,8 +10,6 @@ export default function NavbarWithLoader() {
   const { isSplashVisible } = useSplash();
   const [shouldShowNavbar, setShouldShowNavbar] = useState(false);
 
-  console.log('NavbarWithLoader: isSplashVisible:', isSplashVisible);
-
   // Mostrar navbar después de un delay más corto, incluso si splash está visible
   useEffect(() => {
     if (!isSplashVisible) {
@@ -20,15 +18,12 @@ export default function NavbarWithLoader() {
     } else {
       // Si splash está visible, mostrar navbar después de 1.5 segundos
       const timer = setTimeout(() => {
-        console.log('NavbarWithLoader: Showing navbar after 1.5s delay');
         setShouldShowNavbar(true);
       }, 1500);
 
       return () => clearTimeout(timer);
     }
   }, [isSplashVisible]);
-
-  console.log('NavbarWithLoader: shouldShowNavbar:', shouldShowNavbar);
   
   return (
     <AnimatePresence>

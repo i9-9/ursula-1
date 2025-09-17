@@ -6,8 +6,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     
     // Log para debugging
-    console.log('Contentful webhook received:', {
-      contentType: body.sys?.contentType?.sys?.id,
       action: body.sys?.type,
       timestamp: new Date().toISOString()
     });
@@ -24,7 +22,6 @@ export async function POST(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('Error processing webhook:', error);
     return NextResponse.json(
       { error: 'Error processing webhook' }, 
       { status: 500 }

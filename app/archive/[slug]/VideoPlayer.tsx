@@ -36,10 +36,6 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
 
   // Wrap the entire component logic in a try-catch to prevent crashes
   try {
-    console.log('🎥 VideoPlayer received project:', project);
-    console.log('🎥 Project video fields:', {
-      vimeoId: project.vimeoId,
-      videoUrl: project.videoUrl,
       youtubeUrl: project.youtubeUrl,
       thumbnail: project.thumbnail,
       title: project.title,
@@ -73,9 +69,6 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
     else if (project.videoUrl && extractYouTubeId(project.videoUrl)) contentType = 'youtube';
     else if (project.thumbnail) contentType = 'image';
     
-    console.log('🎭 Content type to display:', contentType, {
-      vimeoId: project.vimeoId,
-      videoUrl: project.videoUrl,
       youtubeUrl: project.youtubeUrl,
       thumbnail: project.thumbnail,
       hasVimeo: !!project.vimeoId,
@@ -86,7 +79,6 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
     // Log the iframe src that will be used
     if (project.vimeoId) {
       const vimeoSrc = `https://player.vimeo.com/video/${project.vimeoId}?autoplay=0&loop=1&title=0&byline=0&portrait=0&controls=0&background=1`;
-      console.log('🎬 Vimeo iframe src:', vimeoSrc);
     }
 
     return (
@@ -104,8 +96,7 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
               allow="autoplay; fullscreen"
               allowFullScreen
               title={displayTitle}
-              onLoad={() => console.log('🎬 Vimeo iframe loaded successfully')}
-              onError={(e) => console.error('🎬 Vimeo iframe error:', e)}
+              onError={(e) => {}}
             />
           </div>
         ) : project.videoUrl && extractYouTubeId(project.videoUrl) ? (
@@ -121,8 +112,7 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
               allow="autoplay; fullscreen"
               allowFullScreen
               title={displayTitle}
-              onLoad={() => console.log('🎬 YouTube iframe loaded successfully')}
-              onError={(e) => console.error('🎬 YouTube iframe error:', e)}
+              onError={(e) => {}}
             />
           </div>
         ) : project.thumbnail ? (
@@ -191,7 +181,6 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
       </div>
     );
   } catch (error) {
-    console.error('Error rendering VideoPlayer:', error);
     return (
       <div className="relative w-screen archive-page-fullscreen" style={{ height: '100vh', width: '100vw', maxWidth: '100vw' }}>
         <div className="w-screen h-full flex items-center justify-center text-white bg-black">

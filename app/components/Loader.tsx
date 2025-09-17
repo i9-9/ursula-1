@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import UrsulaLogo from './UrsulaLogo';
 
 const Loader = () => {
-  console.log('Loader: Rendering loader with logo and dots');
 
   return (
     <motion.div

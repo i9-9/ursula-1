@@ -22,7 +22,6 @@ export async function generateStaticParams() {
       slug,
     }));
   } catch (error) {
-    console.error('Error generating static params:', error);
     // Fallback: no generar rutas si hay error
     return [];
   }
@@ -39,15 +38,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     const project = findProjectBySlug(projects, slug);
     
     if (!project) {
-      console.error(`Project not found for slug: ${slug}`);
-      console.log('Available slugs:', generateAllSlugs(projects).map(p => p.slug));
       notFound();
     }
 
     // Debug: Log the found project data
-    console.log('🎯 Found project for slug:', slug, {
-      id: project.id,
-      title: project.title,
       artist: project.artist,
       vimeoId: project.vimeoId,
       videoUrl: project.videoUrl,
@@ -64,7 +58,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       />
     );
   } catch (error) {
-    console.error('Error loading project page:', error);
     notFound();
   }
 }

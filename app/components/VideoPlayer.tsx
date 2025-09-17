@@ -35,10 +35,6 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
 
   // Wrap the entire component logic in a try-catch to prevent crashes
   try {
-    console.log('🎥 VideoPlayer received project:', project);
-    console.log('🎥 Project video fields:', {
-      vimeoId: project.vimeoId,
-      videoUrl: project.videoUrl,
       youtubeUrl: project.youtubeUrl,
       thumbnail: project.thumbnail,
       title: project.title,
@@ -71,10 +67,6 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
     if (project.vimeoId) contentType = 'vimeo';
     else if (project.videoUrl && extractYouTubeId(project.videoUrl)) contentType = 'youtube';
     else if (project.thumbnail) contentType = 'image';
-    
-    console.log('🎭 Content type to display:', contentType, {
-      vimeoId: project.vimeoId,
-      videoUrl: project.videoUrl,
       youtubeUrl: project.youtubeUrl,
       thumbnail: project.thumbnail,
       hasVimeo: !!project.vimeoId,
@@ -96,8 +88,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                   allow="autoplay; fullscreen"
                   allowFullScreen
                   title={displayTitle}
-                  onLoad={() => console.log('🎬 Vimeo iframe loaded successfully')}
-                  onError={(e) => console.error('🎬 Vimeo iframe error:', e)}
+                  onError={(e) => {}}
                 />
               </div>
             ) : project.videoUrl && extractYouTubeId(project.videoUrl) ? (
@@ -110,8 +101,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                   allow="autoplay; fullscreen"
                   allowFullScreen
                   title={displayTitle}
-                  onLoad={() => console.log('🎬 YouTube iframe loaded successfully')}
-                  onError={(e) => console.error('🎬 YouTube iframe error:', e)}
+                  onError={(e) => {}}
                 />
               </div>
             ) : project.thumbnail ? (
@@ -175,7 +165,6 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
       </div>
     );
   } catch (error) {
-    console.error('❌ VideoPlayer error:', error);
     return (
       <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - 36px)', width: '100vw', maxWidth: '100vw' }}>
         <div className="w-full h-full flex items-center justify-center p-8">

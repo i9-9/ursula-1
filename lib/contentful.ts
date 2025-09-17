@@ -85,12 +85,9 @@ function initializeContentfulClient() {
         accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
         environment: process.env.NEXT_PUBLIC_CONTENTFUL_ENVIRONMENT || 'master'
       });
-      console.log('✅ Contentful client initialized successfully');
-    } else {
-      console.warn('⚠️ Contentful environment variables not found');
     }
   } catch (error) {
-    console.error('❌ Contentful client initialization failed:', error);
+    // Contentful client initialization failed
   }
   
   return client;
@@ -148,7 +145,6 @@ export async function getProjects(): Promise<Project[]> {
   const client = initializeContentfulClient();
   
   if (!client) {
-    console.log('📱 No Contentful connection');
     return [];
   }
 
@@ -160,13 +156,10 @@ export async function getProjects(): Promise<Project[]> {
       limit: 1000,
     });
     
-    console.log(`✅ Fetched ${entries.items.length} projects from 'projects' content type`);
-    
 
     
     // If still no projects, return empty array
     if (entries.items.length === 0) {
-      console.log('❌ No projects found in any content type');
       return [];
     }
     
@@ -266,7 +259,6 @@ export async function getProjects(): Promise<Project[]> {
       };
     });
   } catch (error) {
-    console.error('❌ Error fetching projects from Contentful:', error);
     return [];
   }
 }
@@ -276,7 +268,6 @@ export async function getWorksGridProjects(): Promise<Project[]> {
   const client = initializeContentfulClient();
   
   if (!client) {
-    console.log('📱 No Contentful connection');
     return [];
   }
 
@@ -287,8 +278,6 @@ export async function getWorksGridProjects(): Promise<Project[]> {
       order: ['fields.worksGridOrder'],
       limit: 100,
     });
-    
-    console.log(`✅ Fetched ${entries.items.length} WorksGrid projects from unified content type`);
     
     return entries.items.map((item: { 
       fields: { 
@@ -365,7 +354,6 @@ export async function getWorksGridProjects(): Promise<Project[]> {
       };
     });
   } catch (error) {
-    console.error('❌ Error fetching WorksGrid projects from Contentful:', error);
     return [];
   }
 }
@@ -375,7 +363,6 @@ export async function getArchiveProjects(): Promise<Project[]> {
   const client = initializeContentfulClient();
   
   if (!client) {
-    console.log('📱 No Contentful connection');
     return [];
   }
 
@@ -386,8 +373,6 @@ export async function getArchiveProjects(): Promise<Project[]> {
       order: ['fields.archiveOrder'],
       limit: 1000,
     });
-    
-    console.log(`✅ Fetched ${entries.items.length} archive projects from unified content type`);
     
     return entries.items.map((item: { 
       fields: { 
@@ -439,7 +424,6 @@ export async function getArchiveProjects(): Promise<Project[]> {
       };
     });
   } catch (error) {
-    console.error('❌ Error fetching archive projects from Contentful:', error);
     return [];
   }
 }
@@ -449,7 +433,6 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
   const client = initializeContentfulClient();
   
   if (!client) {
-    console.log('📱 No Contentful connection');
     return [];
   }
 
@@ -462,7 +445,6 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
     });
     
     if (entries.items.length > 0) {
-      console.log(`✅ Fetched ${entries.items.length} hero slides from Contentful`);
       
       return entries.items.map((item: { 
         fields: { 
@@ -489,7 +471,6 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
           : '';
         
         // Debug: Log image URL
-        console.log(`Hero slide "${fields.title}": imageUrl =`, imageUrl);
         
         // Generar slug del proyecto referenciado si existe
         let projectSlug: string | undefined;
@@ -500,12 +481,7 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
           // Siempre generar slug usando título + artista para mantener consistencia con Archive/WorksGrid
           if (fields.project.fields.title && fields.project.fields.artist) {
             projectSlug = generateSemanticSlug(fields.project.fields.title, fields.project.fields.artist);
-            console.log(`Hero slide "${fields.title}": generated consistent slug =`, projectSlug, 'from title:', fields.project.fields.title, 'artist:', fields.project.fields.artist);
-          } else {
-            console.log(`Hero slide "${fields.title}": missing title or artist in project reference`);
           }
-        } else {
-          console.log(`Hero slide "${fields.title}": no project reference`);
         }
         
         return {
@@ -523,18 +499,15 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
       });
     }
     
-    console.log('📱 No hero slides found');
     return [];
     
   } catch (error) {
-    console.error('❌ Error fetching hero slides from Contentful:', error);
     return [];
   }
 }
 
 // Obtener datos de archivo - NUEVA VERSIÓN que incluye todos los items
 export async function getArchiveData(): Promise<ArchiveSection[]> {
-  console.log('⚠️ getArchiveData() is deprecated. Use getArchiveProjects() instead.');
   const projects = await getArchiveProjects();
   
   // Agrupar por categoría
@@ -577,7 +550,6 @@ export async function getProjectById(id: string): Promise<Project | null> {
   const client = initializeContentfulClient();
   
   if (!client) {
-    console.log('📱 No Contentful connection');
     return null;
   }
 
@@ -587,17 +559,13 @@ export async function getProjectById(id: string): Promise<Project | null> {
     try {
       entry = await client.getEntry(id);
     } catch {
-      console.log(`❌ Project ${id} not found in 'projects' content type`);
       return null;
     }
     
     // Check if it's a valid project content type
     if (entry.sys.contentType.sys.id !== 'projects') {
-      console.log(`❌ Entry ${id} is not a project`);
       return null;
     }
-    
-    console.log(`✅ Found project with ID ${id}`);
     
     const fields = entry.fields as {
       title?: string;
@@ -647,7 +615,6 @@ export async function getProjectById(id: string): Promise<Project | null> {
       isFeatured: fields.isFeatured === true,
     };
   } catch (error) {
-    console.error(`❌ Error fetching project ${id} from Contentful:`, error);
     return null;
   }
 }
@@ -657,7 +624,6 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
   const client = initializeContentfulClient();
   
   if (!client) {
-    console.log('📱 No Contentful connection');
     return null;
   }
 
@@ -669,12 +635,10 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     });
     
     if (entries.items.length === 0) {
-      console.log(`❌ No project found with slug: ${slug}`);
       return null;
     }
     
     const entry = entries.items[0];
-    console.log(`✅ Found project with slug: ${slug}`);
     
     const fields = entry.fields as {
       title?: string;
@@ -722,14 +686,12 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       isFeatured: fields.isFeatured === true,
     };
   } catch (error) {
-    console.error(`❌ Error fetching project with slug ${slug} from Contentful:`, error);
     return null;
   }
 }
 
 // Función legacy para compatibilidad (se mantiene temporalmente)
 export async function getArchiveItemById(id: string): Promise<ArchiveItem | null> {
-  console.log('⚠️ getArchiveItemById() is deprecated. Use getProjectById() instead.');
   const project = await getProjectById(id);
   
   if (!project) return null;

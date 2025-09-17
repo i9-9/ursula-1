@@ -149,8 +149,6 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
     
     const targetSlide = slideRefs.current[targetIndex];
     if (targetSlide) {
-      console.log(`🔄 Navigating from slide ${currentIndex} to slide ${targetIndex}`);
-      
       // Clear any existing timeout
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
       
@@ -164,7 +162,6 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
       // Reset scrolling flag after animation completes
       scrollTimeoutRef.current = setTimeout(() => {
         isScrollingRef.current = false;
-        console.log(`✅ Navigation to slide ${targetIndex} completed`);
         // Force one final check to ensure we're on the right slide
         setTimeout(() => {
           if (!isScrollingRef.current) {

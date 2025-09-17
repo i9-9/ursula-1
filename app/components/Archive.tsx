@@ -64,27 +64,18 @@ const Archive = ({ projects }: ArchiveProps) => {
   }, [filteredItems, selectedFilter, isHydrated]);
 
   const handleProjectClick = (item: Project) => {
-    console.log('=== ARCHIVE NAVIGATION DEBUG ===');
-    console.log('Project clicked:', item);
-    console.log('Title:', item.title);
-    console.log('Artist:', item.artist);
-    
     if (item.title && item.artist) {
       const semanticSlug = generateSemanticSlug(item.title, item.artist);
       const url = `/work/${semanticSlug}`;
-      console.log('🚀 Generated semantic slug:', semanticSlug);
-      console.log('🚀 Navigating to WORK URL:', url);
       router.push(url);
-    } else {
-      console.error('❌ Missing title or artist for project:', item);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pt-20 pb-16">
+    <div className="min-h-screen bg-background flex flex-col md:pt-20 pb-16">
       
       {/* Filter Section */}
-      <div className="absolute top-12 md:top-16 left-8 mb-8 z-10 md:block hidden">
+      <div className="absolute md:top-16 left-8 mb-8 z-10 md:block hidden">
         <div className="flex items-center space-x-4">
           <span className="text-foreground text-[12px] uppercase tracking-wide font-regular">
             FILTER
@@ -112,7 +103,7 @@ const Archive = ({ projects }: ArchiveProps) => {
       </div>
 
       {/* Mobile Filter */}
-      <div className="hidden md:hidden px-4 mb-8">
+      <div className="block md:hidden px-4 mb-8">
         <div className="flex items-center space-x-4">
           <span className="text-foreground text-[10px] uppercase tracking-wide font-medium">
             FILTER

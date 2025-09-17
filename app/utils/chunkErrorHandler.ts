@@ -6,7 +6,6 @@ export const handleChunkError = (error: ErrorEvent) => {
     error.message.includes('Loading chunk') ||
     error.message.includes('Failed to fetch dynamically imported module')
   )) {
-    console.warn('Chunk loading error detected, attempting to reload...');
     
     // Force page reload after a short delay
     setTimeout(() => {
@@ -28,7 +27,6 @@ export const initializeChunkErrorHandling = () => {
         if (event.reason.includes('ChunkLoadError') || 
             event.reason.includes('Loading chunk')) {
           event.preventDefault();
-          console.warn('Chunk loading promise rejection, reloading...');
           setTimeout(() => window.location.reload(), 1000);
         }
       }

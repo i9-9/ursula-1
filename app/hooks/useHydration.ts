@@ -32,7 +32,6 @@ export const useSafeBrowserValue = <T>(
   try {
     return getValue();
   } catch (error) {
-    console.warn('Error accessing browser API:', error);
     return defaultValue;
   }
 };

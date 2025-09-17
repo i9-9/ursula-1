@@ -27,7 +27,6 @@ export const SplashProvider: React.FC<SplashProviderProps> = ({ children }) => {
   const [isSplashVisible, setIsSplashVisible] = useState(false);
 
   const hideSplash = useCallback(() => {
-    console.log('SplashContext: hideSplash called');
     setIsSplashVisible(false);
     // Store in sessionStorage so splash won't show again in this session
     if (typeof window !== 'undefined') {
@@ -36,7 +35,6 @@ export const SplashProvider: React.FC<SplashProviderProps> = ({ children }) => {
   }, []);
 
   const resetSplash = useCallback(() => {
-    console.log('SplashContext: resetSplash called');
     setIsSplashVisible(true);
     // Remove from sessionStorage to allow splash to show again
     if (typeof window !== 'undefined') {
@@ -59,7 +57,6 @@ export const SplashProvider: React.FC<SplashProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!isSplashVisible) return;
     
-    console.log('SplashContext: Auto-hiding splash after 2.5 seconds');
     const timer = setTimeout(() => {
       setIsSplashVisible(false);
       sessionStorage.setItem('splashShown', 'true');
