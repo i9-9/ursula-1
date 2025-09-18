@@ -151,9 +151,9 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
         <div className="absolute top-8 right-8 z-10">
           <button 
             className={`transition-colors ${
-              theme === 'light' 
-                ? 'text-black hover:text-black/80' 
-                : 'text-white hover:text-white/80'
+              theme === 'dark' 
+                ? 'text-white hover:text-white/80' 
+                : 'text-black hover:text-black/80'
             }`}
             aria-label={isPlaying ? "Pause video" : "Play video"}
             onClick={togglePlayPause}

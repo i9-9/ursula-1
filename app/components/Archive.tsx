@@ -84,10 +84,11 @@ const Archive = ({ projects }: ArchiveProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col md:pt-20 pb-16">
+    <div className="min-h-screen bg-background flex flex-col pb-16 md:pt-20 pt-8">
       
       {/* Filter Section */}
-      <div className="absolute md:top-16 left-8 mb-8 z-10 md:block hidden">
+
+      <div className="absolute md:top-16 left-8 mb-16 z-10 md:block hidden">
         <div className="flex items-center space-x-4">
           <span className="text-foreground text-[12px] uppercase tracking-wide font-regular">
             FILTER
@@ -115,7 +116,7 @@ const Archive = ({ projects }: ArchiveProps) => {
       </div>
 
       {/* Mobile Filter */}
-      <div className="block md:hidden px-4 mb-8">
+      <div className="block md:hidden px-4 mb-16">
         <div className="flex items-center space-x-4">
           <span className="text-foreground text-[10px] uppercase tracking-wide font-medium">
             FILTER
@@ -143,7 +144,7 @@ const Archive = ({ projects }: ArchiveProps) => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 w-full pt-2" ref={containerRef}>
+      <div className="flex-1 w-full md:pt-2 pt-0" ref={containerRef}>
         {/* Desktop - Grid de 12 columnas usando solo Tailwind */}
         <div className="hidden md:block w-full px-8">
           <div className="grid grid-cols-12 gap-2">

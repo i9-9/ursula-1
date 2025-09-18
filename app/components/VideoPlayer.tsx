@@ -140,7 +140,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
         {project.vimeoId && (
           <button
             onClick={togglePlayPause}
-            className="absolute top-4 right-8 z-50 text-black bg-white/20 backdrop-blur-sm rounded-full p-3 transition-all duration-300 hover:bg-white/30 hover:scale-105"
+            className="absolute top-4 right-8 z-50 text-white bg-white/20 backdrop-blur-sm rounded-full p-3 transition-all duration-300 hover:bg-white/30 hover:scale-105"
             aria-label={isPlaying ? 'Pause video' : 'Play video'}
           >
             {isPlaying ? (
