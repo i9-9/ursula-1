@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Project } from '../../lib/contentful';
+import { useThemeContext } from './ThemeProvider';
 
 interface VideoPlayerProps {
   project: Project;
@@ -14,6 +15,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const { theme } = useThemeContext();
 
   // Ensure component only renders on client side to prevent hydration issues
   useEffect(() => {
@@ -140,7 +142,11 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
         {project.vimeoId && (
           <button
             onClick={togglePlayPause}
-            className="absolute top-4 right-8 z-50 text-white bg-white/20 backdrop-blur-sm rounded-full p-3 transition-all duration-300 hover:bg-white/30 hover:scale-105"
+            className={`absolute top-4 right-8 z-50 p-3 transition-all duration-300 hover:scale-105 ${
+              theme === 'dark' 
+                ? 'text-white hover:text-white/80' 
+                : 'text-black hover:text-black/80'
+            }`}
             aria-label={isPlaying ? 'Pause video' : 'Play video'}
           >
             {isPlaying ? (
