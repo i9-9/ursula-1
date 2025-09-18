@@ -21,6 +21,10 @@ const Archive = ({ projects }: ArchiveProps) => {
   const filteredItems = useMemo(() => {
     if (!projects || projects.length === 0) return [];
     
+    // Debug: Ver todas las categorías únicas que están llegando
+    const uniqueCategories = [...new Set(projects.map(p => p.category))];
+    console.log('🔍 Todas las categorías en los datos:', uniqueCategories);
+    
     let filtered = projects.filter(project => {
       const hasTitle = !!(project.title && project.title.trim());
       const hasArtist = !!(project.artist && project.artist.trim());
@@ -28,13 +32,21 @@ const Archive = ({ projects }: ArchiveProps) => {
     });
     
     if (selectedFilter === 'music-videos') {
-      filtered = filtered.filter(project => project.category === 'MUSIC VIDEO');
+      console.log('Filtering music videos...');
+      console.log('Projects before filter:', filtered.length);
+      console.log('Sample categories:', filtered.slice(0, 3).map(p => ({ title: p.title, category: p.category })));
+      // Filtrar tanto MUSIC VIDEO como MUSIC VIDEOS
+      filtered = filtered.filter(project => {
+        const category = project.category?.toUpperCase();
+        return category === 'MUSIC VIDEO' || category === 'MUSIC VIDEOS';
+      });
+      console.log('Projects after filter:', filtered.length);
     } else if (selectedFilter === 'commercial') {
-      filtered = filtered.filter(project => project.category === 'COMMERCIAL');
+      filtered = filtered.filter(project => project.category?.toUpperCase() === 'COMMERCIAL');
     } else if (selectedFilter === 'set-design') {
-      filtered = filtered.filter(project => project.category === 'SET DESIGN');
+      filtered = filtered.filter(project => project.category?.toUpperCase() === 'SET DESIGN');
     } else if (selectedFilter === 'narrative') {
-      filtered = filtered.filter(project => project.category === 'NARRATIVE');
+      filtered = filtered.filter(project => project.category?.toUpperCase() === 'NARRATIVE');
     }
 
     return filtered.map((project, index) => ({ 
