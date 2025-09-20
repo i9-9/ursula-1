@@ -4,6 +4,8 @@ import { useMemo, useState, useRef, useCallback, useEffect, useLayoutEffect } fr
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { HeroSlide } from '@/lib/contentful'
+import { useSplash } from '../contexts/SplashContext'
+import HydrationSafe from './HydrationSafe'
 
 // Memoized image component
 const ImageSlide = ({ slide }: { slide: HeroSlide }) => {
@@ -50,17 +52,12 @@ interface FeaturedProjectProps {
 
 const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
   const router = useRouter()
+  const { isSplashVisible } = useSplash()
   const [currentIndex, setCurrentIndex] = useState(0)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const slideRefs = useRef<HTMLDivElement[]>([])
   const isScrollingRef = useRef(false)
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const [isHydrated, setIsHydrated] = useState(false)
-
-  // Simple hydration check
-  useEffect(() => {
-    setIsHydrated(true)
-  }, [])
 
   // Función para manejar click en slide
   const handleSlideClick = useCallback((slide: HeroSlide) => {
@@ -99,14 +96,14 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
       }
     })
     
-    if (closestIndex !== currentIndex) {
+    // Only update if the change is significant (avoid micro-adjustments)
+    if (closestIndex !== currentIndex && smallestDistance < container.clientWidth / 4) {
       setCurrentIndex(closestIndex)
     }
   }, [currentIndex])
 
   // Initial position to center slide without horizontal animation
   useLayoutEffect(() => {
-    if (!isHydrated) return
     
     const firstIndex = 0 // Always start at slide 1 (index 0)
     setCurrentIndex(firstIndex)
@@ -124,11 +121,10 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
     target.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' })
     
     container.style.scrollBehavior = previousBehavior
-  }, [slides.length, isHydrated])
+  }, [slides.length])
 
   // Optimized scroll listener with RAF throttling
   useEffect(() => {
-    if (!isHydrated) return
     
     const container = scrollContainerRef.current
     if (!container) return
@@ -150,11 +146,10 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
       container.removeEventListener('scroll', handleScroll)
       if (rafId) cancelAnimationFrame(rafId)
     }
-  }, [updateCurrentIndexFromScroll, isHydrated])
+  }, [updateCurrentIndexFromScroll])
 
   // Enable vertical wheel -> horizontal scroll mapping
   useEffect(() => {
-    if (!isHydrated) return
     
     const container = scrollContainerRef.current
     if (!container) return
@@ -170,7 +165,8 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
     return () => {
       container.removeEventListener('wheel', handleWheel)
     }
-  }, [isHydrated])
+  }, [])
+
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -193,8 +189,14 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
       </section>
     );
   }
+
+  // Don't render if splash is visible to prevent flash
+  if (isSplashVisible) {
+    return null;
+  }
   
   return (
+    <HydrationSafe>
     <section 
       className="absolute inset-0 px-0 bg-background text-foreground overflow-hidden flex flex-col items-center justify-center"
       style={{ 
@@ -206,10 +208,9 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
       <div className="w-full flex items-center justify-center">
         <div 
           ref={scrollContainerRef}
-          className="w-full overflow-x-auto overflow-y-hidden px-0 snap-x snap-mandatory touch-pan-x"
+          className="w-full overflow-x-auto overflow-y-hidden px-0 snap-x snap-mandatory touch-pan-x scroll-padding-inline-[calc((100vw-90vw)/2-16px)] sm:scroll-padding-inline-[calc((100vw-80vw)/2-24px)] md:scroll-padding-inline-[calc((100vw-70vw)/2-32px)] lg:scroll-padding-inline-[calc((100vw-60vw)/2-24px)]"
           aria-label="Featured projects slider"
           style={{ 
-            scrollPaddingInline: 'calc((100vw - 72vw)/2)',
             scrollbarWidth: 'none',
             msOverflowStyle: 'none'
           }}
@@ -221,24 +222,24 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
             
             /* Estilo para las imágenes del hero */
             img {
-              border-radius: 8px;
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
               box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             }
           `}</style>
           <div className="flex items-center justify-start gap-0 w-max" style={{ minHeight: '0' }}>
             {/* Left spacer to allow first slide to center */}
-            <div className="flex-shrink-0" style={{ width: 'calc((100vw - 60vw)/2)' }} aria-hidden="true" />
+            <div className="flex-shrink-0 w-[calc((100vw-90vw)/2-16px)] sm:w-[calc((100vw-80vw)/2-24px)] md:w-[calc((100vw-70vw)/2-32px)] lg:w-[calc((100vw-60vw)/2-24px)]" aria-hidden="true" />
             
             {slides.map((slide, index) => {
-              const isActive = isHydrated && index === currentIndex
               const isClickable = Boolean(slide.projectSlug)
               
               return (
                 <div
                   key={slide.id}
                   ref={(el) => { if (el) slideRefs.current[index] = el }}
-                  className={`group flex-shrink-0 snap-center ${isClickable ? 'cursor-pointer' : ''}`}
-                  style={{ width: isActive ? '60vw' : 'calc(60vw + 120px)' }}
+                  className={`group flex-shrink-0 snap-center w-[90vw] sm:w-[80vw] md:w-[70vw] lg:w-[60vw] px-4 sm:px-6 md:px-8 lg:px-6 ${isClickable ? 'cursor-pointer' : ''}`}
                   role="group"
                   aria-roledescription="slide"
                   aria-label={`${slide.title} by ${slide.client}`}
@@ -252,19 +253,14 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
                   tabIndex={isClickable ? 0 : -1}
                 >
                   <div
-                    className="transition-all duration-300 ease-out will-change-transform"
-                    style={{ 
-                      clipPath: isActive 
-                        ? 'none' 
-                        : 'inset(0 60px 0 60px)' // Show 60px peek on each side
-                    }}
+                    className="relative w-full overflow-hidden"
+                    style={{ paddingBottom: '56.25%' }}
                   >
                     <motion.div
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.35, ease: 'easeOut' }}
-                      className="relative w-full"
-                      style={{ paddingBottom: isActive ? '56.25%' : '40%' }}
+                      className="absolute inset-0 w-full h-full"
                     >
                       <ImageSlide slide={slide} />
                     </motion.div>
@@ -274,11 +270,12 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
             })}
             
             {/* Right spacer to allow last slide to center */}
-            <div className="flex-shrink-0" style={{ width: 'calc((100vw - 60vw)/2)' }} aria-hidden="true" />
+            <div className="flex-shrink-0 w-[calc((100vw-90vw)/2-16px)] sm:w-[calc((100vw-80vw)/2-24px)] md:w-[calc((100vw-70vw)/2-32px)] lg:w-[calc((100vw-60vw)/2-24px)]" aria-hidden="true" />
           </div>
         </div>
       </div>
     </section>
+    </HydrationSafe>
   )
 }
 
