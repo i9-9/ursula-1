@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Project } from '../../lib/contentful';
 import { useThemeContext } from './ThemeProvider';
+import AnimatedProjectInfo from './AnimatedProjectInfo';
 
 interface VideoPlayerProps {
   project: Project;
@@ -16,6 +17,8 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const { theme } = useThemeContext();
+  
+
 
   // Ensure component only renders on client side to prevent hydration issues
   useEffect(() => {
@@ -121,22 +124,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
           </div>
         </div>
         
-        <div className="absolute top-4 left-8 z-50 text-foreground">
-          <div className="space-y-2 text-sm font-light tracking-wide">
-            <div className="flex items-center space-x-4">
-              <span className="text-xs text-foreground opacity-100">{String(project.archiveOrder || displayIndex).padStart(2, '0')}</span>
-              <span className="text-xs text-foreground opacity-100 uppercase">TITLE: {project.title}</span>
-              <span className="text-xs text-foreground opacity-100 uppercase">CLIENT: {project.artist}</span>
-            </div>
-            <div className="flex items-center space-x-4 text-xs text-foreground opacity-100">
-              <span>YEAR: {project.year || '2024'}</span>
-              <span>TYPE: {project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}</span>
-            </div>
-            <div className="text-xs text-foreground opacity-100">
-              <span>PRODUCTION COMPANY: {project.company || 'ARENA COLLECTIVE'}</span>
-            </div>
-          </div>
-        </div>
+        <AnimatedProjectInfo project={project} displayIndex={displayIndex} />
 
         {/* Play/Pause Button - Solo para Vimeo */}
         {project.vimeoId && (

@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Project } from '../../../lib/contentful';
 import { useTheme } from '../../hooks/useTheme';
+import { useSequentialAnimation } from '../../../hooks/useSequentialAnimation';
 
 interface VideoPlayerProps {
   project: Project;
@@ -17,6 +18,13 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
   const [isPlaying, setIsPlaying] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const { theme } = useTheme();
+  
+  // Sequential animation for project info sections
+  const { getItemAnimationProps } = useSequentialAnimation({
+    itemCount: 3, // Three info sections: title/client, year/type, company
+    delayBetweenItems: 150,
+    initialDelay: 300
+  });
 
   // Ensure component only renders on client side to prevent hydration issues
   useEffect(() => {
@@ -133,16 +141,21 @@ export default function VideoPlayer({ project, displayTitle, displayCreator, dis
         
         <div className="absolute top-8 left-8 z-50 text-white md:text-white text-black">
           <div className="space-y-2 text-sm font-light tracking-wide">
-            <div className="flex items-center space-x-4">
-              <span className="text-xs text-black md:text-white opacity-100">{String(displayIndex).padStart(2, '0')}</span>
-              <span className="text-xs text-black md:text-white opacity-100 uppercase">{displayTitle}</span>
-              <span className="text-xs text-black md:text-white opacity-100 uppercase">{displayCreator}</span>
+            {/* Elemento 1: Número, Título y Cliente */}
+            <div {...getItemAnimationProps(0)} className="flex items-center space-x-4">
+              <span className="text-xs text-black md:text-white">{String(displayIndex).padStart(2, '0')}</span>
+              <span className="text-xs text-black md:text-white uppercase">{displayTitle}</span>
+              <span className="text-xs text-black md:text-white uppercase">{displayCreator}</span>
             </div>
-            <div className="flex items-center space-x-4 text-xs text-black md:text-white opacity-100">
+            
+            {/* Elemento 2: Año y Tipo */}
+            <div {...getItemAnimationProps(1)} className="flex items-center space-x-4 text-xs text-black md:text-white">
               <span>YEAR: {project.year || '2024'}</span>
               <span>TYPE: {project.projectType?.toUpperCase() || 'MUSIC VIDEO'}</span>
             </div>
-            <div className="text-xs text-black md:text-white opacity-100">
+            
+            {/* Elemento 3: Compañía de Producción */}
+            <div {...getItemAnimationProps(2)} className="text-xs text-black md:text-white">
               <span>PRODUCTION COMPANY: {project.productionCompany || project.company || displayCreator || 'ARENA COLLECTIVE'}</span>
             </div>
           </div>

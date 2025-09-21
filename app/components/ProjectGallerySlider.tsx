@@ -4,6 +4,7 @@ import { useMemo, useState, useRef, useCallback, useEffect, useLayoutEffect } fr
 import { motion } from 'framer-motion';
 import { Project } from '@/lib/contentful';
 import { useHydration } from '../hooks/useHydration';
+import AnimatedProjectInfo from './AnimatedProjectInfo';
 
 // Componente de imagen optimizado con manejo inteligente de aspect ratios
 const ProjectImage = ({ imageUrl, title }: { imageUrl: string; title: string }) => {
@@ -38,6 +39,8 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
   const isScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isHydrated = useHydration();
+  
+
 
   // Memoized images from project
   const images = useMemo((): string[] => {
@@ -227,21 +230,8 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
       }}
     >
       {/* Project Info */}
-      <div className="absolute top-24 left-8 z-50 text-foreground">
-        <div className="space-y-2 text-sm font-light tracking-wide">
-          <div className="flex items-center space-x-4">
-            <span className="text-xs text-foreground opacity-100">{String(project.archiveOrder || 0).padStart(2, '0')}</span>
-            <span className="text-xs text-foreground opacity-100 uppercase">TITLE: {project.title}</span>
-            <span className="text-xs text-foreground opacity-100 uppercase">CLIENT: {project.artist}</span>
-          </div>
-          <div className="flex items-center space-x-4 text-xs text-foreground opacity-100">
-            <span>YEAR: {project.year || '2024'}</span>
-            <span>TYPE: {project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}</span>
-          </div>
-          <div className="text-xs text-foreground opacity-100">
-            <span>PRODUCTION COMPANY: {project.company || 'ARENA COLLECTIVE'}</span>
-          </div>
-        </div>
+      <div className="absolute top-24 left-8 z-50">
+        <AnimatedProjectInfo project={project} displayIndex={0} />
       </div>
       
       {/* Navigation */}
