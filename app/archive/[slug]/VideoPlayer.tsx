@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Project } from '../../../lib/contentful';
 import { useTheme } from '../../hooks/useTheme';
-import { useSequentialAnimation } from '../../../hooks/useSequentialAnimation';
+import { useSequentialAnimation } from '../../hooks/useSequentialAnimation';
 
 interface VideoPlayerProps {
   project: Project;
