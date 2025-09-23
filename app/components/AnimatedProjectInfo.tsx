@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Project } from '../../lib/contentful';
 
 interface AnimatedProjectInfoProps {
-  project: any;
+  project: Project;
   displayIndex?: number;
 }
 

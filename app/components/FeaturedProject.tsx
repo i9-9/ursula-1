@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
+import { useMemo, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { HeroSlide } from '@/lib/contentful'
@@ -51,11 +51,10 @@ interface FeaturedProjectProps {
 const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
   const router = useRouter()
   const { isSplashVisible } = useSplash()
-  const [currentIndex, setCurrentIndex] = useState(0)
+  // const [currentIndex, setCurrentIndex] = useState(0) // eslint-disable-line @typescript-eslint/no-unused-vars
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const slideRefs = useRef<HTMLDivElement[]>([])
   const isTransitioningRef = useRef(false)
-  const lastScrollLeft = useRef(0)
 
   // Función para manejar click en slide
   const handleSlideClick = useCallback((slide: HeroSlide) => {
@@ -89,7 +88,6 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
     if (!container || !slide) return;
 
     const containerRect = container.getBoundingClientRect();
-    const slideRect = slide.getBoundingClientRect();
     const containerCenter = containerRect.width / 2;
     const slideCenter = slide.offsetWidth / 2;
     const targetScrollLeft = slide.offsetLeft - containerCenter + slideCenter;
@@ -127,7 +125,7 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
       }
     });
 
-    setCurrentIndex(closestIndex);
+    // setCurrentIndex(closestIndex);
 
     // Lógica de salto infinito
     const setIndex = Math.floor(closestIndex / originalSlidesCount);
@@ -141,7 +139,7 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
       
       setTimeout(() => {
         scrollToSlide(targetIndex, 'auto');
-        setCurrentIndex(targetIndex);
+        // setCurrentIndex(targetIndex);
         
         setTimeout(() => {
           isTransitioningRef.current = false;
@@ -156,7 +154,7 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
       
       setTimeout(() => {
         scrollToSlide(targetIndex, 'auto');
-        setCurrentIndex(targetIndex);
+        // setCurrentIndex(targetIndex);
         
         setTimeout(() => {
           isTransitioningRef.current = false;
@@ -171,7 +169,7 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
 
     // Empezar en el segundo set para tener slides en ambos lados
     const startIndex = originalSlidesCount; // Primer slide del segundo set
-    setCurrentIndex(startIndex);
+    // setCurrentIndex(startIndex);
     
     // Scroll inicial sin animación
     setTimeout(() => {
