@@ -14,16 +14,109 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer({ project, displayTitle, displayIndex }: VideoPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const playerRef = useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const isDraggingRef = useRef(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [isClient, setIsClient] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isPlayerReady, setIsPlayerReady] = useState(false);
   const { theme } = useThemeContext();
-  
-
 
   // Ensure component only renders on client side to prevent hydration issues
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Initialize Vimeo Player with dynamic import
+  useEffect(() => {
+    if (!isClient || !project.vimeoId) return;
+
+    const initializePlayer = async () => {
+      try {
+        // Dynamic import to avoid SSR issues
+        const { default: Player } = await import('@vimeo/player');
+        
+        // Wait for DOM to be ready
+        const checkIframe = () => {
+          if (iframeRef.current) {
+            const player = new Player(iframeRef.current);
+            playerRef.current = player;
+            
+            console.log('Vimeo Player initialized');
+
+            player.ready().then(() => {
+              console.log('Player ready');
+              setIsPlayerReady(true);
+              player.getDuration().then((dur) => {
+                console.log('Duration:', dur);
+                setDuration(dur);
+              });
+            });
+
+            player.on('play', () => {
+              console.log('Playing');
+              setIsPlaying(true);
+            });
+            
+            player.on('pause', () => {
+              console.log('Paused');
+              setIsPlaying(false);
+            });
+            
+            player.on('timeupdate', (data) => {
+              console.log('Time update:', data.seconds);
+              setCurrentTime(data.seconds);
+            });
+            
+            player.on('loaded', () => {
+              console.log('Video loaded');
+              player.getDuration().then(setDuration);
+            });
+
+            player.on('error', (error) => {
+              console.error('Player error:', error);
+            });
+
+          } else {
+            // Retry if iframe not ready
+            setTimeout(checkIframe, 100);
+          }
+        };
+
+        checkIframe();
+
+      } catch (error) {
+        console.error('Error loading Vimeo Player:', error);
+      }
+    };
+
+    initializePlayer();
+
+    return () => {
+      if (playerRef.current) {
+        console.log('Unloading player');
+        playerRef.current.unload();
+        playerRef.current = null;
+        setIsPlayerReady(false);
+      }
+    };
+  }, [isClient, project.vimeoId]);
+
+  // Global mouse up listener para detener el arrastre
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      isDraggingRef.current = false;
+    };
+
+    if (isClient) {
+      document.addEventListener('mouseup', handleGlobalMouseUp);
+      return () => {
+        document.removeEventListener('mouseup', handleGlobalMouseUp);
+      };
+    }
+  }, [isClient]);
 
   // Don't render anything until client-side hydration is complete
   if (!isClient) {
@@ -38,61 +131,126 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
     );
   }
 
+  const togglePlayPause = () => {
+    if (playerRef.current && isPlayerReady) {
+      if (isPlaying) {
+        console.log('Pausing video');
+        playerRef.current.pause();
+      } else {
+        console.log('Playing video');
+        playerRef.current.play();
+      }
+    }
+  };
+
+  const updateTimeFromPosition = (clientX: number, element: HTMLDivElement) => {
+    if (!playerRef.current || !isPlayerReady || duration === 0) return;
+    const rect = element.getBoundingClientRect();
+    const posX = clientX - rect.left;
+    const percentage = Math.min(Math.max(posX / rect.width, 0), 1);
+    const newTime = percentage * duration;
+    playerRef.current.setCurrentTime(newTime);
+    setCurrentTime(newTime);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    isDraggingRef.current = true;
+    updateTimeFromPosition(e.clientX, e.currentTarget);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isDraggingRef.current) {
+      updateTimeFromPosition(e.clientX, e.currentTarget);
+    }
+  };
+
+  const handleMouseUp = () => {
+    isDraggingRef.current = false;
+  };
+
+  const handleMouseEnter = () => {
+    setShowTimeline(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowTimeline(false);
+  };
+
+  const extractYouTubeId = (url: string): string | null => {
+    if (!url || !url.includes('youtu')) return null;
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
+    return match ? match[1] : null;
+  };
+
   // Wrap the entire component logic in a try-catch to prevent crashes
   try {
-
-    const togglePlayPause = () => {
-      if (iframeRef.current) {
-        const iframe = iframeRef.current;
-        const iframeWindow = iframe.contentWindow;
-        
-        if (iframeWindow) {
-          iframeWindow.postMessage(
-            isPlaying ? '{"method":"pause"}' : '{"method":"play"}',
-            'https://player.vimeo.com'
-          );
-          setIsPlaying(!isPlaying);
-        }
-      }
-    };
-
-    const extractYouTubeId = (url: string): string | null => {
-      if (!url || !url.includes('youtu')) return null;
-      const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-      return match ? match[1] : null;
-    };
-
-    // Determinar qué contenido mostrar
-    if (project.vimeoId) {
-      // Vimeo content
-    } else if (project.videoUrl && extractYouTubeId(project.videoUrl)) {
-      // YouTube content
-    } else if (project.thumbnail) {
-      // Image content
-    }
-
     return (
       <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - 36px)', width: '100vw', maxWidth: '100vw' }}>
         <div className="w-full h-full flex items-center justify-center p-8">
           <div className="relative w-[1000px] aspect-video bg-black overflow-hidden shadow-2xl">
             {project.vimeoId ? (
-              <div className="w-full h-full">
+              <div 
+                className="w-full h-full relative"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
                 <iframe
                   ref={iframeRef}
-                  src={`https://player.vimeo.com/video/${project.vimeoId}?autoplay=0&loop=1&title=0&byline=0&portrait=0&controls=0&background=1`}
+                  src={`https://player.vimeo.com/video/${project.vimeoId}?autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0&controls=0`}
                   className="w-full h-full"
                   frameBorder="0"
                   allow="autoplay; fullscreen"
                   allowFullScreen
                   title={displayTitle}
-                  onError={() => {}}
+                  onError={() => console.error('Error loading Vimeo iframe')}
                 />
+                
+                {/* Timeline mejorado */}
+                {showTimeline && isPlayerReady && duration > 0 && (
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
+                    <div className="flex items-center gap-3">
+                      {/* Tiempo actual */}
+                      <span className="text-white text-xs font-mono min-w-[40px]">
+                        {Math.floor(currentTime / 60)}:{(currentTime % 60).toFixed(0).padStart(2, '0')}
+                      </span>
+                      
+                      {/* Barra de progreso */}
+                      <div 
+                        className="flex-1 h-1 bg-gray-600 rounded-full cursor-pointer relative group"
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                      >
+                        {/* Progreso transcurrido */}
+                        <div 
+                          className="h-full bg-gray-300 rounded-full transition-all duration-100"
+                          style={{ width: `${(currentTime / duration) * 100}%` }}
+                        />
+                        {/* Indicador circular */}
+                        <div 
+                          className="absolute top-1/2 w-3 h-3 bg-white rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-lg"
+                          style={{ left: `${(currentTime / duration) * 100}%` }}
+                        />
+                      </div>
+                      
+                      {/* Tiempo restante */}
+                      <span className="text-white text-xs font-mono min-w-[40px]">
+                        -{Math.floor((duration - currentTime) / 60)}:{((duration - currentTime) % 60).toFixed(0).padStart(2, '0')}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : project.videoUrl && extractYouTubeId(project.videoUrl) ? (
-              <div className="w-full h-full">
+              <div 
+                className="w-full h-full relative"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
                 <iframe
                   ref={iframeRef}
-                  src={`https://www.youtube.com/embed/${extractYouTubeId(project.videoUrl)}?autoplay=0&loop=1&mute=0&controls=0&modestbranding=1&rel=0`}
+                  src={`https://www.youtube.com/embed/${extractYouTubeId(project.videoUrl)}?autoplay=1&loop=1&mute=0&controls=0&modestbranding=1&rel=0`}
                   className="w-full h-full"
                   frameBorder="0"
                   allow="autoplay; fullscreen"
@@ -100,6 +258,28 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                   title={displayTitle}
                   onError={() => {}}
                 />
+                
+                {/* Timeline para YouTube (simulado) */}
+                {showTimeline && (
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
+                    <div className="flex items-center gap-3">
+                      <span className="text-white text-xs font-mono min-w-[40px]">
+                        {Math.floor(currentTime / 60)}:{(currentTime % 60).toFixed(0).padStart(2, '0')}
+                      </span>
+                      
+                      <div className="flex-1 h-2 bg-white/20 rounded-full">
+                        <div 
+                          className="h-full bg-white rounded-full transition-all duration-200"
+                          style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
+                        />
+                      </div>
+                      
+                      <span className="text-white text-xs font-mono min-w-[40px]">
+                        {Math.floor(duration / 60)}:{(duration % 60).toFixed(0).padStart(2, '0')}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : project.thumbnail ? (
               <div className="w-full h-full">
@@ -127,10 +307,10 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
         <AnimatedProjectInfo project={project} displayIndex={displayIndex} />
 
         {/* Play/Pause Button - Solo para Vimeo */}
-        {project.vimeoId && (
+        {project.vimeoId && isPlayerReady && (
           <button
             onClick={togglePlayPause}
-            className={`absolute top-4 right-8 z-50 p-3 transition-all duration-300 hover:scale-105 ${
+            className={`absolute top-4 right-8 z-50 p-3 transition-all duration-300 ${
               theme === 'dark' 
                 ? 'text-white hover:text-white/80' 
                 : 'text-black hover:text-black/80'

@@ -1,6 +1,5 @@
 import { createClient } from 'contentful';
 import { generateSemanticSlug, generateTitleSlug } from './slug-utils';
-import { clientOrderData } from '../app/data/clientOrder';
 
 // Tipos para los datos de Contentful
 export interface HeroSlide {
@@ -12,9 +11,8 @@ export interface HeroSlide {
   type: 'image' | 'video';
   videoUrl?: string;
   order?: number;
-  // Nueva propiedad para referenciar proyecto individual
-  projectSlug?: string; // Slug del proyecto al que debe navegar
-  projectId?: string; // ID del proyecto en Contentful (opcional, para validación)
+  projectSlug?: string;
+  projectId?: string;
 }
 
 // Nuevo tipo unificado para projects
@@ -24,10 +22,10 @@ export interface Project {
   artist: string;
   company: string;
   thumbnail?: string;
-  images?: string[]; // Array de URLs de imágenes del proyecto (alta calidad)
-  hoverImages?: string[]; // Array de URLs optimizadas para hover (menor peso)
+  images?: string[];
+  hoverImages?: string[];
   videoUrl?: string;
-  videoThumbnail?: string; // Campo para videos optimizados de Contentful
+  videoThumbnail?: string;
   vimeoId?: string;
   youtubeUrl?: string;
   archiveOrder: number;
@@ -93,19 +91,6 @@ function initializeContentfulClient() {
   return client;
 }
 
-// Función para extraer Vimeo ID de un link
-function extractVimeoIdFromUrl(url: string): string | null {
-  if (!url || !url.includes('vimeo.com')) return null;
-  const match = url.match(/vimeo\.com\/(\d+)/);
-  return match ? match[1] : null;
-}
-
-// Función para extraer YouTube ID de un link
-function extractYouTubeIdFromUrl(url: string): string | null {
-  if (!url || !url.includes('youtu')) return null;
-  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-  return match ? match[1] : null;
-}
 
 // Función helper para optimizar URLs de imágenes de Contentful
 function optimizeContentfulImage(url: string, width?: number, height?: number, format: string = 'webp', quality: number = 95): string {
@@ -211,27 +196,9 @@ export async function getProjects(): Promise<Project[]> {
         ? `https:${fields.videoThumbnail.fields.file.url}` 
         : undefined;
       
-      // Buscar datos adicionales en clientOrder.ts
-      const clientOrderItem = clientOrderData.find(item => 
-        item.artist.toLowerCase() === (fields.artist || '').toLowerCase() && 
-        item.projectName.toLowerCase() === (fields.title || '').toLowerCase()
-      );
-
-      // Extraer IDs de video de clientOrder si existe
-      let vimeoId = fields.vimeoId || '';
-      let youtubeUrl = fields.youtubeUrl || '';
-      
-      if (clientOrderItem?.link) {
-        const vimeoIdFromClient = extractVimeoIdFromUrl(clientOrderItem.link);
-        const youtubeIdFromClient = extractYouTubeIdFromUrl(clientOrderItem.link);
-        
-        if (vimeoIdFromClient) {
-          vimeoId = vimeoIdFromClient;
-        }
-        if (youtubeIdFromClient) {
-          youtubeUrl = `https://youtu.be/${youtubeIdFromClient}`;
-        }
-      }
+      // Usar únicamente campos de video de Contentful
+      const vimeoId = fields.vimeoId || '';
+      const youtubeUrl = fields.youtubeUrl || '';
 
       return {
         id: item.sys.id,
