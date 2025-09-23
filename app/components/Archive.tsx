@@ -32,13 +32,13 @@ const Archive = ({ projects }: ArchiveProps) => {
     });
     
     if (selectedFilter === 'music-videos') {
-      console.log('Filtering music videos...');
+      console.log('Filtering music video...');
       console.log('Projects before filter:', filtered.length);
       console.log('Sample categories:', filtered.slice(0, 3).map(p => ({ title: p.title, category: p.category })));
-      // Filtrar tanto MUSIC VIDEO como MUSIC VIDEOS
+      // Filtrar proyectos de MUSIC VIDEO
       filtered = filtered.filter(project => {
         const category = project.category?.toUpperCase();
-        return category === 'MUSIC VIDEO' || category === 'MUSIC VIDEOS';
+        return category === 'MUSIC VIDEO';
       });
       console.log('Projects after filter:', filtered.length);
     } else if (selectedFilter === 'commercial') {
@@ -101,7 +101,7 @@ const Archive = ({ projects }: ArchiveProps) => {
               onChange={(e) => setSelectedFilter(e.target.value)}
             >
               <option value="">All Projects</option>
-              <option value="music-videos">Music Videos</option>
+              <option value="music-videos">Music Video</option>
               <option value="commercial">Commercial</option>
               <option value="set-design">Set Design</option>
               <option value="narrative">Narrative</option>
@@ -129,7 +129,7 @@ const Archive = ({ projects }: ArchiveProps) => {
               onChange={(e) => setSelectedFilter(e.target.value)}
             >
               <option value="">All Projects</option>
-              <option value="music-videos">Music Videos</option>
+              <option value="music-videos">Music Video</option>
               <option value="commercial">Commercial</option>
               <option value="set-design">Set Design</option>
               <option value="narrative">Narrative</option>
