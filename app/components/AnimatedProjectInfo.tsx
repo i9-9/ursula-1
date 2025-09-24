@@ -6,9 +6,10 @@ import { Project } from '../../lib/contentful';
 interface AnimatedProjectInfoProps {
   project: Project;
   displayIndex?: number;
+  topPosition?: string;
 }
 
-export default function AnimatedProjectInfo({ project, displayIndex = 0 }: AnimatedProjectInfoProps) {
+export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosition = 'top-4' }: AnimatedProjectInfoProps) {
   const [line1Visible, setLine1Visible] = useState(false);
   const [line2Visible, setLine2Visible] = useState(false);
   const [line3Visible, setLine3Visible] = useState(false);
@@ -37,7 +38,7 @@ export default function AnimatedProjectInfo({ project, displayIndex = 0 }: Anima
   }, []);
 
   return (
-    <div className="absolute top-4 left-8 z-50 text-foreground">
+    <div className={`absolute ${topPosition} left-8 z-50 text-foreground`}>
       <div className="space-y-2 text-sm font-light tracking-wide">
         {/* Línea 1: Número, Título y Cliente */}
         <div 
@@ -62,7 +63,7 @@ export default function AnimatedProjectInfo({ project, displayIndex = 0 }: Anima
         
         {/* Línea 3: Compañía */}
         <div 
-          className={`text-xs text-foreground transition-all duration-500 ease-out ${
+          className={`flex items-center text-xs text-foreground transition-all duration-500 ease-out ${
             line3Visible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
           }`}
         >

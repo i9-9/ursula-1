@@ -10,14 +10,14 @@ import AnimatedProjectInfo from './AnimatedProjectInfo';
 const ProjectImage = ({ imageUrl, title }: { imageUrl: string; title: string }) => {
   if (!imageUrl) {
     return (
-      <div className="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
+      <div className="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center">
         <p className="text-gray-500 text-sm">Imagen no disponible</p>
       </div>
     );
   }
   
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden rounded-lg">
+    <div className="absolute inset-0 w-full h-full overflow-hidden">
       <img
         src={imageUrl}
         alt={title}
@@ -229,14 +229,12 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
         paddingTop: 0
       }}
     >
-      {/* Project Info */}
-      <div className="absolute top-24 left-8 z-50">
-        <AnimatedProjectInfo project={project} displayIndex={0} />
-      </div>
+      {/* Project Info - Mismo layout que videos */}
+      <AnimatedProjectInfo project={project} displayIndex={0} topPosition="top-20" />
       
       {/* Navigation */}
       {images.length > 1 && (
-        <div className="absolute top-24 right-8 z-50 flex items-center space-x-4">
+        <div className="absolute top-20 right-8 z-50 flex items-center space-x-4">
           {/* Navigation arrows */}
           <div className="flex items-center -space-x-2">
             <button 
