@@ -38,25 +38,105 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
   const slideRefs = useRef<HTMLDivElement[]>([]);
   const isScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isDraggingRef = useRef(false);
   const isHydrated = useHydration();
   
 
 
-  // Memoized images from project
+  // Memoized images from project with infinite scroll
   const images = useMemo((): string[] => {
-    if (project.images && project.images.length > 0) {
-      return project.images;
-    }
-    if (project.thumbnail) {
-      return [project.thumbnail];
-    }
-    return [];
+    const baseImages = project.images && project.images.length > 0 
+      ? project.images 
+      : project.thumbnail 
+        ? [project.thumbnail] 
+        : [];
+    
+    // Para scroll infinito bidireccional, necesitamos al menos 3 copias
+    return [...baseImages, ...baseImages, ...baseImages];
   }, [project.images, project.thumbnail]);
+
+  const originalImagesCount = project.images?.length || (project.thumbnail ? 1 : 0);
+
+  // Función para obtener el índice real (mapeado al set original)
+  const getRealIndex = useCallback((index: number): number => {
+    if (originalImagesCount === 0) return 0;
+    return index % originalImagesCount;
+  }, [originalImagesCount]);
+
+  // Función para manejar la transición infinita
+  const handleInfiniteLoop = useCallback(() => {
+    if (isScrollingRef.current || isDraggingRef.current || originalImagesCount === 0) return;
+
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const containerCenter = containerRect.left + containerRect.width / 2;
+    
+    let closestIndex = 0;
+    let minDistance = Infinity;
+
+    // Encontrar el slide más cercano al centro
+    slideRefs.current.forEach((slide, index) => {
+      if (!slide) return;
+      
+      const slideRect = slide.getBoundingClientRect();
+      const slideCenter = slideRect.left + slideRect.width / 2;
+      const distance = Math.abs(slideCenter - containerCenter);
+      
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    // Solo hacer el salto si estamos muy cerca del borde
+    if (minDistance > containerRect.width / 3) return;
+
+    // Lógica de salto infinito
+    const setIndex = Math.floor(closestIndex / originalImagesCount);
+    const positionInSet = closestIndex % originalImagesCount;
+
+    // Si estamos en el primer set (índices 0 a originalImagesCount-1)
+    // Saltar al segundo set (índices originalImagesCount a 2*originalImagesCount-1)
+    if (setIndex === 0) {
+      const targetIndex = originalImagesCount + positionInSet;
+      isScrollingRef.current = true;
+      
+      setTimeout(() => {
+        const targetSlide = slideRefs.current[targetIndex];
+        if (targetSlide) {
+          targetSlide.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
+        }
+        
+        setTimeout(() => {
+          isScrollingRef.current = false;
+        }, 200);
+      }, 100);
+    }
+    // Si estamos en el tercer set (índices 2*originalImagesCount a 3*originalImagesCount-1)
+    // Saltar al segundo set
+    else if (setIndex === 2) {
+      const targetIndex = originalImagesCount + positionInSet;
+      isScrollingRef.current = true;
+      
+      setTimeout(() => {
+        const targetSlide = slideRefs.current[targetIndex];
+        if (targetSlide) {
+          targetSlide.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
+        }
+        
+        setTimeout(() => {
+          isScrollingRef.current = false;
+        }, 200);
+      }, 100);
+    }
+  }, [originalImagesCount]);
 
   // Optimized scroll update with proper throttling
   const updateCurrentIndexFromScroll = useCallback(() => {
-    // Don't update if we're programmatically scrolling
-    if (isScrollingRef.current) return;
+    // Don't update if we're programmatically scrolling or dragging
+    if (isScrollingRef.current || isDraggingRef.current) return;
     
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -79,27 +159,30 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
     
     // Only update if the change is significant (avoid micro-adjustments)
     if (closestIndex !== currentIndex && smallestDistance < container.clientWidth / 4) {
-      setCurrentIndex(closestIndex);
+      setCurrentIndex(getRealIndex(closestIndex));
     }
-  }, [currentIndex]);
+  }, [currentIndex, getRealIndex]);
 
-  // Initial position to center first slide
+  // Inicializar posición en el segundo set (centro) para scroll infinito
   useLayoutEffect(() => {
-    if (!isHydrated) return;
+    if (!isHydrated || originalImagesCount === 0 || images.length === 0) return;
     
     const container = scrollContainerRef.current;
-    if (!container || images.length === 0) return;
+    if (!container) return;
 
-    const firstSlide = slideRefs.current[0];
-    if (firstSlide) {
+    // Empezar en el segundo set para tener slides en ambos lados
+    const startIndex = originalImagesCount; // Primer slide del segundo set
+    const startSlide = slideRefs.current[startIndex];
+    
+    if (startSlide) {
       const previousBehavior = container.style.scrollBehavior;
       container.style.scrollBehavior = 'auto';
-      firstSlide.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
+      startSlide.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
       container.style.scrollBehavior = previousBehavior;
     }
-  }, [images.length, isHydrated]);
+  }, [images.length, originalImagesCount, isHydrated]);
 
-  // Optimized scroll listener with RAF throttling
+  // Optimized scroll listener with RAF throttling and infinite loop
   useEffect(() => {
     if (!isHydrated) return;
     
@@ -107,14 +190,42 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
     if (!container) return;
     
     let rafId: number | null = null;
+    let scrollTimeout: NodeJS.Timeout | null = null;
+    let lastScrollTime = 0;
     
     const handleScroll = () => {
-      if (rafId) return;
+      const now = Date.now();
       
+      // Throttle scroll events to max 60fps
+      if (now - lastScrollTime < 16) return;
+      lastScrollTime = now;
+      
+      // Cancelar RAF anterior si existe
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+
+      // Cancelar timeout anterior si existe
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+
+      // Programar actualización con RAF
       rafId = requestAnimationFrame(() => {
-        updateCurrentIndexFromScroll();
+        // Solo actualizar si no estamos en transición o arrastrando
+        if (!isScrollingRef.current && !isDraggingRef.current) {
+          updateCurrentIndexFromScroll();
+        }
         rafId = null;
       });
+
+      // Programar verificación de loop infinito después de que termine el scroll
+      scrollTimeout = setTimeout(() => {
+        if (!isScrollingRef.current && !isDraggingRef.current) {
+          handleInfiniteLoop();
+        }
+        scrollTimeout = null;
+      }, 300); // Aumentado para mayor estabilidad
     };
     
     container.addEventListener('scroll', handleScroll, { passive: true });
@@ -122,8 +233,9 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
     return () => {
       container.removeEventListener('scroll', handleScroll);
       if (rafId) cancelAnimationFrame(rafId);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
     };
-  }, [updateCurrentIndexFromScroll, isHydrated]);
+  }, [updateCurrentIndexFromScroll, handleInfiniteLoop, isHydrated]);
 
   // Enable vertical wheel -> horizontal scroll mapping
   useEffect(() => {
@@ -145,19 +257,65 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
     };
   }, [isHydrated]);
 
+  // Handle touch/drag events to prevent conflicts with infinite scroll
+  useEffect(() => {
+    if (!isHydrated) return;
+    
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleTouchStart = () => {
+      isDraggingRef.current = true;
+    };
+
+    const handleTouchEnd = () => {
+      isDraggingRef.current = false;
+    };
+
+    const handleMouseDown = () => {
+      isDraggingRef.current = true;
+    };
+
+    const handleMouseUp = () => {
+      isDraggingRef.current = false;
+    };
+
+    // Global mouse up listener para detener el arrastre
+    const handleGlobalMouseUp = () => {
+      isDraggingRef.current = false;
+    };
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+    container.addEventListener('mousedown', handleMouseDown, { passive: true });
+    container.addEventListener('mouseup', handleMouseUp, { passive: true });
+    document.addEventListener('mouseup', handleGlobalMouseUp);
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('mousedown', handleMouseDown);
+      container.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+  }, [isHydrated]);
+
   // Navigation functions
-  const navigateToSlide = (targetIndex: number) => {
+  const navigateToSlide = (targetRealIndex: number) => {
     const container = scrollContainerRef.current;
     if (!container) return;
     
+    // Navegar al slide en el segundo set (centro)
+    const targetIndex = originalImagesCount + targetRealIndex;
     const targetSlide = slideRefs.current[targetIndex];
+    
     if (targetSlide) {
       // Clear any existing timeout
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
       
       // Set scrolling flag and update index immediately
       isScrollingRef.current = true;
-      setCurrentIndex(targetIndex);
+      setCurrentIndex(targetRealIndex);
       
       // Scroll to target slide
       targetSlide.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
@@ -165,35 +323,45 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
       // Reset scrolling flag after animation completes
       scrollTimeoutRef.current = setTimeout(() => {
         isScrollingRef.current = false;
-        // Force one final check to ensure we're on the right slide
-        setTimeout(() => {
-          if (!isScrollingRef.current) {
-            const container = scrollContainerRef.current;
-            if (container) {
-              const containerCenter = container.getBoundingClientRect().left + container.clientWidth / 2;
-              let closestIndex = 0;
-              let smallestDistance = Infinity;
-              
-              slideRefs.current.forEach((el, idx) => {
-                if (!el) return;
-                const rect = el.getBoundingClientRect();
-                const slideCenter = rect.left + rect.width / 2;
-                const distance = Math.abs(slideCenter - containerCenter);
-                
-                if (distance < smallestDistance) {
-                  smallestDistance = distance;
-                  closestIndex = idx;
-                }
-              });
-              
-              if (closestIndex !== currentIndex) {
-                setCurrentIndex(closestIndex);
-              }
-            }
-          }
-        }, 100);
-      }, 800); // Back to longer timeout for stability
+      }, 800);
     }
+  };
+
+  // Función para navegación infinita (sin volver al comienzo)
+  const navigateInfinite = (direction: 'prev' | 'next') => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    
+    // Prevenir conflictos con la lógica automática
+    isScrollingRef.current = true;
+    
+    const currentSlide = slideRefs.current[originalImagesCount + currentIndex];
+    if (!currentSlide) {
+      isScrollingRef.current = false;
+      return;
+    }
+    
+    const slideWidth = currentSlide.offsetWidth;
+    const currentScrollLeft = container.scrollLeft;
+    
+    if (direction === 'next') {
+      // Scroll hacia la derecha
+      container.scrollTo({
+        left: currentScrollLeft + slideWidth,
+        behavior: 'smooth'
+      });
+    } else {
+      // Scroll hacia la izquierda
+      container.scrollTo({
+        left: currentScrollLeft - slideWidth,
+        behavior: 'smooth'
+      });
+    }
+    
+    // Reset scrolling flag después de la animación
+    setTimeout(() => {
+      isScrollingRef.current = false;
+    }, 800);
   };
 
   // Cleanup timeout on unmount
@@ -206,7 +374,7 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
     };
   }, []);
 
-  if (images.length === 0) {
+  if (originalImagesCount === 0) {
     return (
       <section className="absolute inset-0 px-0 bg-background text-foreground overflow-hidden flex flex-col items-center justify-center" style={{ height: '100vh', paddingTop: 0 }}>
         <div className="text-center">
@@ -230,20 +398,17 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
       }}
     >
       {/* Project Info - Mismo layout que videos */}
-      <AnimatedProjectInfo project={project} displayIndex={0} topPosition="top-20" />
+      <AnimatedProjectInfo project={project} displayIndex={0} topPosition="top-20" showProductionCompany={false} />
       
       {/* Navigation */}
-      {images.length > 1 && (
+      {originalImagesCount > 1 && (
         <div className="absolute top-20 right-8 z-50 flex items-center space-x-4">
           {/* Navigation arrows */}
           <div className="flex items-center -space-x-2">
             <button 
               className="text-foreground hover:text-foreground/80 transition-colors cursor-pointer p-1"
               aria-label="Previous image"
-              onClick={() => {
-                const prevIndex = currentIndex > 0 ? currentIndex - 1 : images.length - 1;
-                navigateToSlide(prevIndex);
-              }}
+              onClick={() => navigateInfinite('prev')}
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M16 5v14l-11-7z"/>
@@ -253,10 +418,7 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
             <button 
               className="text-foreground hover:text-foreground/80 transition-colors cursor-pointer p-1"
               aria-label="Next image"
-              onClick={() => {
-                const nextIndex = currentIndex < images.length - 1 ? currentIndex + 1 : 0;
-                navigateToSlide(nextIndex);
-              }}
+              onClick={() => navigateInfinite('next')}
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z"/>
@@ -288,15 +450,19 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
             <div className="flex-shrink-0 w-[calc((100vw-85vw)/2)] sm:w-[calc((100vw-75vw)/2)]" aria-hidden="true" />
             
             {images.map((imageUrl, index) => {
+              const realIndex = getRealIndex(index);
+              const setNumber = Math.floor(index / originalImagesCount);
+              const uniqueKey = `${project.id}-image-set${setNumber}-${realIndex}`;
+              
               return (
                 <div
-                  key={`${project.id}-image-${index}`}
+                  key={uniqueKey}
                   ref={(el) => { if (el) slideRefs.current[index] = el }}
                   className="group flex-shrink-0 snap-center cursor-pointer w-[calc(85vw-2rem)] sm:w-[calc(75vw-2rem)]"
                   role="group"
                   aria-roledescription="slide"
-                  aria-label={`${project.title} - Imagen ${index + 1}`}
-                  onClick={() => navigateToSlide(index)}
+                  aria-label={`${project.title} - Imagen ${realIndex + 1}`}
+                  onClick={() => navigateToSlide(realIndex)}
                 >
                   <div>
                     <motion.div
@@ -319,10 +485,10 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
       </div>
       
       {/* Dots indicator */}
-      {images.length > 1 && (
+      {originalImagesCount > 1 && (
         <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-40">
           <div className="flex space-x-2">
-            {images.map((_, index) => (
+            {Array.from({ length: originalImagesCount }, (_, index) => (
               <button
                 key={index}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${

@@ -6,10 +6,11 @@ import { Project } from '../../lib/contentful';
 interface AnimatedProjectInfoProps {
   project: Project;
   displayIndex?: number;
-  topPosition?: string;
+  topPosition?: 'top-4' | 'top-20';
+  showProductionCompany?: boolean;
 }
 
-export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosition = 'top-4' }: AnimatedProjectInfoProps) {
+export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosition = 'top-4', showProductionCompany = true }: AnimatedProjectInfoProps) {
   const [line1Visible, setLine1Visible] = useState(false);
   const [line2Visible, setLine2Visible] = useState(false);
   const [line3Visible, setLine3Visible] = useState(false);
@@ -38,7 +39,7 @@ export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosi
   }, []);
 
   return (
-    <div className={`absolute ${topPosition} left-8 z-50 text-foreground`}>
+    <div className={`absolute left-8 z-50 text-foreground ${topPosition === 'top-20' ? 'top-20' : 'top-4'}`}>
       <div className="space-y-2 text-sm font-light tracking-wide">
         {/* Línea 1: Número, Título y Cliente */}
         <div 
@@ -61,14 +62,16 @@ export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosi
           <span>TYPE: {project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}</span>
         </div>
         
-        {/* Línea 3: Compañía */}
-        <div 
-          className={`flex items-center text-xs text-foreground transition-all duration-500 ease-out ${
-            line3Visible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
-          }`}
-        >
-          <span>PRODUCTION COMPANY: {project.company || 'ARENA COLLECTIVE'}</span>
-        </div>
+        {/* Línea 3: Compañía (solo si showProductionCompany es true) */}
+        {showProductionCompany && (
+          <div 
+            className={`flex items-center text-xs text-foreground transition-all duration-500 ease-out ${
+              line3Visible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
+            }`}
+          >
+            <span>PRODUCTION COMPANY: {project.company || 'ARENA COLLECTIVE'}</span>
+          </div>
+        )}
       </div>
     </div>
   );
