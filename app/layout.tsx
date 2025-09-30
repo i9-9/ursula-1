@@ -8,14 +8,13 @@ import ScrollbarStyles from './components/ScrollbarStyles';
 import ThemeProvider from './components/ThemeProvider';
 import ChunkErrorBoundary from './components/ChunkErrorBoundary';
 import { SplashProvider } from './contexts/SplashContext';
-import Copyright from './components/Copyright';
 import SplashScreen from './components/SplashScreen';
 import MainContentWrapper from './components/MainContentWrapper';
 
 
 export const metadata: Metadata = {
-  title: 'Ursula Benavidez - Portfolio',
-  description: 'Portfolio profesional de Ursula Benavidez, Art Director y Set Designer.',
+  title: 'URSULA BENAVIDEZ - WEB',
+  description: 'PRODUCTION DESIGNER, ART DIRECTOR, SET DESIGNER',
   keywords: ['portfolio', 'art director', 'set designer', 'creative', 'design'],
   authors: [{ name: 'Ursula Benavidez' }],
   creator: 'Ursula Benavidez',
@@ -30,16 +29,16 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'Ursula Benavidez - Portfolio',
-    description: 'Portfolio profesional de Ursula Benavidez, Art Director y Set Designer.',
+    title: 'URSULA BENAVIDEZ - WEB',
+    description: 'PRODUCTION DESIGNER, ART DIRECTOR, SET DESIGNER',
     url: 'https://ursulabenavidez.com',
-    siteName: 'Ursula Benavidez Portfolio',
+    siteName: 'Ursula Benavidez Web',
     images: [
       {
         url: '/seo/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Ursula Benavidez Portfolio',
+        alt: 'Ursula Benavidez Wev',
       },
     ],
     locale: 'es_ES',
@@ -47,8 +46,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Ursula Benavidez - Portfolio',
-    description: 'Portfolio profesional de Ursula Benavidez, Art Director y Set Designer.',
+    title: 'URSULA BENAVIDEZ - WEB',
+    description: 'PRODUCTION DESIGNER, ART DIRECTOR, SET DESIGNER',
     images: ['/seo/twitter-image.jpg'],
   },
   robots: {
@@ -96,8 +95,6 @@ export default function RootLayout({
                   <MainContentWrapper>
                     <NavbarWithLoader />
                     {children}
-                    {/* Copyright - Aparece en todas las páginas excepto durante el loader */}
-                    <Copyright />
                   </MainContentWrapper>
                 </div>
               </ChunkErrorBoundary>

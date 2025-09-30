@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import Copyright from '../components/Copyright';
 
 export default function Privacy() {
   // Scroll to top when page loads
@@ -98,6 +99,7 @@ export default function Privacy() {
           </div>
         </div>
       </section>
+      <Copyright />
     </main>
   );
 } 

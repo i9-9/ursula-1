@@ -1,47 +1,56 @@
 'use client'
 
-import { useMemo, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
+import { useMemo, useRef, useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { HeroSlide } from '@/lib/contentful'
 import { useSplash } from '../contexts/SplashContext'
 import HydrationSafe from './HydrationSafe'
 
-// Memoized image component
+// Image component with automatic width calculation based on aspect ratio
 const ImageSlide = ({ slide }: { slide: HeroSlide }) => {
+  const [aspectRatio, setAspectRatio] = useState(1); // ancho / alto
+
   const imageSource = useMemo(() => {
-    if (slide.src) {
-      return slide.src;
-    }
-    
-    if (slide.videoUrl && (slide.videoUrl.includes('.jpg') || slide.videoUrl.includes('.jpeg') || slide.videoUrl.includes('.png') || slide.videoUrl.includes('.webp'))) {
-      return slide.videoUrl;
-    }
-    
+    if (slide.src) return slide.src;
+    if (slide.videoUrl?.match(/\.(jpg|jpeg|png|webp)$/)) return slide.videoUrl;
     return '';
-  }, [slide])
-  
-  const ImageContent = useMemo(() => {
-    if (!imageSource) {
-      return (
-        <div className="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center">
-          <p className="text-gray-500 text-sm">Imagen no disponible</p>
-        </div>
-      )
-    }
-    
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={imageSource}
-        alt={slide.alt || slide.title}
-        className="absolute inset-0 w-full h-full object-cover z-0"
-        loading="lazy"
-      />
-    )
-  }, [imageSource, slide.alt, slide.title])
-  
-  return ImageContent
+  }, [slide]);
+
+  const handleLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    setAspectRatio(img.naturalWidth / img.naturalHeight);
+  }, []);
+
+  // Calcular width según aspect ratio y altura deseada
+  const height = typeof window !== 'undefined' ? 0.6 * window.innerHeight : 400; // 60vh
+  const width = height * aspectRatio;
+
+  return imageSource ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={imageSource}
+      alt={slide.alt || slide.title}
+      onLoad={handleLoad}
+      loading="lazy"
+      style={{
+        height: `${height}px`,
+        width: `${width}px`,
+        objectFit: 'contain',
+      }}
+    />
+  ) : (
+    <div style={{ 
+      height: `${height}px`, 
+      width: `${height * aspectRatio}px`, 
+      background: '#eee',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <p className="text-gray-500 text-sm">Imagen no disponible</p>
+    </div>
+  );
 }
 
 interface FeaturedProjectProps {
@@ -223,6 +232,17 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
     };
   }, [handleInfiniteLoop]);
 
+  // Manejar resize del viewport para recalcular dimensiones
+  useEffect(() => {
+    const handleResize = () => {
+      // Force re-render of images when viewport changes
+      // This will trigger recalculation of image dimensions
+      window.dispatchEvent(new Event('resize'));
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Mapear scroll vertical a horizontal
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -272,7 +292,7 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
         <div className="w-full flex items-center justify-center">
           <div 
             ref={scrollContainerRef}
-            className="w-full overflow-x-auto overflow-y-hidden px-0 snap-x snap-mandatory touch-pan-x scroll-padding-inline-[calc((100vw-90vw)/2-16px)] sm:scroll-padding-inline-[calc((100vw-80vw)/2-24px)] md:scroll-padding-inline-[calc((100vw-70vw)/2-32px)] lg:scroll-padding-inline-[calc((100vw-60vw)/2-24px)]"
+            className="w-full overflow-x-auto overflow-y-hidden px-0 snap-x snap-mandatory touch-pan-x scroll-padding-inline-[calc((100vw-90vw)/2-24px)] sm:scroll-padding-inline-[calc((100vw-80vw)/2-24px)] md:scroll-padding-inline-[calc((100vw-70vw)/2-24px)] lg:scroll-padding-inline-[calc((100vw-60vw)/2-24px)]"
             aria-label="Featured projects slider"
             style={{ 
               scrollbarWidth: 'none',
@@ -292,9 +312,9 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
               }
             `}</style>
             
-            <div className="flex items-center justify-start gap-0 w-max" style={{ minHeight: '0' }}>
+            <div className="flex items-center justify-start gap-8 w-max" style={{ minHeight: '0' }}>
               {/* Espaciador izquierdo */}
-              <div className="flex-shrink-0 w-[calc((100vw-90vw)/2-16px)] sm:w-[calc((100vw-80vw)/2-24px)] md:w-[calc((100vw-70vw)/2-32px)] lg:w-[calc((100vw-60vw)/2-24px)]" aria-hidden="true" />
+              <div className="flex-shrink-0 w-[calc((100vw-90vw)/2-24px)] sm:w-[calc((100vw-80vw)/2-24px)] md:w-[calc((100vw-70vw)/2-24px)] lg:w-[calc((100vw-60vw)/2-24px)]" aria-hidden="true" />
               
               {slides.map((slide, index) => {
                 const isClickable = Boolean(slide.projectSlug);
@@ -306,7 +326,7 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
                   <div
                     key={uniqueKey}
                     ref={(el) => { if (el) slideRefs.current[index] = el }}
-                    className={`group flex-shrink-0 snap-center w-[90vw] sm:w-[80vw] md:w-[70vw] lg:w-[60vw] px-4 sm:px-6 md:px-8 lg:px-6 ${isClickable ? 'cursor-pointer' : ''}`}
+                    className={`group flex-shrink-0 snap-center ${isClickable ? 'cursor-pointer' : ''}`}
                     role="group"
                     aria-roledescription="slide"
                     aria-label={`${slide.title} by ${slide.client}`}
@@ -318,26 +338,21 @@ const FeaturedProject = ({ heroSlides = [] }: FeaturedProjectProps) => {
                       }
                     }}
                     tabIndex={isClickable ? 0 : -1}
+                    style={{ display: 'inline-block' }}
                   >
-                    <div
-                      className="relative w-full overflow-hidden"
-                      style={{ paddingBottom: '56.25%' }}
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35, ease: 'easeOut' }}
                     >
-                      <motion.div
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.35, ease: 'easeOut' }}
-                        className="absolute inset-0 w-full h-full"
-                      >
-                        <ImageSlide slide={slide} />
-                      </motion.div>
-                    </div>
+                      <ImageSlide slide={slide} />
+                    </motion.div>
                   </div>
                 );
               })}
               
               {/* Espaciador derecho */}
-              <div className="flex-shrink-0 w-[calc((100vw-90vw)/2-16px)] sm:w-[calc((100vw-80vw)/2-24px)] md:w-[calc((100vw-70vw)/2-32px)] lg:w-[calc((100vw-60vw)/2-24px)]" aria-hidden="true" />
+              <div className="flex-shrink-0 w-[calc((100vw-90vw)/2-24px)] sm:w-[calc((100vw-80vw)/2-24px)] md:w-[calc((100vw-70vw)/2-24px)] lg:w-[calc((100vw-60vw)/2-24px)]" aria-hidden="true" />
             </div>
           </div>
         </div>

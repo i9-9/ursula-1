@@ -19,17 +19,17 @@ export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosi
     // Línea 1: Número, Título y Cliente (aparece primero)
     const timer1 = setTimeout(() => {
       setLine1Visible(true);
-    }, 500);
+    }, 100); // Muy rápido para que se vea casi inmediatamente
 
     // Línea 2: Año y Tipo (aparece segundo)
     const timer2 = setTimeout(() => {
       setLine2Visible(true);
-    }, 700);
+    }, 300);
 
     // Línea 3: Compañía (aparece tercero)
     const timer3 = setTimeout(() => {
       setLine3Visible(true);
-    }, 900);
+    }, 500);
 
     return () => {
       clearTimeout(timer1);
@@ -47,9 +47,9 @@ export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosi
             line1Visible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
           }`}
         >
-          <span className="text-xs text-foreground">{String(project.archiveOrder || displayIndex).padStart(2, '0')}</span>
-          <span className="text-xs text-foreground uppercase">TITLE: {project.title}</span>
-          <span className="text-xs text-foreground uppercase">CLIENT: {project.artist}</span>
+          <span className="text-xs text-foreground font-bold">{String(project.archiveOrder || displayIndex).padStart(2, '0')}</span>
+          <span className="text-xs text-foreground uppercase">TITLE: <span className="font-bold">{project.title}</span></span>
+          <span className="text-xs text-foreground uppercase">CLIENT: <span className="font-bold">{project.artist}</span></span>
         </div>
         
         {/* Línea 2: Año y Tipo */}
@@ -58,8 +58,8 @@ export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosi
             line2Visible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
           }`}
         >
-          <span>YEAR: {project.year || '2024'}</span>
-          <span>TYPE: {project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}</span>
+          <span>YEAR: <span className="font-bold">{project.year || '2024'}</span></span>
+          <span>TYPE: <span className="font-bold">{project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}</span></span>
         </div>
         
         {/* Línea 3: Compañía (solo si showProductionCompany es true) */}
@@ -69,7 +69,7 @@ export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosi
               line3Visible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
             }`}
           >
-            <span>PRODUCTION COMPANY: {project.company || 'ARENA COLLECTIVE'}</span>
+            <span>PRODUCTION COMPANY: <span className="font-bold">{project.company || 'ARENA COLLECTIVE'}</span></span>
           </div>
         )}
       </div>

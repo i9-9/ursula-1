@@ -34,7 +34,7 @@ const Navbar = () => {
             <Link
               href="/work"
               className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
-                pathname === "/work" ? "opacity-100" : "opacity-100"
+                pathname === "/work" ? "opacity-60" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
               aria-label="Selected works"
@@ -46,7 +46,7 @@ const Navbar = () => {
             <Link
               href="/archive"
               className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
-                pathname === "/archive" ? "opacity-100" : "opacity-100"
+                pathname === "/archive" ? "opacity-60" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
               aria-label="Archive"
@@ -59,7 +59,7 @@ const Navbar = () => {
             <Link
               href="/about"
               className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
-                pathname === "/about" ? "opacity-100" : "opacity-100"
+                pathname === "/about" ? "opacity-60" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
               aria-label="About"
@@ -96,7 +96,7 @@ const Navbar = () => {
             <Link
               href="/work"
               className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
-                pathname === "/work" ? "opacity-100" : "opacity-100"
+                pathname === "/work" ? "opacity-60" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
               aria-label="Selected works"
@@ -108,7 +108,7 @@ const Navbar = () => {
             <Link
               href="/archive"
               className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
-                pathname === "/archive" ? "opacity-100" : "opacity-100"
+                pathname === "/archive" ? "opacity-60" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
               aria-label="Archive"
@@ -121,7 +121,7 @@ const Navbar = () => {
             <Link
               href="/about"
               className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
-                pathname === "/about" ? "opacity-100" : "opacity-100"
+                pathname === "/about" ? "opacity-60" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
               aria-label="About"

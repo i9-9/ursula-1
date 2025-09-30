@@ -13,8 +13,10 @@ export default function Copyright() {
 
   return (
     <HydrationSafe fallback={null}>
-      <div className="fixed bottom-8 right-8 z-40 text-xs text-foreground">
-        © 2025
+      <div className="px-4 md:px-[30px] py-8">
+        <div className="text-xs text-foreground text-right">
+          © 2025
+        </div>
       </div>
     </HydrationSafe>
   );

@@ -107,14 +107,7 @@ const OptimizedProjectItem = ({
             }
           }}
         >
-          <StaticVideoThumbnail
-            src={getVideoSource(project)}
-            poster={project.thumbnail || ''}
-            alt={project.title}
-            className="w-full h-auto block"
-          />
-          
-          {/* Overlays: positioned relative to the image container */}
+          {/* Mostrar imagen estática solo cuando no hay hover activo */}
           {!isMobile && (hasApproached || index < 6) && (
             <>
               {/* Video Hover para proyectos de video con videoThumbnail */}
@@ -124,7 +117,7 @@ const OptimizedProjectItem = ({
                   isVisible={hoveredProject === project.id}
                   onMouseEnter={() => setHoveredProject(project.id)}
                   onMouseLeave={() => setHoveredProject(null)}
-                  className="absolute inset-0 z-10"
+                  className="w-full h-auto block"
                 />
               )}
 
@@ -135,11 +128,23 @@ const OptimizedProjectItem = ({
                   hoverImages={project.hoverImages}
                   isVisible={hoveredProject === project.id}
                   projectTitle={`${project.title}, ${project.artist}`}
-                  className="absolute inset-0 z-10"
+                  className="w-full h-auto block"
                 />
               )}
             </>
           )}
+          
+          {/* Imagen estática - solo visible cuando no hay hover activo */}
+          <StaticVideoThumbnail
+            src={getVideoSource(project)}
+            poster={project.thumbnail || ''}
+            alt={project.title}
+            className={`w-full h-auto block transition-opacity duration-300 ${
+              !isMobile && (hasApproached || index < 6) && hoveredProject === project.id 
+                ? 'opacity-0' 
+                : 'opacity-100'
+            }`}
+          />
         </Link>
       </div>
     );
@@ -174,11 +179,43 @@ const OptimizedProjectItem = ({
         {/* Media box (define la altura de la celda) */}
         <div className="relative w-full flex justify-center">
           <div className={`relative ${isMobile ? 'w-11/12 max-w-[320px]' : 'w-3/4 max-w-[240px]'}`}>
+            {/* Mostrar imagen estática solo cuando no hay hover activo */}
+            {!isMobile && (hasApproached || index < 6) && (
+              <>
+                {/* Video Hover para proyectos de video con videoThumbnail */}
+                {isVideoProject(project) && project.videoThumbnail && (
+                  <VideoHover
+                    videoUrl={project.videoThumbnail}
+                    isVisible={hoveredProject === project.id}
+                    onMouseEnter={() => setHoveredProject(project.id)}
+                    onMouseLeave={() => setHoveredProject(null)}
+                    className="w-full h-auto block"
+                  />
+                )}
+
+                {/* Image Hover para proyectos de imagen con múltiples imágenes */}
+                {isImageProject(project) && project.images && project.images.length > 0 && (
+                  <ImageHover
+                    images={project.images}
+                    hoverImages={project.hoverImages}
+                    isVisible={hoveredProject === project.id}
+                    projectTitle={`${project.title}, ${project.artist}`}
+                    className="w-full h-auto block"
+                  />
+                )}
+              </>
+            )}
+            
+            {/* Imagen estática - solo visible cuando no hay hover activo */}
             <StaticVideoThumbnail
               src={getVideoSource(project)}
               poster={project.thumbnail || ''}
               alt={project.title}
-              className="w-full h-auto block"
+              className={`w-full h-auto block transition-opacity duration-300 ${
+                !isMobile && (hasApproached || index < 6) && hoveredProject === project.id 
+                  ? 'opacity-0' 
+                  : 'opacity-100'
+              }`}
             />
             
             {/* Número y título manejados en el componente padre para desktop */}
@@ -200,33 +237,6 @@ const OptimizedProjectItem = ({
                       {project.title}, {project.artist}
                     </p>
                   </div>
-                )}
-              </>
-            )}
-            
-            {/* Overlays: positioned relative to the image container */}
-            {!isMobile && (hasApproached || index < 6) && (
-              <>
-                {/* Video Hover para proyectos de video con videoThumbnail */}
-                {isVideoProject(project) && project.videoThumbnail && (
-                  <VideoHover
-                    videoUrl={project.videoThumbnail}
-                    isVisible={hoveredProject === project.id}
-                    onMouseEnter={() => setHoveredProject(project.id)}
-                    onMouseLeave={() => setHoveredProject(null)}
-                    className="absolute inset-0 z-10"
-                  />
-                )}
-
-                {/* Image Hover para proyectos de imagen con múltiples imágenes */}
-                {isImageProject(project) && project.images && project.images.length > 0 && (
-                  <ImageHover
-                    images={project.images}
-                    hoverImages={project.hoverImages}
-                    isVisible={hoveredProject === project.id}
-                    projectTitle={`${project.title}, ${project.artist}`}
-                    className="absolute inset-0 z-10"
-                  />
                 )}
               </>
             )}

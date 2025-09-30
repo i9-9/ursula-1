@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Copyright from '../components/Copyright';
 
 export default function AboutPage() {
   return (
@@ -12,11 +13,15 @@ export default function AboutPage() {
               MAIL,
             </Link>
             <Link href="https://instagram.com/ursulabenavidez" target="_blank" rel="noopener noreferrer" className="ml-2 hover:opacity-70 transition-opacity">
-              INSTAGRAM
+              INSTAGRAM,
+            </Link>
+            <Link href="https://vimeo.com/ursulabenavidez" target="_blank" rel="noopener noreferrer" className="ml-2 hover:opacity-70 transition-opacity">
+              VIMEO
             </Link>
           </span>
         </span>
       </div>
+      <Copyright />
     </main>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Project } from '../../lib/contentful';
 import { useThemeContext } from './ThemeProvider';
@@ -19,10 +19,13 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
   const [isPlaying, setIsPlaying] = useState(true);
   const [isClient, setIsClient] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
+  const [hasShownInitialTimeline, setHasShownInitialTimeline] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [autoHideTimer, setAutoHideTimer] = useState<NodeJS.Timeout | null>(null);
+  const [isMouseOverVideo, setIsMouseOverVideo] = useState(false);
   const { theme } = useThemeContext();
 
   // Ensure component only renders on client side to prevent hydration issues
@@ -105,19 +108,117 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
     };
   }, [isClient, project.vimeoId]);
 
-  // Global mouse up listener para detener el arrastre
+  const updateTimeFromPosition = useCallback((clientX: number, element: HTMLDivElement) => {
+    if (!playerRef.current || !isPlayerReady || duration === 0) return;
+    const rect = element.getBoundingClientRect();
+    const posX = clientX - rect.left;
+    const percentage = Math.min(Math.max(posX / rect.width, 0), 1);
+    const newTime = percentage * duration;
+    playerRef.current.setCurrentTime(newTime);
+    setCurrentTime(newTime);
+  }, [playerRef, isPlayerReady, duration]);
+
+  // Global mouse listeners para el arrastre
   useEffect(() => {
     const handleGlobalMouseUp = () => {
       isDraggingRef.current = false;
     };
 
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      if (isDraggingRef.current) {
+        // Encontrar el elemento de la barra de progreso
+        const progressBar = document.querySelector('.flex-1.h-1.bg-white\\/20.rounded-full');
+        if (progressBar) {
+          updateTimeFromPosition(e.clientX, progressBar as HTMLDivElement);
+        }
+      }
+    };
+
     if (isClient) {
       document.addEventListener('mouseup', handleGlobalMouseUp);
+      document.addEventListener('mousemove', handleGlobalMouseMove);
       return () => {
         document.removeEventListener('mouseup', handleGlobalMouseUp);
+        document.removeEventListener('mousemove', handleGlobalMouseMove);
       };
     }
-  }, [isClient]);
+  }, [isClient, updateTimeFromPosition]);
+
+  // Listener para eventos de YouTube
+  useEffect(() => {
+    const handleYouTubeMessage = (event: MessageEvent) => {
+      if (event.origin !== 'https://www.youtube.com') return;
+      
+      try {
+        const data = JSON.parse(event.data);
+        if (data.event === 'video-progress') {
+          setCurrentTime(data.info.seconds);
+        } else if (data.event === 'video-ready') {
+          setDuration(data.info.duration);
+          setIsPlayerReady(true);
+        } else if (data.event === 'video-state-change') {
+          if (data.info === 1) { // Playing
+            setIsPlaying(true);
+          } else if (data.info === 2) { // Paused
+            setIsPlaying(false);
+          }
+        }
+      } catch {
+        // Ignorar errores de parsing
+      }
+    };
+
+    if (isClient && project.videoUrl && extractYouTubeId(project.videoUrl)) {
+      window.addEventListener('message', handleYouTubeMessage);
+      return () => {
+        window.removeEventListener('message', handleYouTubeMessage);
+      };
+    }
+  }, [isClient, project.videoUrl]);
+
+  // Mostrar timeline inicialmente cuando el player esté listo
+  useEffect(() => {
+    if (isPlayerReady && !hasShownInitialTimeline) {
+      console.log('Mostrando timeline inicialmente');
+      setShowTimeline(true);
+      setHasShownInitialTimeline(true);
+      
+      // Ocultar después de 5 segundos
+      const hideTimer = setTimeout(() => {
+        console.log('Ocultando timeline después de 5 segundos (inicial)');
+        // Solo ocultar si el mouse no está sobre el video
+        if (!isMouseOverVideo) {
+          setShowTimeline(false);
+        }
+      }, 5000);
+      
+      setAutoHideTimer(hideTimer);
+
+      return () => {
+        console.log('Limpiando timer inicial');
+        clearTimeout(hideTimer);
+        setAutoHideTimer(null);
+      };
+    }
+  }, [isPlayerReady, hasShownInitialTimeline, isMouseOverVideo]);
+
+  // Función para iniciar el timer de auto-hide
+  const startAutoHideTimer = () => {
+    // Limpiar timer existente si hay uno
+    if (autoHideTimer) {
+      clearTimeout(autoHideTimer);
+    }
+    
+    // Crear nuevo timer
+    const newTimer = setTimeout(() => {
+      console.log('Ocultando timeline después de 5 segundos (auto-hide)');
+      if (!isMouseOverVideo) {
+        setShowTimeline(false);
+      }
+    }, 5000);
+    
+    setAutoHideTimer(newTimer);
+  };
 
   // Don't render anything until client-side hydration is complete
   if (!isClient) {
@@ -133,13 +234,29 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
   }
 
   const togglePlayPause = () => {
-    if (playerRef.current && isPlayerReady) {
+    if (project.vimeoId && playerRef.current && isPlayerReady) {
+      // Para videos de Vimeo
       if (isPlaying) {
-        console.log('Pausing video');
+        console.log('Pausing Vimeo video');
         playerRef.current.pause();
       } else {
-        console.log('Playing video');
+        console.log('Playing Vimeo video');
         playerRef.current.play();
+      }
+    } else if (project.videoUrl && extractYouTubeId(project.videoUrl)) {
+      // Para videos de YouTube, necesitamos usar la API de YouTube
+      const youtubeId = extractYouTubeId(project.videoUrl);
+      if (youtubeId && iframeRef.current) {
+        const iframe = iframeRef.current;
+        if (iframe.contentWindow) {
+          if (isPlaying) {
+            console.log('Pausing YouTube video');
+            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+          } else {
+            console.log('Playing YouTube video');
+            iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+          }
+        }
       }
     }
   };
@@ -158,37 +275,34 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
     }
   };
 
-  const updateTimeFromPosition = (clientX: number, element: HTMLDivElement) => {
-    if (!playerRef.current || !isPlayerReady || duration === 0) return;
-    const rect = element.getBoundingClientRect();
-    const posX = clientX - rect.left;
-    const percentage = Math.min(Math.max(posX / rect.width, 0), 1);
-    const newTime = percentage * duration;
-    playerRef.current.setCurrentTime(newTime);
-    setCurrentTime(newTime);
-  };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     isDraggingRef.current = true;
     updateTimeFromPosition(e.clientX, e.currentTarget);
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isDraggingRef.current) {
-      updateTimeFromPosition(e.clientX, e.currentTarget);
-    }
-  };
-
-  const handleMouseUp = () => {
-    isDraggingRef.current = false;
-  };
-
   const handleMouseEnter = () => {
+    console.log('Mouse enter - mostrando timeline');
+    setIsMouseOverVideo(true);
+    
+    // Cancelar el timer automático si existe
+    if (autoHideTimer) {
+      console.log('Cancelando timer automático');
+      clearTimeout(autoHideTimer);
+      setAutoHideTimer(null);
+    }
+    
     setShowTimeline(true);
   };
 
   const handleMouseLeave = () => {
-    setShowTimeline(false);
+    console.log('Mouse leave - iniciando auto-hide');
+    setIsMouseOverVideo(false);
+    
+    // Solo iniciar auto-hide si ya se mostró el timeline inicial
+    if (hasShownInitialTimeline) {
+      startAutoHideTimer();
+    }
   };
 
   const extractYouTubeId = (url: string): string | null => {
@@ -220,12 +334,18 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                   onError={() => console.error('Error loading Vimeo iframe')}
                 />
                 
+                {/* Overlay transparente para capturar clicks */}
+                <div 
+                  className="absolute inset-0 cursor-pointer z-10"
+                  onClick={togglePlayPause}
+                />
+                
                 {/* Timeline mejorado */}
                 {showTimeline && isPlayerReady && duration > 0 && (
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
-                    <div className="flex items-center gap-6">
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent z-20 pointer-events-none">
+                    <div className="flex items-center gap-6 pointer-events-auto">
                       {/* Tiempo actual */}
-                      <span className="text-white text-xs font-mono min-w-[40px]">
+                      <span className="text-white text-xs font-normal min-w-[40px]" style={{ fontFamily: 'Suisse BP INTL, sans-serif' }}>
                         {Math.floor(currentTime / 60)}:{(currentTime % 60).toFixed(0).padStart(2, '0')}
                       </span>
                       
@@ -233,9 +353,6 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                       <div 
                         className="flex-1 h-1 bg-white/20 rounded-full cursor-pointer relative group"
                         onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
-                        onMouseUp={handleMouseUp}
-                        onMouseLeave={handleMouseUp}
                       >
                         {/* Progreso transcurrido */}
                         <div 
@@ -250,7 +367,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                       </div>
                       
                       {/* Tiempo restante */}
-                      <span className="text-white text-xs font-mono min-w-[40px]">
+                      <span className="text-white text-xs font-normal min-w-[40px]" style={{ fontFamily: 'Suisse BP INTL, sans-serif' }}>
                         -{Math.floor((duration - currentTime) / 60)}:{((duration - currentTime) % 60).toFixed(0).padStart(2, '0')}
                       </span>
                       
@@ -282,7 +399,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
               >
                 <iframe
                   ref={iframeRef}
-                  src={`https://www.youtube.com/embed/${extractYouTubeId(project.videoUrl)}?autoplay=1&loop=1&mute=0&controls=0&modestbranding=1&rel=0`}
+                  src={`https://www.youtube.com/embed/${extractYouTubeId(project.videoUrl)}?autoplay=1&loop=1&mute=0&controls=0&modestbranding=1&rel=0&enablejsapi=1`}
                   className="w-full h-full"
                   frameBorder="0"
                   allow="autoplay; fullscreen"
@@ -291,11 +408,17 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                   onError={() => {}}
                 />
                 
+                {/* Overlay transparente para capturar clicks */}
+                <div 
+                  className="absolute inset-0 cursor-pointer z-10"
+                  onClick={togglePlayPause}
+                />
+                
                 {/* Timeline para YouTube (simulado) */}
                 {showTimeline && (
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
-                    <div className="flex items-center gap-8">
-                      <span className="text-white text-xs font-mono min-w-[40px]">
+                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent z-20 pointer-events-none">
+                    <div className="flex items-center gap-8 pointer-events-auto">
+                      <span className="text-white text-xs font-normal min-w-[40px]" style={{ fontFamily: 'Suisse BP INTL, sans-serif' }}>
                         {Math.floor(currentTime / 60)}:{(currentTime % 60).toFixed(0).padStart(2, '0')}
                       </span>
                       
@@ -306,7 +429,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                         />
                       </div>
                       
-                      <span className="text-white text-xs font-mono min-w-[40px]">
+                      <span className="text-white text-xs font-normal min-w-[40px]" style={{ fontFamily: 'Suisse BP INTL, sans-serif' }}>
                         {Math.floor(duration / 60)}:{(duration % 60).toFixed(0).padStart(2, '0')}
                       </span>
                     </div>

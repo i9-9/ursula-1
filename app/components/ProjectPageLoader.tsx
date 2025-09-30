@@ -2,6 +2,7 @@
 
 import VideoPlayer from './VideoPlayer';
 import ProjectGallerySlider from './ProjectGallerySlider';
+import Copyright from './Copyright';
 import { Project } from '@/lib/contentful';
 
 interface ProjectPageLoaderProps {
@@ -40,6 +41,7 @@ export default function ProjectPageLoader({ project, currentIndex = 0 }: Project
           </div>
         </div>
       )}
+      <Copyright />
     </div>
   );
 }
