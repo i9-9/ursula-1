@@ -28,9 +28,15 @@ export default function ProjectPageLoader({ project, currentIndex = 0 }: Project
         />
       ) : hasImages ? (
         /* Galería de imágenes usando el nuevo slider basado en home */
-        <ProjectGallerySlider
-          project={project}
-        />
+        <div className="relative" style={{ marginTop: 0, paddingTop: 0 }}>
+          <ProjectGallerySlider
+            project={project}
+          />
+          {/* Copyright positioned after the slider content */}
+          <div className="relative z-10">
+            <Copyright />
+          </div>
+        </div>
       ) : (
         /* Fallback para proyectos sin video ni imágenes */
         <div className="min-h-screen bg-background flex items-center justify-center">
@@ -39,9 +45,9 @@ export default function ProjectPageLoader({ project, currentIndex = 0 }: Project
             <p className="text-lg opacity-70">{project.artist}</p>
             <p className="text-sm opacity-50 mt-4">Proyecto sin contenido multimedia</p>
           </div>
+          <Copyright />
         </div>
       )}
-      <Copyright />
     </div>
   );
 }

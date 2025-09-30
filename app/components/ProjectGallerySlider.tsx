@@ -376,7 +376,7 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
 
   if (originalImagesCount === 0) {
     return (
-      <section className="absolute inset-0 px-0 bg-background text-foreground overflow-hidden flex flex-col items-center justify-center" style={{ height: '100vh', paddingTop: 0 }}>
+      <section className="relative px-0 bg-background text-foreground overflow-hidden flex flex-col items-center justify-center" style={{ height: 'calc(100vh - 36px)', paddingTop: 0, marginTop: 0 }}>
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">{project.title}</h1>
           <p className="text-lg opacity-70">{project.artist}</p>
@@ -391,18 +391,19 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
   
   return (
     <section 
-      className="absolute inset-0 px-0 bg-background text-foreground overflow-hidden flex flex-col items-center justify-center"
+      className="relative px-0 bg-background text-foreground overflow-hidden flex flex-col items-center justify-center"
       style={{ 
-        height: '100vh',
-        paddingTop: 0
+        height: 'calc(100vh - 36px)',
+        paddingTop: 0,
+        marginTop: 0
       }}
     >
       {/* Project Info - Mismo layout que videos */}
-      <AnimatedProjectInfo project={project} displayIndex={0} topPosition="top-20" showProductionCompany={false} />
+      <AnimatedProjectInfo project={project} displayIndex={0} topPosition="top-4" showProductionCompany={false} />
       
       {/* Navigation */}
       {originalImagesCount > 1 && (
-        <div className="absolute top-20 right-8 z-50 flex items-center space-x-4">
+        <div className="absolute top-4 right-8 z-50 flex items-center space-x-4">
           {/* Navigation arrows */}
           <div className="flex items-center -space-x-2">
             <button 
@@ -428,7 +429,7 @@ const ProjectGallerySlider = ({ project }: ProjectGallerySliderProps) => {
         </div>
       )}
       
-      <div className="w-full flex items-center justify-center mt-16">
+      <div className="w-full flex items-center justify-center mt-4">
         <div 
           ref={scrollContainerRef}
           className="w-full overflow-x-auto overflow-y-hidden px-0 snap-x snap-mandatory touch-pan-x"
