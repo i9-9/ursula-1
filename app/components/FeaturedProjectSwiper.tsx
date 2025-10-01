@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Mousewheel } from 'swiper/modules'
 import { HeroSlide } from '@/lib/contentful'
@@ -35,11 +36,14 @@ const MediaSlide = ({ slide }: { slide: HeroSlide }) => {
 
   if (slide.src) {
     return (
-      <img 
+      <Image 
         src={slide.src}
         alt={slide.alt || slide.title} 
         loading="lazy" 
         style={mediaStyle}
+        width={800}
+        height={600}
+        className="object-contain"
       />
     )
   }

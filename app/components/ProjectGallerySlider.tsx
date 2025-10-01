@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Project } from '@/lib/contentful';
 import { useHydration } from '../hooks/useHydration';
 import AnimatedProjectInfo from './AnimatedProjectInfo';
@@ -18,11 +19,14 @@ const ProjectImage = ({ imageUrl, title }: { imageUrl: string; title: string }) 
   
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden">
-      <img
+      <Image
         src={imageUrl}
         alt={title}
-        className="w-full h-full object-cover transition-all duration-500 ease-out"
+        fill
+        className="object-cover transition-all duration-500 ease-out"
         loading="lazy"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+        quality={85}
       />
     </div>
   );

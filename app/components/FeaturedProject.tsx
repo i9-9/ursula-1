@@ -8,7 +8,7 @@ import { useSplash } from '../contexts/SplashContext'
 import HydrationSafe from './HydrationSafe'
 
 // Image component with automatic width calculation based on aspect ratio
-const ImageSlide = ({ slide }: { slide: HeroSlide }) => {
+function ImageSlide({ slide }: { slide: HeroSlide }) {
   const [aspectRatio, setAspectRatio] = useState(1); // ancho / alto
 
   const imageSource = useMemo(() => {
@@ -52,8 +52,6 @@ const ImageSlide = ({ slide }: { slide: HeroSlide }) => {
     </div>
   );
 }
-
-ImageSlide.displayName = 'ImageSlide';
 
 interface FeaturedProjectProps {
   heroSlides?: HeroSlide[]

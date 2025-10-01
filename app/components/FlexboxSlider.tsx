@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useRef } from 'react';
+import Image from 'next/image';
 import { HeroSlide } from '@/lib/contentful';
 import { useRouter } from 'next/navigation';
 import { useSplash } from '../contexts/SplashContext';
@@ -34,11 +35,14 @@ const MediaSlide = ({ slide }: { slide: HeroSlide }) => {
 
   if (slide.src) {
     return (
-      <img 
+      <Image 
         src={slide.src}
         alt={slide.alt || slide.title} 
         loading="lazy" 
         style={mediaStyle}
+        width={800}
+        height={600}
+        className="object-contain"
       />
     )
   }
