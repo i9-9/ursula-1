@@ -39,17 +39,14 @@ export default function ClientHome({ heroSlides }: ClientHomeProps) {
       style={{ height: 'calc(100vh - 36px)' }}
     >
       {/* Contenedor principal centrado */}
-      <div className="relative w-full h-full flex items-center justify-center p-12">
+      <div className="relative w-full h-full flex items-center justify-center p-4 md:p-12">
         {/* Imagen centrada con aspect-ratio fijo para evitar CLS */}
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center w-full px-4 md:px-0">
           {firstSlide.type === 'image' ? (
             <div 
-              className="relative"
+              className="relative w-full max-w-[320px] md:max-w-[600px]"
               style={{ 
                 aspectRatio: '3/2',
-                width: '600px',
-                height: '400px',
-                maxWidth: '600px',
                 maxHeight: '50vh'
               }}
             >
@@ -60,18 +57,15 @@ export default function ClientHome({ heroSlides }: ClientHomeProps) {
                 className="object-contain"
                 priority
                 fetchPriority="high"
-                sizes="(max-width: 768px) 90vw, 600px"
+                sizes="(max-width: 768px) 360px, 600px"
                 quality={85}
               />
             </div>
           ) : firstSlide.videoUrl ? (
             <div 
-              className="relative"
+              className="relative w-full max-w-[320px] md:max-w-[600px]"
               style={{ 
                 aspectRatio: '3/2',
-                width: '600px',
-                height: '400px',
-                maxWidth: '600px',
                 maxHeight: '50vh'
               }}
             >
@@ -87,12 +81,9 @@ export default function ClientHome({ heroSlides }: ClientHomeProps) {
             </div>
           ) : (
             <div 
-              className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg"
+              className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg w-full max-w-[320px] md:max-w-[600px]"
               style={{ 
                 aspectRatio: '3/2',
-                width: '600px',
-                height: '400px',
-                maxWidth: '600px',
                 maxHeight: '50vh'
               }}
             >
