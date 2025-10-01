@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { memo, useCallback } from 'react';
 import { Project } from '@/lib/contentful';
 import { generateSemanticSlug } from '@/lib/slug-utils';
 import StaticVideoThumbnail from './StaticVideoThumbnail';
@@ -26,7 +27,7 @@ interface OptimizedProjectItemProps {
   isPreloaded?: (url: string) => boolean; // Nuevo: función para verificar si un asset fue precargado
 }
 
-const OptimizedProjectItem = ({
+const OptimizedProjectItem = memo(({
   project,
   index,
   hoveredProject,
@@ -60,15 +61,15 @@ const OptimizedProjectItem = ({
     }
   });
 
-  const handleMouseEnterProject = () => {
+  const handleMouseEnterProject = useCallback(() => {
     setHoveredProject(project.id);
     handleMouseEnter();
-  };
+  }, [project.id, setHoveredProject, handleMouseEnter]);
 
-  const handleMouseLeaveProject = () => {
+  const handleMouseLeaveProject = useCallback(() => {
     setHoveredProject(null);
     handleMouseLeave();
-  };
+  }, [setHoveredProject, handleMouseLeave]);
 
   // Determinar clases basadas en orientación
   const getImageClasses = () => {
@@ -143,6 +144,7 @@ const OptimizedProjectItem = ({
             alt={project.title}
             preload={!isMobile && (hasApproached || index < 6)}
             isPreloaded={isPreloaded(getVideoSource(project))}
+            isMobile={isMobile}
             className={`w-full h-auto block transition-opacity duration-300 ${
               !isMobile && (hasApproached || index < 6) && hoveredProject === project.id 
                 ? 'opacity-0' 
@@ -217,6 +219,7 @@ const OptimizedProjectItem = ({
               alt={project.title}
               preload={!isMobile && (hasApproached || index < 6)}
               isPreloaded={isPreloaded(getVideoSource(project))}
+              isMobile={isMobile}
               className={`w-full h-auto block transition-opacity duration-300 ${
                 !isMobile && (hasApproached || index < 6) && hoveredProject === project.id 
                   ? 'opacity-0' 
@@ -251,6 +254,8 @@ const OptimizedProjectItem = ({
       </div>
     </Link>
   );
-};
+});
+
+OptimizedProjectItem.displayName = 'OptimizedProjectItem';
 
 export default OptimizedProjectItem;

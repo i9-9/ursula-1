@@ -15,10 +15,13 @@ export const useAssetPreloader = ({
   isMobile = false
 }: UseAssetPreloaderProps) => {
   const preloadedAssets = useRef(new Set<string>());
+  const preloadingQueue = useRef(new Set<string>());
 
   // Función para precargar un video con optimizaciones
   const preloadVideo = (url: string) => {
-    if (preloadedAssets.current.has(url)) return;
+    if (preloadedAssets.current.has(url) || preloadingQueue.current.has(url)) return;
+    
+    preloadingQueue.current.add(url);
     
     const video = document.createElement('video');
     video.preload = 'metadata';
@@ -29,27 +32,33 @@ export const useAssetPreloader = ({
     // Marcar como precargado cuando los metadatos estén listos
     video.addEventListener('loadedmetadata', () => {
       preloadedAssets.current.add(url);
+      preloadingQueue.current.delete(url);
     });
     
     // Manejar errores
     video.addEventListener('error', () => {
       preloadedAssets.current.add(url); // Marcar como precargado para evitar reintentos
+      preloadingQueue.current.delete(url);
     });
   };
 
   // Función para precargar imágenes con Next.js Image
   const preloadImages = (urls: string[]) => {
     urls.forEach(url => {
-      if (preloadedAssets.current.has(url)) return;
+      if (preloadedAssets.current.has(url) || preloadingQueue.current.has(url)) return;
+      
+      preloadingQueue.current.add(url);
       
       // Usar Next.js Image para precarga optimizada
       const img = new Image();
       img.onload = () => {
         preloadedAssets.current.add(url);
+        preloadingQueue.current.delete(url);
       };
       img.onerror = () => {
         // Marcar como precargado incluso si hay error para evitar reintentos
         preloadedAssets.current.add(url);
+        preloadingQueue.current.delete(url);
       };
       img.src = url;
       

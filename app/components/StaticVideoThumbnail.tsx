@@ -1,6 +1,7 @@
 'use client';
-import React from 'react';
+import React, { memo } from 'react';
 import { useOptimizedMedia } from '@/app/hooks/useOptimizedMedia';
+import { useIntersectionObserver } from '@/app/hooks/useIntersectionObserver';
 import Image from 'next/image';
 
 type Props = {
@@ -11,28 +12,37 @@ type Props = {
   onClick?: () => void;
   preload?: boolean;
   isPreloaded?: boolean; // Nuevo: indica si el asset ya fue precargado masivamente
+  isMobile?: boolean; // Nuevo: indica si estamos en móvil para lazy loading más agresivo
 };
 
-export default function StaticVideoThumbnail({ 
+const StaticVideoThumbnail = memo(({ 
   src, 
   poster, 
   alt = '', 
   className = '', 
   onClick,
   preload = false,
-  isPreloaded = false
-}: Props) {
+  isPreloaded = false,
+  isMobile = false
+}: Props) => {
+  // Usar intersection observer para lazy loading más agresivo en móvil
+  const { elementRef, hasIntersected } = useIntersectionObserver({
+    threshold: isMobile ? 0.1 : 0.5,
+    rootMargin: isMobile ? '100px' : '50px'
+  });
+  
   const { optimizedSrc, shouldPreload, handleLoad, handleError } = useOptimizedMedia({
     src: src || poster,
-    preload,
+    preload: preload || hasIntersected, // Cargar cuando esté visible o cuando se solicite preload
     isPreloaded
   });
 
   const isVideo = !!(optimizedSrc && optimizedSrc.match(/\.(mp4|webm|mov|ogg)$/i));
 
-  if (!optimizedSrc) {
+  // En móvil, mostrar placeholder hasta que esté visible
+  if (!optimizedSrc || (isMobile && !hasIntersected && !shouldPreload)) {
     return (
-      <div className={`w-full h-48 bg-gray-200 flex items-center justify-center ${className}`}>
+      <div ref={elementRef as React.RefObject<HTMLDivElement>} className={`w-full h-48 bg-gray-200 flex items-center justify-center ${className}`}>
         <p className="text-gray-500 text-sm">Media no disponible</p>
       </div>
     );
@@ -41,6 +51,7 @@ export default function StaticVideoThumbnail({
   if (isVideo) {
     return (
       <video
+        ref={elementRef as React.RefObject<HTMLVideoElement>}
         src={optimizedSrc}
         poster={poster}
         muted
@@ -65,6 +76,7 @@ export default function StaticVideoThumbnail({
 
   return (
     <Image
+      ref={elementRef as React.RefObject<HTMLImageElement>}
       src={optimizedSrc}
       alt={alt}
       width={400}
@@ -79,4 +91,8 @@ export default function StaticVideoThumbnail({
       quality={85}
     />
   );
-}
+});
+
+StaticVideoThumbnail.displayName = 'StaticVideoThumbnail';
+
+export default StaticVideoThumbnail;

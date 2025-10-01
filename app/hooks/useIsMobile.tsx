@@ -1,26 +1,39 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export const useIsMobile = (breakpoint: number = 1024) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setIsClient(true);
     
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < breakpoint);
+      const newIsMobile = window.innerWidth < breakpoint;
+      // Solo actualizar si el valor realmente cambió
+      setIsMobile(prev => prev !== newIsMobile ? newIsMobile : prev);
     };
 
     // Verificar inicialmente
     checkIsMobile();
 
-    // Escuchar cambios de tamaño de ventana
-    window.addEventListener('resize', checkIsMobile);
+    // Debounce resize para evitar demasiados re-renders
+    const handleResize = () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(checkIsMobile, 100);
+    };
+
+    window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
-      window.removeEventListener('resize', checkIsMobile);
+      window.removeEventListener('resize', handleResize);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, [breakpoint]);
 

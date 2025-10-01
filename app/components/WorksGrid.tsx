@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, memo } from "react"
+import { useState, memo, useMemo, useCallback } from "react"
 import type { Project } from "@/lib/contentful"
 import { useAssetPreloader } from "@/app/hooks/useAssetPreloader"
 import { useIsMobile } from "@/app/hooks/useIsMobile"
 import OptimizedProjectItem from "./OptimizedProjectItem"
+import MobileProjectItem from "./MobileProjectItem"
 
 interface WorksGridProps {
   works: Project[]
@@ -76,26 +77,49 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
     isMobile: isMobile || false, // No precargar en mobile
   })
 
-  // Helper function to get video source
-  const getVideoSource = (project: Project) => {
+  // Memoizar funciones helper para evitar recreaciones
+  const isVideoFile = useCallback((url: string) => {
+    return url.includes(".mp4") || url.includes(".mov") || url.includes(".webm") || url.includes(".avi")
+  }, [])
+
+  const getVideoSource = useCallback((project: Project) => {
     // Solo usar videoUrl si es una URL de video directa (archivo)
     if (project.videoUrl && isVideoFile(project.videoUrl)) {
       return project.videoUrl
     }
     return project.thumbnail || ""
-  }
+  }, [isVideoFile])
 
-  const isVideoFile = (url: string) => {
-    return url.includes(".mp4") || url.includes(".mov") || url.includes(".webm") || url.includes(".avi")
-  }
-
-  const isVideoProject = (project: Project) => {
+  const isVideoProject = useCallback((project: Project) => {
     return !!(project.videoUrl || project.vimeoId || project.youtubeUrl || project.videoThumbnail)
-  }
+  }, [])
 
-  const isImageProject = (project: Project) => {
+  const isImageProject = useCallback((project: Project) => {
     return !!(project.images && project.images.length > 0)
-  }
+  }, [])
+
+  // Memoizar el layout móvil para evitar re-renders innecesarios
+  const mobileLayout = useMemo(() => {
+    if (isMobile === false) return null // No renderizar en desktop
+    
+    return (
+      <div className="lg:hidden px-4">
+        {works.map((project, index) => {
+          const projectNumber = project.archiveOrder
+            ? project.archiveOrder.toString().padStart(2, "0")
+            : (index + 1).toString().padStart(2, "0")
+          
+          return (
+            <MobileProjectItem
+              key={project.id}
+              project={project}
+              projectNumber={projectNumber}
+            />
+          )
+        })}
+      </div>
+    )
+  }, [works, isMobile])
 
   if (works.length === 0) {
     return (
@@ -112,36 +136,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
       <div className="mb-6 md:mb-8"></div>
 
       {/* Mobile/Tablet Layout - Vertical Stack with moderate padding */}
-      <div className="lg:hidden px-4">
-        {works.map((project, index) => {
-          const orientation = project.isVertical ? "portrait" : "square"
-          
-          return (
-            <div key={project.id} className="flex justify-center pb-20">
-              <OptimizedProjectItem
-                project={project}
-                index={index}
-                hoveredProject={hoveredProject}
-                setHoveredProject={setHoveredProject}
-                onPreloadProject={preloadProjectAsync}
-                getVideoSource={getVideoSource}
-                isVideoProject={isVideoProject}
-                isImageProject={isImageProject}
-                isMobile={true}
-                showNumber={true}
-                showTitle={true}
-                projectNumber={
-                  project.archiveOrder
-                    ? project.archiveOrder.toString().padStart(2, "0")
-                    : (index + 1).toString().padStart(2, "0")
-                }
-                imageOrientation={orientation}
-                isPreloaded={isPreloaded}
-              />
-            </div>
-          )
-        })}
-      </div>
+      {mobileLayout}
 
       {/* Desktop Layout - Contenedor unificado por proyecto */}
       <div className="hidden lg:block px-6">
