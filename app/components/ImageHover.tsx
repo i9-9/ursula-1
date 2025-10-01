@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 type Props = { 
   images: string[];
@@ -24,13 +25,24 @@ export default function ImageHover({
   useEffect(() => {
     if (!isVisible || imagesToUse.length <= 1) return;
 
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => 
-        prevIndex === imagesToUse.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 1000); // Cambiar imagen cada segundo
+    // Usar RAF en lugar de setInterval para mejor performance
+    let rafId: number;
+    let lastTime = Date.now();
+    const interval = 1000; // Cambiar imagen cada segundo
 
-    return () => clearInterval(interval);
+    const animate = () => {
+      const now = Date.now();
+      if (now - lastTime >= interval) {
+        setCurrentImageIndex((prev) => 
+          (prev + 1) % imagesToUse.length
+        );
+        lastTime = now;
+      }
+      rafId = requestAnimationFrame(animate);
+    };
+
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
   }, [isVisible, imagesToUse.length]);
 
   if (!imagesToUse.length) return null;
@@ -45,13 +57,16 @@ export default function ImageHover({
       } ${className}`}
       aria-hidden
     >
-      <img 
+      <Image 
         src={currentSrc} 
         alt={`${projectTitle} - Image ${currentImageIndex + 1}`} 
-        className="w-full h-full block object-cover"
+        fill
+        className="object-cover"
         style={{ objectPosition: 'center center' }}
         loading="lazy"
         decoding="async"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+        quality={85}
       />
     </div>
   );

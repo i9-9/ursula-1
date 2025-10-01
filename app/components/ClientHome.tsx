@@ -23,7 +23,7 @@ export default function ClientHome({ heroSlides }: ClientHomeProps) {
           <p className="text-sm opacity-70">No se encontraron proyectos para mostrar</p>
         </div>
         {/* Copyright posicionado en la parte inferior derecha */}
-        <div className="absolute bottom-8 right-0 px-4 md:px-[30px]">
+        <div className="absolute bottom-1 right-0 px-4 md:px-[30px]">
           <Copyright absolute={true} />
         </div>
       </section>
@@ -40,30 +40,62 @@ export default function ClientHome({ heroSlides }: ClientHomeProps) {
     >
       {/* Contenedor principal centrado */}
       <div className="relative w-full h-full flex items-center justify-center p-12">
-        {/* Imagen centrada */}
+        {/* Imagen centrada con aspect-ratio fijo para evitar CLS */}
         <div className="flex items-center justify-center">
           {firstSlide.type === 'image' ? (
-            <Image
-              src={firstSlide.src}
-              alt={firstSlide.alt}
-              width={600}
-              height={400}
-              className="object-contain max-w-full max-h-[50vh]"
-              priority
-              sizes="(max-width: 768px) 90vw, 600px"
-            />
+            <div 
+              className="relative"
+              style={{ 
+                aspectRatio: '3/2',
+                width: '600px',
+                height: '400px',
+                maxWidth: '600px',
+                maxHeight: '50vh'
+              }}
+            >
+              <Image
+                src={firstSlide.src}
+                alt={firstSlide.alt}
+                fill
+                className="object-contain"
+                priority
+                fetchPriority="high"
+                sizes="(max-width: 768px) 90vw, 600px"
+                quality={85}
+              />
+            </div>
           ) : firstSlide.videoUrl ? (
-            <video
-              src={firstSlide.videoUrl}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="max-w-full max-h-[50vh] object-contain"
-              style={{ width: '600px', height: '400px' }}
-            />
+            <div 
+              className="relative"
+              style={{ 
+                aspectRatio: '3/2',
+                width: '600px',
+                height: '400px',
+                maxWidth: '600px',
+                maxHeight: '50vh'
+              }}
+            >
+              <video
+                src={firstSlide.videoUrl}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-contain"
+                preload="metadata"
+              />
+            </div>
           ) : (
-            <div className="w-[600px] h-[400px] flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+            <div 
+              className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg"
+              style={{ 
+                aspectRatio: '3/2',
+                width: '600px',
+                height: '400px',
+                maxWidth: '600px',
+                maxHeight: '50vh'
+              }}
+            >
               <p className="text-gray-500 dark:text-gray-400">Contenido no disponible</p>
             </div>
           )}
@@ -71,7 +103,7 @@ export default function ClientHome({ heroSlides }: ClientHomeProps) {
       </div>
       
       {/* Copyright posicionado en la parte inferior derecha */}
-      <div className="absolute bottom-8 right-0 px-4 md:px-[30px]">
+      <div className="absolute bottom-1 right-0 px-4 md:px-[30px]">
         <Copyright absolute={true} />
       </div>
     </section>

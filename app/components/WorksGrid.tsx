@@ -21,6 +21,7 @@ const ProjectItem = memo(
     getVideoSource,
     isVideoProject,
     isImageProject,
+    isPreloaded,
   }: {
     project: Project
     globalIndex: number
@@ -31,6 +32,7 @@ const ProjectItem = memo(
     getVideoSource: (project: Project) => string
     isVideoProject: (project: Project) => boolean
     isImageProject: (project: Project) => boolean
+    isPreloaded: (url: string) => boolean
   }) => {
     return (
       <div key={project.id} className="flex flex-col justify-center h-full">
@@ -50,6 +52,7 @@ const ProjectItem = memo(
             projectNumber=""
             skipContainer={true}
             imageOrientation={orientation}
+            isPreloaded={isPreloaded}
           />
         </div>
 
@@ -67,7 +70,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
   const isMobile = useIsMobile(1024) // lg breakpoint
 
   // Hook para precargar assets críticos (solo en desktop)
-  const { preloadProjectAsync } = useAssetPreloader({
+  const { preloadProjectAsync, isPreloaded } = useAssetPreloader({
     projects: works,
     preloadCount: 6, // Precargar los primeros 6 proyectos
     isMobile: isMobile || false, // No precargar en mobile
@@ -133,6 +136,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                     : (index + 1).toString().padStart(2, "0")
                 }
                 imageOrientation={orientation}
+                isPreloaded={isPreloaded}
               />
             </div>
           )
@@ -189,6 +193,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                       getVideoSource={getVideoSource}
                       isVideoProject={isVideoProject}
                       isImageProject={isImageProject}
+                      isPreloaded={isPreloaded}
                     />
                   )
                 })}

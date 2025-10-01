@@ -53,6 +53,8 @@ const ImageSlide = ({ slide }: { slide: HeroSlide }) => {
   );
 }
 
+ImageSlide.displayName = 'ImageSlide';
+
 interface FeaturedProjectProps {
   heroSlides?: HeroSlide[]
 }

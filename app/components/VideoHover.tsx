@@ -56,7 +56,7 @@ export default function VideoHover({
         muted
         loop
         playsInline
-        preload="metadata"
+        preload="none" // Optimizado: metadata ya se precarga en useAssetPreloader
         className="w-full h-full block object-cover"
         style={{ objectPosition: 'center center' }}
         onEnded={() => {

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef } from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Mousewheel, Keyboard } from 'swiper/modules';
 import type { Swiper as SwiperType } from 'swiper';
@@ -8,6 +8,7 @@ import { HeroSlide } from '@/lib/contentful';
 import { useRouter } from 'next/navigation';
 import { useSplash } from '../contexts/SplashContext';
 import HydrationSafe from './HydrationSafe';
+import Image from 'next/image';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -19,14 +20,23 @@ interface SommetStyleSliderProps {
 // Ancho fijo único como en Sommet Studio original
 const SLIDE_WIDTH = 400;  // Reducido de 500px a 400px
 
-const MediaSlide = ({ slide, onLoad }: { slide: HeroSlide; onLoad?: () => void }) => {
-  const mediaStyle: React.CSSProperties = {
+const MediaSlide = React.memo(({ slide, onLoad }: { slide: HeroSlide; onLoad?: () => void }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  
+  const mediaStyle: React.CSSProperties = useMemo(() => ({
     width: '100%',
     height: '100%',
     objectFit: 'cover',
     display: 'block',
     userSelect: 'none',
-  }
+    opacity: isLoaded ? 1 : 0,
+    transition: 'opacity 0.3s ease-in-out',
+  }), [isLoaded]);
+
+  const handleLoad = useCallback(() => {
+    setIsLoaded(true);
+    onLoad?.();
+  }, [onLoad]);
 
   if (slide.videoUrl) {
     return (
@@ -36,27 +46,37 @@ const MediaSlide = ({ slide, onLoad }: { slide: HeroSlide; onLoad?: () => void }
         loop
         muted
         playsInline
+        preload="metadata"
         style={mediaStyle}
-        onLoadedMetadata={onLoad}
+        onLoadedMetadata={handleLoad}
+        onError={() => setIsLoaded(true)} // Fallback for video errors
       />
     )
   }
 
   if (slide.src) {
     return (
-      <img 
+      <Image 
         src={slide.src}
         alt={slide.alt || slide.title} 
-        loading="lazy" 
+        width={400}
+        height={300}
         style={mediaStyle}
         draggable={false}
-        onLoad={onLoad}
+        onLoad={handleLoad}
+        onError={() => setIsLoaded(true)} // Fallback for image errors
+        loading="lazy"
+        decoding="async"
+        sizes="400px"
+        quality={85}
       />
     )
   }
 
   return null;
-}
+});
+
+MediaSlide.displayName = 'MediaSlide';
 
 const SommetStyleSlider = ({ heroSlides }: SommetStyleSliderProps) => {
   const router = useRouter();

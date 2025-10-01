@@ -23,7 +23,7 @@ export default function AboutPage() {
           </span>
         </div>
       </main>
-      <div className="absolute bottom-32 right-0 px-4 md:px-[30px]">
+      <div className="absolute bottom-24 right-0 px-4 md:px-[30px]">
         <Copyright absolute={true} />
       </div>
     </div>

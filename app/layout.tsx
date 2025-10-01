@@ -75,6 +75,11 @@ export default function RootLayout({
     <html lang="es" className={suisseBpIntl.variable}>
       <head>
         <PreloadScript />
+        {/* Resource hints para optimizar carga de assets */}
+        <link rel="preconnect" href="https://images.ctfassets.net" />
+        <link rel="preconnect" href="https://videos.ctfassets.net" />
+        <link rel="dns-prefetch" href="https://images.ctfassets.net" />
+        <link rel="dns-prefetch" href="https://videos.ctfassets.net" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon/favicon16x16.ico" sizes="16x16" type="image/x-icon" />
         <link rel="icon" href="/favicon/favicon32x32.ico" sizes="32x32" type="image/x-icon" />

@@ -11,12 +11,12 @@ interface UseAssetPreloaderProps {
 
 export const useAssetPreloader = ({ 
   projects, 
-  preloadCount = 6,
+  preloadCount = 3, // Reducido de 6 a 3 para mejor performance
   isMobile = false
 }: UseAssetPreloaderProps) => {
   const preloadedAssets = useRef(new Set<string>());
 
-  // Función para precargar un video
+  // Función para precargar un video con optimizaciones
   const preloadVideo = (url: string) => {
     if (preloadedAssets.current.has(url)) return;
     
@@ -24,23 +24,38 @@ export const useAssetPreloader = ({
     video.preload = 'metadata';
     video.src = url;
     video.muted = true;
+    video.playsInline = true;
     
     // Marcar como precargado cuando los metadatos estén listos
     video.addEventListener('loadedmetadata', () => {
       preloadedAssets.current.add(url);
     });
+    
+    // Manejar errores
+    video.addEventListener('error', () => {
+      preloadedAssets.current.add(url); // Marcar como precargado para evitar reintentos
+    });
   };
 
-  // Función para precargar imágenes
+  // Función para precargar imágenes con Next.js Image
   const preloadImages = (urls: string[]) => {
     urls.forEach(url => {
       if (preloadedAssets.current.has(url)) return;
       
+      // Usar Next.js Image para precarga optimizada
       const img = new Image();
       img.onload = () => {
         preloadedAssets.current.add(url);
       };
+      img.onerror = () => {
+        // Marcar como precargado incluso si hay error para evitar reintentos
+        preloadedAssets.current.add(url);
+      };
       img.src = url;
+      
+      // Agregar atributos de optimización
+      img.loading = 'eager';
+      img.decoding = 'async';
     });
   };
 
@@ -68,6 +83,15 @@ export const useAssetPreloader = ({
 
     // Precargar inmediatamente los primeros N proyectos
     const projectsToPreload = projects.slice(0, preloadCount);
+    
+    // Solo mostrar logs en desarrollo
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`🚀 Preloading ${projectsToPreload.length} projects for instant hover...`);
+      
+      projectsToPreload.forEach((project, index) => {
+        console.log(`📦 Preloading project ${index + 1}: ${project.title}`);
+      });
+    }
     
     projectsToPreload.forEach(project => {
       preloadProject(project);

@@ -23,6 +23,7 @@ interface OptimizedProjectItemProps {
   projectNumber: string;
   skipContainer?: boolean; // Nueva prop para saltar el contenedor w-3/4
   imageOrientation?: 'portrait' | 'landscape' | 'square'; // Nueva prop para orientación
+  isPreloaded?: (url: string) => boolean; // Nuevo: función para verificar si un asset fue precargado
 }
 
 const OptimizedProjectItem = ({
@@ -39,7 +40,8 @@ const OptimizedProjectItem = ({
   showTitle = false,
   projectNumber,
   skipContainer = false,
-  imageOrientation = 'square'
+  imageOrientation = 'square',
+  isPreloaded = () => false
 }: OptimizedProjectItemProps) => {
   
   // Hook para lazy loading con preload al acercarse (solo desktop)
@@ -139,6 +141,8 @@ const OptimizedProjectItem = ({
             src={getVideoSource(project)}
             poster={project.thumbnail || ''}
             alt={project.title}
+            preload={!isMobile && (hasApproached || index < 6)}
+            isPreloaded={isPreloaded(getVideoSource(project))}
             className={`w-full h-auto block transition-opacity duration-300 ${
               !isMobile && (hasApproached || index < 6) && hoveredProject === project.id 
                 ? 'opacity-0' 
@@ -211,6 +215,8 @@ const OptimizedProjectItem = ({
               src={getVideoSource(project)}
               poster={project.thumbnail || ''}
               alt={project.title}
+              preload={!isMobile && (hasApproached || index < 6)}
+              isPreloaded={isPreloaded(getVideoSource(project))}
               className={`w-full h-auto block transition-opacity duration-300 ${
                 !isMobile && (hasApproached || index < 6) && hoveredProject === project.id 
                   ? 'opacity-0' 
