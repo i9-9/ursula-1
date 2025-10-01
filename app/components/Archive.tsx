@@ -84,7 +84,7 @@ const Archive = ({ projects }: ArchiveProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pb-16 md:pt-20 pt-8">
+    <div className="min-h-screen bg-background flex flex-col pb-16 md:pt-20 pt-8" style={{ minHeight: 'calc(100vh - 36px)' }}>
       
       {/* Filter Section */}
 
