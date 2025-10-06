@@ -202,24 +202,6 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
     }
   }, [isPlayerReady, hasShownInitialTimeline, isMouseOverVideo]);
 
-  // Función para iniciar el timer de auto-hide
-  const startAutoHideTimer = () => {
-    // Limpiar timer existente si hay uno
-    if (autoHideTimer) {
-      clearTimeout(autoHideTimer);
-    }
-    
-    // Crear nuevo timer
-    const newTimer = setTimeout(() => {
-      console.log('Ocultando timeline después de 5 segundos (auto-hide)');
-      if (!isMouseOverVideo) {
-        setShowTimeline(false);
-      }
-    }, 5000);
-    
-    setAutoHideTimer(newTimer);
-  };
-
   // Don't render anything until client-side hydration is complete
   if (!isClient) {
     return (
@@ -296,12 +278,16 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
   };
 
   const handleMouseLeave = () => {
-    console.log('Mouse leave - iniciando auto-hide');
+    console.log('Mouse leave - ocultando timeline inmediatamente');
     setIsMouseOverVideo(false);
     
-    // Solo iniciar auto-hide si ya se mostró el timeline inicial
-    if (hasShownInitialTimeline) {
-      startAutoHideTimer();
+    // Ocultar timeline inmediatamente cuando el mouse sale
+    setShowTimeline(false);
+    
+    // Limpiar cualquier timer existente
+    if (autoHideTimer) {
+      clearTimeout(autoHideTimer);
+      setAutoHideTimer(null);
     }
   };
 
@@ -336,7 +322,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                 
                 {/* Overlay transparente para capturar clicks */}
                 <div 
-                  className="absolute inset-0 cursor-pointer z-10"
+                  className="absolute inset-0 z-10"
                   onClick={togglePlayPause}
                 />
                 
@@ -351,7 +337,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                       
                       {/* Barra de progreso estilo Apple */}
                       <div 
-                        className="flex-1 h-1 bg-white/20 rounded-full cursor-pointer relative group"
+                        className="flex-1 h-1 bg-white/20 rounded-full relative group"
                         onMouseDown={handleMouseDown}
                       >
                         {/* Progreso transcurrido */}
@@ -374,7 +360,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                       {/* Botón de mute estilo Apple */}
                       <button
                         onClick={toggleMute}
-                        className="text-white hover:text-white/80 transition-colors duration-200 cursor-pointer"
+                        className="text-white hover:text-white/80 transition-colors duration-200"
                         aria-label={isMuted ? 'Unmute video' : 'Mute video'}
                       >
                         {isMuted ? (
@@ -410,7 +396,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                 
                 {/* Overlay transparente para capturar clicks */}
                 <div 
-                  className="absolute inset-0 cursor-pointer z-10"
+                  className="absolute inset-0 z-10"
                   onClick={togglePlayPause}
                 />
                 
@@ -465,7 +451,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
         {project.vimeoId && isPlayerReady && (
           <button
             onClick={togglePlayPause}
-            className={`absolute top-4 right-8 z-50 p-3 cursor-pointer transition-all duration-300 ${
+            className={`absolute top-4 right-8 z-50 p-3 transition-all duration-300 ${
               theme === 'dark' 
                 ? 'text-white hover:text-white/80' 
                 : 'text-black hover:text-black/80'
