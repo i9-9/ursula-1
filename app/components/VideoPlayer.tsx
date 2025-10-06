@@ -451,7 +451,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
         {project.vimeoId && isPlayerReady && (
           <button
             onClick={togglePlayPause}
-            className={`absolute top-4 right-8 z-50 p-3 transition-all duration-300 ${
+            className={`absolute top-1 right-8 z-50 p-3 transition-all duration-300 ${
               theme === 'dark' 
                 ? 'text-white hover:text-white/80' 
                 : 'text-black hover:text-black/80'
