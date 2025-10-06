@@ -91,15 +91,33 @@ const nextConfig = {
     return config;
   },
   
-  // Headers para mejor rendimiento en SSG
+  // Headers para mejor rendimiento en SSG con cache busting
   async headers() {
     return [
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable', // Assets estáticos con hash
+          },
+        ],
+      },
+      {
+        source: '/:path*\\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=86400, must-revalidate', // 24 horas para assets con versionado
+          },
+        ],
+      },
       {
         source: '/(.*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable', // Cache por 1 año
+            value: 'public, max-age=0, must-revalidate', // Sin caché para HTML
           },
         ],
       },

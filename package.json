@@ -1,15 +1,17 @@
 {
   "name": "ursula-1",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "build:prod": "cp next.config.production.mjs next.config.mjs && next build && cp next.config.mjs next.config.backup.mjs && git checkout next.config.mjs",
+    "build:clean": "node scripts/clean-cache.js && npm run build",
     "start": "next start",
     "start:prod": "next start",
     "export": "npm run build:prod",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "node scripts/clean-cache.js"
   },
   "dependencies": {
     "@vercel/speed-insights": "^1.2.0",
