@@ -29,49 +29,51 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Columnas 5-8: Área de navegación - elementos más cercanos */}
-          <div className="col-span-4 flex items-baseline justify-center space-x-6">
-            <Link
-              href="/work"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
-                pathname === "/work" ? "opacity-60" : "opacity-100"
-              }`}
-              style={{ fontFamily: 'Suisse BP INTL' }}
-              aria-label="Selected works"
-              aria-current={pathname === "/work" ? "page" : undefined}
-            >
-              WORK
-            </Link>
+          {/* Columnas 5-8: Área de navegación - ARCHIVE centrado exactamente */}
+          <div className="col-span-4 flex items-center justify-center pt-1">
+            <div className="flex items-center space-x-6">
+              <Link
+                href="/work"
+                className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-center ${
+                  pathname === "/work" ? "opacity-60" : "opacity-100"
+                }`}
+                style={{ fontFamily: 'Suisse BP INTL' }}
+                aria-label="Selected works"
+                aria-current={pathname === "/work" ? "page" : undefined}
+              >
+                WORK
+              </Link>
 
-            <Link
-              href="/archive"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
-                pathname === "/archive" ? "opacity-60" : "opacity-100"
-              }`}
-              style={{ fontFamily: 'Suisse BP INTL' }}
-              aria-label="Archive"
-              aria-current={pathname === "/archive" ? "page" : undefined}
-              data-nav-item="archive"
-            >
-              ARCHIVE
-            </Link>
+              <Link
+                href="/archive"
+                className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-center ${
+                  pathname === "/archive" ? "opacity-60" : "opacity-100"
+                }`}
+                style={{ fontFamily: 'Suisse BP INTL' }}
+                aria-label="Archive"
+                aria-current={pathname === "/archive" ? "page" : undefined}
+                data-nav-item="archive"
+              >
+                ARCHIVE
+              </Link>
 
-            <Link
-              href="/about"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
-                pathname === "/about" ? "opacity-60" : "opacity-100"
-              }`}
-              style={{ fontFamily: 'Suisse BP INTL' }}
-              aria-label="About"
-              aria-current={pathname === "/about" ? "page" : undefined}
-            >
-              ABOUT
-            </Link>
+              <Link
+                href="/about"
+                className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-center ${
+                  pathname === "/about" ? "opacity-60" : "opacity-100"
+                }`}
+                style={{ fontFamily: 'Suisse BP INTL' }}
+                aria-label="About"
+                aria-current={pathname === "/about" ? "page" : undefined}
+              >
+                ABOUT
+              </Link>
+            </div>
           </div>
 
           {/* Columnas 9-12: Área del toggle */}
-          <div className="col-span-4 flex items-baseline justify-end">
-            <div className="flex items-baseline space-x-4">
+          <div className="col-span-4 flex items-center justify-end pt-1">
+            <div className="flex items-center space-x-4">
               <ThemeToggle />
             </div>
           </div>
@@ -92,10 +94,10 @@ const Navbar = () => {
           </Link>
 
           {/* Nav items con menos espacio */}
-          <div className="flex items-baseline space-x-2">
+          <div className="flex items-center space-x-2 pt-1">
             <Link
               href="/work"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
+              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-center ${
                 pathname === "/work" ? "opacity-60" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
@@ -107,7 +109,7 @@ const Navbar = () => {
 
             <Link
               href="/archive"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
+              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-center ${
                 pathname === "/archive" ? "opacity-60" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
@@ -120,7 +122,7 @@ const Navbar = () => {
 
             <Link
               href="/about"
-              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-baseline ${
+              className={`text-foreground text-[13px] uppercase tracking-wide font-regular hover:opacity-60 transition-opacity duration-200 flex items-center ${
                 pathname === "/about" ? "opacity-60" : "opacity-100"
               }`}
               style={{ fontFamily: 'Suisse BP INTL' }}
@@ -130,7 +132,7 @@ const Navbar = () => {
               ABOUT
             </Link>
 
-            <div className="ml-3 flex items-baseline space-x-2">
+            <div className="ml-3 flex items-center space-x-2">
               <ThemeToggle />
             </div>
           </div>

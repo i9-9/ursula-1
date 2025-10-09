@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, memo, useMemo, useCallback } from "react"
+import { useState, memo, useMemo, useCallback, useEffect } from "react"
 import type { Project } from "@/lib/contentful"
 import { useAssetPreloader } from "@/app/hooks/useAssetPreloader"
 import { useIsMobile } from "@/app/hooks/useIsMobile"
@@ -66,6 +66,7 @@ ProjectItem.displayName = "ProjectItem"
 
 const WorksGrid = ({ works = [] }: WorksGridProps) => {
   const [hoveredProject, setHoveredProject] = useState<string | null>(null)
+  const [visibleProjects, setVisibleProjects] = useState<Set<number>>(new Set())
 
   // Detectar si estamos en mobile
   const isMobile = useIsMobile(1024) // lg breakpoint
@@ -98,6 +99,25 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
     return !!(project.images && project.images.length > 0)
   }, [])
 
+  // Animación escalonada al cargar
+  useEffect(() => {
+    if (works.length === 0) return
+
+    // Reset animation state
+    setVisibleProjects(new Set())
+
+    // Start animation sequence
+    const timer = setTimeout(() => {
+      works.forEach((_, index) => {
+        setTimeout(() => {
+          setVisibleProjects(prev => new Set(prev).add(index))
+        }, index * 80) // 80ms delay entre cada proyecto
+      })
+    }, 100) // 100ms delay inicial
+
+    return () => clearTimeout(timer)
+  }, [works])
+
   // Memoizar el layout móvil para evitar re-renders innecesarios
   const mobileLayout = useMemo(() => {
     if (isMobile === false) return null // No renderizar en desktop
@@ -109,17 +129,30 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
             ? project.archiveOrder.toString().padStart(2, "0")
             : (index + 1).toString().padStart(2, "0")
           
+          const isVisible = visibleProjects.has(index)
+          
           return (
-            <MobileProjectItem
+            <div
               key={project.id}
-              project={project}
-              projectNumber={projectNumber}
-            />
+              className={`transition-all duration-500 ease-out ${
+                isVisible 
+                  ? 'opacity-100 transform translate-y-0' 
+                  : 'opacity-0 transform translate-y-4'
+              }`}
+              style={{
+                transitionDelay: `${index * 80}ms`
+              }}
+            >
+              <MobileProjectItem
+                project={project}
+                projectNumber={projectNumber}
+              />
+            </div>
           )
         })}
       </div>
     )
-  }, [works, isMobile])
+  }, [works, isMobile, visibleProjects])
 
   if (works.length === 0) {
     return (
@@ -155,10 +188,20 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                     ? project.archiveOrder.toString().padStart(2, "0")
                     : (globalIndex + 1).toString().padStart(2, "0")
 
-                  // const orientation = project.isVertical ? "portrait" : "square"
+                  const isVisible = visibleProjects.has(globalIndex)
 
                   return (
-                    <div key={`number-${project.id}`} className="flex justify-start">
+                    <div 
+                      key={`number-${project.id}`} 
+                      className={`flex justify-start transition-all duration-500 ease-out ${
+                        isVisible 
+                          ? 'opacity-100 transform translate-y-0' 
+                          : 'opacity-0 transform translate-y-4'
+                      }`}
+                      style={{
+                        transitionDelay: `${globalIndex * 80}ms`
+                      }}
+                    >
                       {/* Ambos tipos usan el mismo ancho para mantener alineación vertical consistente */}
                       <div className="w-5/6 flex justify-end">
                         <span className="font-normal text-foreground text-[9px]">{projectNumber}</span>
@@ -172,33 +215,58 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
               <div className="grid grid-cols-4 gap-8 items-center min-h-[200px]">
                 {projectsInRow.map((project, index) => {
                   const globalIndex = startIndex + index
+                  const isVisible = visibleProjects.has(globalIndex)
 
                   // Determinar orientación basada en el campo isVertical
                   const orientation = project.isVertical ? "portrait" : "square"
 
                   return (
-                    <ProjectItem
+                    <div
                       key={project.id}
-                      project={project}
-                      globalIndex={globalIndex}
-                      orientation={orientation}
-                      hoveredProject={hoveredProject}
-                      setHoveredProject={setHoveredProject}
-                      preloadProjectAsync={preloadProjectAsync}
-                      getVideoSource={getVideoSource}
-                      isVideoProject={isVideoProject}
-                      isImageProject={isImageProject}
-                      isPreloaded={isPreloaded}
-                    />
+                      className={`transition-all duration-500 ease-out ${
+                        isVisible 
+                          ? 'opacity-100 transform translate-y-0' 
+                          : 'opacity-0 transform translate-y-4'
+                      }`}
+                      style={{
+                        transitionDelay: `${globalIndex * 80}ms`
+                      }}
+                    >
+                      <ProjectItem
+                        project={project}
+                        globalIndex={globalIndex}
+                        orientation={orientation}
+                        hoveredProject={hoveredProject}
+                        setHoveredProject={setHoveredProject}
+                        preloadProjectAsync={preloadProjectAsync}
+                        getVideoSource={getVideoSource}
+                        isVideoProject={isVideoProject}
+                        isImageProject={isImageProject}
+                        isPreloaded={isPreloaded}
+                      />
+                    </div>
                   )
                 })}
               </div>
 
               {/* Fila de títulos - alineados al margen izquierdo de las imágenes */}
               <div className="grid grid-cols-4 gap-8 mt-2">
-                {projectsInRow.map((project) => {
+                {projectsInRow.map((project, index) => {
+                  const globalIndex = startIndex + index
+                  const isVisible = visibleProjects.has(globalIndex)
+
                   return (
-                    <div key={`title-${project.id}`} className="flex justify-start">
+                    <div 
+                      key={`title-${project.id}`} 
+                      className={`flex justify-start transition-all duration-500 ease-out ${
+                        isVisible 
+                          ? 'opacity-100 transform translate-y-0' 
+                          : 'opacity-0 transform translate-y-4'
+                      }`}
+                      style={{
+                        transitionDelay: `${globalIndex * 80}ms`
+                      }}
+                    >
                       <div className="w-5/6">
                         <p
                           className={`font-normal uppercase tracking-wide text-foreground text-left leading-tight text-[12px] transition-opacity duration-300 ${
