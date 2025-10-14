@@ -1,5 +1,6 @@
 import { createClient } from 'contentful';
 import { generateSemanticSlug, generateTitleSlug } from './slug-utils';
+import { unstable_cache } from 'next/cache';
 
 // Tipos para los datos de Contentful
 export interface HeroSlide {
@@ -125,8 +126,8 @@ function generateSlug(title: string): string {
   return generateTitleSlug(title);
 }
 
-      // NUEVA FUNCIÓN: Obtener todos los proyectos del content type unificado
-export async function getProjects(): Promise<Project[]> {
+// Función interna sin caché
+async function _getProjects(): Promise<Project[]> {
   const client = initializeContentfulClient();
   
   if (!client) {
@@ -229,6 +230,16 @@ export async function getProjects(): Promise<Project[]> {
     return [];
   }
 }
+
+// Función pública con caché
+export const getProjects = unstable_cache(
+  _getProjects,
+  ['projects'],
+  {
+    tags: ['projects', 'contentful'],
+    revalidate: false, // Sin cache - siempre obtener datos frescos
+  }
+);
 
 // NUEVA FUNCIÓN: Obtener solo los 24 proyectos del WorksGrid
 export async function getWorksGridProjects(): Promise<Project[]> {

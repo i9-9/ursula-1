@@ -1,4 +1,4 @@
-# Cache Busting Configuration
+# Cache Busting Configuration - v20251014-1760459825433
 # Este archivo fuerza a los navegadores a descargar la nueva versión
 
 # Deshabilitar caché para archivos HTML
@@ -6,11 +6,13 @@
     Header set Cache-Control "no-cache, no-store, must-revalidate"
     Header set Pragma "no-cache"
     Header set Expires "0"
+    Header set Last-Modified "Tue, 14 Oct 2025 16:37:07 GMT"
 </FilesMatch>
 
 # Caché corto para CSS y JS (24 horas)
 <FilesMatch "\.(css|js)$">
     Header set Cache-Control "public, max-age=86400, must-revalidate"
+    Header set Last-Modified "Tue, 14 Oct 2025 16:37:07 GMT"
 </FilesMatch>
 
 # Caché largo para assets estáticos con hash
@@ -21,4 +23,14 @@
 # Forzar recarga de archivos específicos
 <FilesMatch "^(app|globals|main)\.(css|js)$">
     Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</FilesMatch>
+
+# Cache busting para páginas principales
+<FilesMatch "^(index|work|archive|about)\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+    Header set Last-Modified "Tue, 14 Oct 2025 16:37:07 GMT"
 </FilesMatch>

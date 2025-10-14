@@ -1,7 +1,7 @@
 'use client';
 
 import VideoPlayer from './VideoPlayer';
-import ProjectGallerySlider from './ProjectGallerySlider';
+import ProjectGallerySwiper from './ProjectGallerySwiper';
 import Copyright from './Copyright';
 import { Project } from '@/lib/contentful';
 
@@ -27,16 +27,10 @@ export default function ProjectPageLoader({ project, currentIndex = 0 }: Project
           displayIndex={currentIndex + 1}
         />
       ) : hasImages ? (
-        /* Galería de imágenes usando el nuevo slider basado en home */
-        <div className="relative" style={{ marginTop: 0, paddingTop: 0 }}>
-          <ProjectGallerySlider
-            project={project}
-          />
-          {/* Copyright positioned after the slider content */}
-          <div className="relative z-10">
-            <Copyright />
-          </div>
-        </div>
+        /* Galería de imágenes usando el nuevo ProjectGallerySwiper con navegación */
+        <ProjectGallerySwiper
+          project={project}
+        />
       ) : (
         /* Fallback para proyectos sin video ni imágenes */
         <div className="min-h-screen bg-background flex items-center justify-center">

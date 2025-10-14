@@ -3,8 +3,8 @@ import Copyright from '../components/Copyright';
 
 export default function AboutPage() {
   return (
-    <div className="relative min-h-screen flex flex-col">
-      <main className="flex-1 px-4 md:px-[30px] pt-20 md:pt-10" style={{ minHeight: 'calc(100vh - 36px)' }}>
+    <div className="relative h-screen flex flex-col">
+      <main className="flex-1 px-4 md:px-[30px] pt-20 md:pt-10" style={{ height: 'calc(100vh - 36px)' }}>
         <div className="flex flex-col gap-y-1 text-[10px] md:text-[12px]">
           <span>PRODUCTION DESIGNER, ART DIRECTOR, SET DESIGNER</span>
           <span>FROM BUENOS AIRES, ARGENTINA</span>

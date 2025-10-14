@@ -9,7 +9,7 @@ import { HeroSlide } from '@/lib/contentful'
 // ═══════════════════════════════════════════════════════════════
 
 const SLIDE_HEIGHT_VH = 50 // Altura más pequeña
-const AUTOPLAY_DELAY = 500
+const AUTOPLAY_DELAY = 3000 // Tiempo original recuperado
 
 // ═══════════════════════════════════════════════════════════════
 // 📦 FadeSlider - Imagen central con transición de opacidad
@@ -25,9 +25,11 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
   const imageRefs = useRef<Map<string, HTMLImageElement>>(new Map())
 
-  // Calcular altura en píxeles basada en viewport
+  // Calcular altura responsive basada en viewport
   const slideHeightPx = typeof window !== 'undefined' 
-    ? (window.innerHeight * SLIDE_HEIGHT_VH) / 100 
+    ? window.innerWidth < 768 
+      ? (window.innerHeight * 60) / 100 // 60vh en mobile (más grande)
+      : (window.innerHeight * SLIDE_HEIGHT_VH) / 100 // 70vh en desktop
     : 700
 
   // Pre-cargar imágenes para evitar flicker
@@ -97,15 +99,16 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
   return (
     <section 
       className="absolute inset-0 flex items-center justify-center bg-background"
-      style={{ height: '100vh' }}
+      style={{ height: 'calc(100vh - 36px)' }}
     >
-      {/* Contenedor central fijo */}
+      {/* Contenedor central más pequeño */}
       <div 
         className="relative flex items-center justify-center"
         style={{
           height: `${slideHeightPx}px`,
           width: '100%',
-          maxWidth: '90vw',
+          maxWidth: typeof window !== 'undefined' && window.innerWidth < 768 ? '90vw' : '60vw',
+          margin: '0 auto',
         }}
       >
         {/* Renderizar todas las slides con transición de opacidad */}
@@ -140,13 +143,12 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
                 />
               ) : slide.src ? (
                 <div 
-                  className="relative"
+                  className="relative flex items-center justify-center"
                   style={{
                     height: '100%',
                     width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    maxHeight: '100%',
+                    maxWidth: '100%',
                   }}
                 >
                   <Image
@@ -156,7 +158,7 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
                     style={{
                       objectFit: 'contain',
                     }}
-                    sizes="90vw"
+                    sizes="(max-width: 768px) 60vw, (max-width: 1200px) 50vw, 40vw"
                     priority={isActive}
                     quality={95}
                   />

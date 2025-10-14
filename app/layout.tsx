@@ -6,6 +6,7 @@ import NavbarWithLoader from './components/NavbarWithLoader';
 import ClientWrapper from './components/ClientWrapper';
 import ScrollbarStyles from './components/ScrollbarStyles';
 import ThemeProvider from './components/ThemeProvider';
+import ScrollManager from './components/ScrollManager';
 import ChunkErrorBoundary from './components/ChunkErrorBoundary';
 import { SplashProvider } from './contexts/SplashContext';
 import SplashScreen from './components/SplashScreen';
@@ -95,9 +96,10 @@ export default function RootLayout({
           <SplashProvider>
             <ClientWrapper>
               <ChunkErrorBoundary>
-                <div className="min-h-screen bg-background text-foreground">
+                <div className="bg-background text-foreground">
                   <SplashScreen />
                   <MainContentWrapper>
+                    <ScrollManager />
                     <NavbarWithLoader />
                     {children}
                   </MainContentWrapper>

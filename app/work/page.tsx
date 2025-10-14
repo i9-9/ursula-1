@@ -4,7 +4,7 @@ import Copyright from '@/app/components/Copyright';
 
 export default async function WorkPage() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen allow-scroll">
       <WorkLoaderWrapper />
       <Copyright />
     </main>

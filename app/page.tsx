@@ -3,7 +3,7 @@ import ClientHome from '@/app/components/ClientHome';
 
 export default async function HomePage() {
   return (
-    <main className="min-h-screen">
+    <main className="h-screen">
       <HomeLoaderWrapper />
     </main>
   );

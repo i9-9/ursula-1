@@ -106,8 +106,21 @@ body {
   background-color: var(--background);
   /* Prevenir scroll negativo */
   overscroll-behavior-y: none;
-  /* Asegurar que el scroll no vaya más allá del contenido */
-  min-height: 100vh;
+  /* Altura exacta sin scroll por defecto */
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Clase para páginas CON scroll (Work, Archive, etc.) */
+.allow-scroll {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Asegurar que el body permita scroll cuando tiene la clase allow-scroll */
+body.allow-scroll {
+  height: auto !important;
+  overflow: visible !important;
 }
 
 /* Headings */

@@ -19,11 +19,21 @@ export async function POST(request: NextRequest) {
     revalidateTag('projects');
     revalidateTag('contentful');
     
+    // Log para debugging
+    console.log('Cache invalidated for:', {
+      contentType: body.sys?.contentType?.sys?.id || 'unknown',
+      timestamp: new Date().toISOString(),
+      paths: ['/', '/work', '/archive', '/about'],
+      tags: ['projects', 'contentful']
+    });
+    
     return NextResponse.json({ 
       success: true, 
       message: 'Cache invalidated successfully',
       timestamp: Date.now(),
-      contentType: body.sys?.contentType?.sys?.id || 'unknown'
+      contentType: body.sys?.contentType?.sys?.id || 'unknown',
+      revalidatedPaths: ['/', '/work', '/archive', '/about', '/work/[slug]', '/archive/[slug]'],
+      revalidatedTags: ['projects', 'contentful']
     });
     
   } catch (error) {
@@ -40,6 +50,7 @@ export async function GET() {
   return NextResponse.json({ 
     status: 'Webhook endpoint ready',
     message: 'This endpoint receives Contentful webhooks for cache invalidation',
-    timestamp: Date.now()
+    timestamp: Date.now(),
+    usage: 'Send POST request with Contentful webhook payload to invalidate cache'
   });
 }

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:stable": "next dev",
     "build": "next build",
     "build:prod": "cp next.config.production.mjs next.config.mjs && next build && cp next.config.mjs next.config.backup.mjs && git checkout next.config.mjs",
     "build:clean": "node scripts/clean-cache.js && npm run build",
@@ -11,7 +12,10 @@
     "start:prod": "next start",
     "export": "npm run build:prod",
     "lint": "next lint",
-    "clean": "node scripts/clean-cache.js"
+    "clean": "node scripts/clean-cache.js",
+    "debug:cache": "node scripts/debug-cache.js",
+    "cache-bust": "node scripts/cache-bust.js",
+    "deploy:fresh": "npm run cache-bust && npm run build && npm run start"
   },
   "dependencies": {
     "@vercel/speed-insights": "^1.2.0",
@@ -38,5 +42,7 @@
     "eslint-config-next": "15.2.4",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "cacheBustVersion": "v20251014-1760459825433",
+  "cacheBustTimestamp": 1760459825433
 }

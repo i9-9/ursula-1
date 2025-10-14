@@ -4,7 +4,7 @@ import Copyright from '@/app/components/Copyright';
 
 export default async function ArchivePage() {
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen allow-scroll">
       <main className="min-h-screen" style={{ minHeight: 'calc(100vh - 36px)' }}>
         <ArchiveWrapper />
       </main>
