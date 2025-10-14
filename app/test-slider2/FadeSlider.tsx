@@ -9,7 +9,7 @@ import { HeroSlide } from '@/lib/contentful'
 // ═══════════════════════════════════════════════════════════════
 
 const SLIDE_HEIGHT_VH = 50 // Altura más pequeña
-const AUTOPLAY_DELAY = 3000 // Tiempo original recuperado
+const AUTOPLAY_DELAY = 1000 // Slider más rápido - 2 segundos
 
 // ═══════════════════════════════════════════════════════════════
 // 📦 FadeSlider - Imagen central con transición de opacidad

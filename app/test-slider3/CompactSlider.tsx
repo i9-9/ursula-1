@@ -16,7 +16,7 @@ interface HeroSlide {
   alt?: string
 }
 
-const AUTO_PLAY_DELAY = 4000 // Cambio automático cada 4 segundos
+const AUTO_PLAY_DELAY = 2500 // Slider más rápido - 2.5 segundos
 const SLIDE_HEIGHT = 500 // Altura fija para todas las slides (en px)
 const SLIDE_GAP = 20 // Espacio entre slides (en px)
 

@@ -17,7 +17,7 @@ import 'swiper/css'
 
 const SLIDE_HEIGHT_VH = 70 // Altura fija en vh
 const GAP_SIZE = 80 // Espacio entre slides en px
-const AUTOPLAY_DELAY = 3000 // Cambio automático cada 4 segundos
+const AUTOPLAY_DELAY = 2000 // Slider más rápido - 2 segundos
 
 // ═══════════════════════════════════════════════════════════════
 // 📦 MediaSlide - Altura normalizada con dimensiones calculadas
