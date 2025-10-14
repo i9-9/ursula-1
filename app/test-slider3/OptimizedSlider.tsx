@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import useEmblaCarousel from 'embla-carousel-react'
 
 // ═══════════════════════════════════════════════════════════════
@@ -30,7 +31,7 @@ const SLIDE_GAP = 20 // Espacio entre slides (en px)
 
 async function preloadImage(src: string): Promise<{ width: number; height: number }> {
   return new Promise((resolve, reject) => {
-    const img = new Image()
+    const img = new window.Image()
     img.onload = () => {
       const aspectRatio = img.naturalWidth / img.naturalHeight
       const width = SLIDE_HEIGHT * aspectRatio
@@ -115,12 +116,12 @@ function SlideItem({ slide, index }: SlideItemProps) {
         />
       ) : slide.src ? (
         // Renderizado de imagen con dimensiones exactas
-        <img
+        <Image
           src={slide.src}
           alt={slide.alt || slide.title}
+          width={slide.width}
+          height={slide.height}
           style={{
-            width: `${slide.width}px`,
-            height: `${slide.height}px`,
             display: 'block',
             objectFit: 'contain', // Mantiene proporción original sin estirar
           }}
@@ -177,7 +178,7 @@ export default function OptimizedSlider({ slides }: OptimizedSliderProps) {
     skipSnaps: false, // No saltar slides
   })
 
-  const [isPlaying, setIsPlaying] = useState(true)
+  const [isPlaying] = useState(true)
 
   // ═══════════════════════════════════════════════════════════════
   // 🔄 AUTO-PLAY: Cambio automático de slides cada 4 segundos

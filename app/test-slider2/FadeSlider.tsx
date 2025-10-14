@@ -22,10 +22,8 @@ interface FadeSliderProps {
 export default function FadeSlider({ slides }: FadeSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [hasStarted, setHasStarted] = useState(false)
-  const [isAccelerated, setIsAccelerated] = useState(false)
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
   const imageRefs = useRef<Map<string, HTMLImageElement>>(new Map())
-  const isAcceleratedRef = useRef(false)
 
   // Calcular altura en píxeles basada en viewport
   const slideHeightPx = typeof window !== 'undefined' 
