@@ -10,7 +10,7 @@ export default function AboutPage() {
           <span>FROM BUENOS AIRES, ARGENTINA</span>
           <span className="flex flex-row pt-24">CONTACT: 
             <span className="flex flex-row ml-2">
-              <Link href="mailto:info@ursulabenavidez.com" className="hover:opacity-70 transition-opacity">
+              <Link href="mailto:ursulabenavidez19@gmail.com" className="hover:opacity-70 transition-opacity">
                 MAIL,
               </Link>
               <Link href="https://instagram.com/ursulabenavidez" target="_blank" rel="noopener noreferrer" className="ml-2 hover:opacity-70 transition-opacity">

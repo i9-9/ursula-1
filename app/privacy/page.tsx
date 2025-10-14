@@ -80,8 +80,8 @@ export default function Privacy() {
                 <h2 className="h3 mb-3">Contact</h2>
                 <p className="text-p opacity-80 mb-2">
                   If you have questions about this Privacy Policy, please contact us at{' '}
-                  <a href="mailto:contact@ursulabenavides.com" className="underline hover:opacity-70 transition-opacity">
-                    contact@ursulabenavides.com
+                  <a href="mailto:ursulabenavidez19@gmail.com" className="underline hover:opacity-70 transition-opacity">
+                    ursulabenavidez19@gmail.com
                   </a>.
                 </p>
               </div>
