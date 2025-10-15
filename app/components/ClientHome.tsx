@@ -22,7 +22,7 @@ export default function ClientHome({ heroSlides }: ClientHomeProps) {
           <p className="text-sm opacity-70">No se encontraron proyectos para mostrar</p>
         </div>
         {/* Copyright posicionado en la parte inferior derecha */}
-        <div className="absolute bottom-1 right-0 px-4 md:px-[30px]">
+        <div className="absolute bottom-4 right-0 px-4 md:px-[30px]">
           <Copyright absolute={true} />
         </div>
       </section>
@@ -38,7 +38,7 @@ export default function ClientHome({ heroSlides }: ClientHomeProps) {
       <FadeSlider slides={heroSlides} />
       
       {/* Copyright posicionado en la parte inferior derecha */}
-      <div className="absolute bottom-1 right-0 px-4 md:px-[30px] z-10">
+      <div className="absolute bottom-4 right-0 px-4 md:px-[30px] z-10">
         <Copyright absolute={true} />
       </div>
     </section>

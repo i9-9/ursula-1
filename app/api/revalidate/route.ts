@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
     // Revalidar por tags si usas tags en tus fetch
     revalidateTag('projects');
     revalidateTag('contentful');
+    revalidateTag('works-grid'); // Nuevo tag para WorksGrid
     
     // Log para debugging
     console.log('Cache invalidated for:', {

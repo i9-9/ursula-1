@@ -51,6 +51,14 @@
         {
           "key": "Expires",
           "value": "0"
+        },
+        {
+          "key": "Vary",
+          "value": "User-Agent, Accept-Encoding"
+        },
+        {
+          "key": "X-Cache-Bust",
+          "value": "mobile-work-v20251015"
         }
       ]
     },

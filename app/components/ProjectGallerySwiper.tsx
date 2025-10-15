@@ -373,7 +373,7 @@ const ProjectGallerySwiper = ({ project }: ProjectGallerySwiperProps) => {
         )}
 
         {/* Copyright */}
-        <div className="absolute bottom-1 right-0 px-4 md:px-[30px] z-10">
+        <div className="absolute bottom-4 right-0 px-4 md:px-[30px] z-10">
           <Copyright absolute={true} />
         </div>
       </section>

@@ -241,8 +241,8 @@ export const getProjects = unstable_cache(
   }
 );
 
-// NUEVA FUNCIÓN: Obtener solo los 24 proyectos del WorksGrid
-export async function getWorksGridProjects(): Promise<Project[]> {
+// Función interna para WorksGrid sin caché
+async function _getWorksGridProjects(): Promise<Project[]> {
   const client = initializeContentfulClient();
   
   if (!client) {
@@ -335,6 +335,16 @@ export async function getWorksGridProjects(): Promise<Project[]> {
     return [];
   }
 }
+
+// NUEVA FUNCIÓN: Obtener solo los 24 proyectos del WorksGrid CON CACHE BUSTING
+export const getWorksGridProjects = unstable_cache(
+  _getWorksGridProjects,
+  ['works-grid-projects'],
+  {
+    tags: ['projects', 'contentful', 'works-grid'],
+    revalidate: false, // Sin cache - siempre obtener datos frescos
+  }
+);
 
 // NUEVA FUNCIÓN: Obtener proyectos del archivo (todos los que no están en WorksGrid)
 export async function getArchiveProjects(): Promise<Project[]> {

@@ -15,6 +15,7 @@
     "clean": "node scripts/clean-cache.js",
     "debug:cache": "node scripts/debug-cache.js",
     "cache-bust": "node scripts/cache-bust.js",
+    "mobile-cache-bust": "node scripts/mobile-cache-bust.js",
     "deploy:fresh": "npm run cache-bust && npm run build && npm run start"
   },
   "dependencies": {
@@ -43,6 +44,6 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "cacheBustVersion": "v20251014-1760459825433",
-  "cacheBustTimestamp": 1760459825433
+  "cacheBustVersion": "v20251015-1760486614386",
+  "cacheBustTimestamp": 1760486614386
 }
