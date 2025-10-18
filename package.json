@@ -16,6 +16,8 @@
     "debug:cache": "node scripts/debug-cache.js",
     "cache-bust": "node scripts/cache-bust.js",
     "mobile-cache-bust": "node scripts/mobile-cache-bust.js",
+    "test:multi-domain": "node scripts/test-multi-domain-cache.js",
+    "verify:cache": "node scripts/verify-multi-domain-cache.js",
     "deploy:fresh": "npm run cache-bust && npm run build && npm run start"
   },
   "dependencies": {
@@ -44,6 +46,6 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "cacheBustVersion": "v20251015-1760486614386",
-  "cacheBustTimestamp": 1760486614386
+  "cacheBustVersion": "v20251018-1760800440518",
+  "cacheBustTimestamp": 1760800440518
 }

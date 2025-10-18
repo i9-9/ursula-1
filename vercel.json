@@ -55,10 +55,6 @@
         {
           "key": "Vary",
           "value": "User-Agent, Accept-Encoding"
-        },
-        {
-          "key": "X-Cache-Bust",
-          "value": "mobile-work-v20251015"
         }
       ]
     },
@@ -101,7 +97,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate, max-age=0"
+          "value": "no-cache, no-store, must-revalidate, max-age=0, s-maxage=0"
         },
         {
           "key": "Pragma",
@@ -110,6 +106,10 @@
         {
           "key": "Expires",
           "value": "0"
+        },
+        {
+          "key": "Surrogate-Control",
+          "value": "no-store"
         }
       ]
     },
@@ -119,6 +119,51 @@
         {
           "key": "Cache-Control",
           "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "ursulabenavidez.com"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Domain-Source",
+          "value": "naked-domain"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.ursulabenavidez.com"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Domain-Source",
+          "value": "www-domain"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "ursula-b.vercel.app"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Domain-Source",
+          "value": "vercel-domain"
         }
       ]
     }

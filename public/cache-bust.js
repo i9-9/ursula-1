@@ -9,8 +9,8 @@ const invalidateCache = async () => {
       },
       body: JSON.stringify({
         cacheBust: true,
-        version: 'v20251015-1760486614386',
-        timestamp: 1760486614386
+        version: 'v20251018-1760800440518',
+        timestamp: 1760800440518
       })
     });
     

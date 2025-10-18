@@ -91,8 +91,12 @@ const nextConfig = {
     return config;
   },
   
-  // Headers para cache busting - forzar versiones nuevas
+  // Headers para cache busting - configuración optimizada con timestamps dinámicos
   async headers() {
+    // Generate dynamic cache-bust value on every build
+    const buildTimestamp = Date.now();
+    const buildVersion = `v${new Date().toISOString().split('T')[0].replace(/-/g, '')}-${buildTimestamp}`;
+
     return [
       {
         source: '/api/(.*)',
@@ -112,13 +116,13 @@ const nextConfig = {
           },
         ],
       },
-      // Headers adicionales para forzar recarga de páginas principales
+      // Headers para páginas dinámicas - configuración más agresiva
       {
         source: '/(.*)',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate, max-age=0',
+            value: 'no-cache, no-store, must-revalidate, max-age=0, s-maxage=0',
           },
           {
             key: 'Pragma',
@@ -129,8 +133,16 @@ const nextConfig = {
             value: '0',
           },
           {
-            key: 'Last-Modified',
-            value: new Date().toUTCString(),
+            key: 'Surrogate-Control',
+            value: 'no-store',
+          },
+          {
+            key: 'X-Cache-Bust',
+            value: buildVersion,
+          },
+          {
+            key: 'X-Build-Timestamp',
+            value: buildTimestamp.toString(),
           },
         ],
       },
