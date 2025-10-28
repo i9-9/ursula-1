@@ -6,8 +6,12 @@ html {
   overscroll-behavior: none;
   /* Asegurar que el scroll sea suave y controlado */
   scroll-behavior: smooth;
-  /* Prevenir zoom en iOS al hacer doble tap */
-  touch-action: manipulation;
+  /* Prevenir zoom en iOS al hacer doble tap - solo en inputs */
+  /* touch-action: manipulation; */ /* Deshabilitado - puede causar problemas en Safari iOS */
+
+  /* Safari iOS viewport height fix */
+  height: -webkit-fill-available;
+  min-height: -webkit-fill-available;
 }
 
 /* Font Family */
@@ -108,7 +112,13 @@ body {
   overscroll-behavior-y: none;
   /* Altura exacta sin scroll por defecto */
   height: 100vh;
+  /* Safari iOS viewport height fix */
+  height: -webkit-fill-available;
+  min-height: -webkit-fill-available;
   overflow: hidden;
+  /* Mejorar rendering en Safari iOS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Clase para páginas CON scroll (Work, Archive, etc.) */

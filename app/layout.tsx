@@ -20,6 +20,13 @@ export const metadata: Metadata = {
   authors: [{ name: 'Ursula Benavidez' }],
   creator: 'Ursula Benavidez',
   publisher: 'Ursula Benavidez',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+    viewportFit: 'cover', // iOS safe area support
+  },
   formatDetection: {
     email: false,
     address: false,

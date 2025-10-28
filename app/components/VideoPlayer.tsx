@@ -292,7 +292,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                   ref={iframeRef}
                   src={`https://player.vimeo.com/video/${project.vimeoId}?autoplay=1&muted=1&loop=1&title=0&byline=0&portrait=0&controls=0`}
                   className="w-full h-full"
-                  frameBorder="0"
+                  style={{ border: 'none' }}
                   allow="autoplay; fullscreen"
                   allowFullScreen
                   title={displayTitle}
@@ -366,7 +366,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
                   ref={iframeRef}
                   src={`https://www.youtube.com/embed/${extractYouTubeId(project.videoUrl)}?autoplay=1&loop=1&mute=0&controls=0&modestbranding=1&rel=0&enablejsapi=1`}
                   className="w-full h-full"
-                  frameBorder="0"
+                  style={{ border: 'none' }}
                   allow="autoplay; fullscreen"
                   allowFullScreen
                   title={displayTitle}

@@ -120,27 +120,25 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
 
   // Memoizar el layout móvil para evitar re-renders innecesarios
   const mobileLayout = useMemo(() => {
-    if (isMobile === false) return null // No renderizar en desktop
-    
     return (
       <div className="lg:hidden px-4">
         {works.map((project, index) => {
           const projectNumber = project.archiveOrder
             ? project.archiveOrder.toString().padStart(2, "0")
             : (index + 1).toString().padStart(2, "0")
-          
+
           const isVisible = visibleProjects.has(index)
-          
+
           return (
             <div
               key={project.id}
-              className={`transition-all duration-500 ease-out ${
-                isVisible 
-                  ? 'opacity-100 transform translate-y-0' 
-                  : 'opacity-0 transform translate-y-4'
-              }`}
+              className="transition-opacity transition-transform duration-700 ease-out"
               style={{
-                transitionDelay: `${index * 80}ms`
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
+                WebkitTransform: isVisible ? 'translateY(0)' : 'translateY(12px)',
+                transitionDelay: `${index * 80}ms`,
+                willChange: 'opacity, transform'
               }}
             >
               <MobileProjectItem
@@ -152,7 +150,7 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
         })}
       </div>
     )
-  }, [works, isMobile, visibleProjects])
+  }, [works, visibleProjects])
 
   if (works.length === 0) {
     return (
@@ -191,15 +189,15 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   const isVisible = visibleProjects.has(globalIndex)
 
                   return (
-                    <div 
-                      key={`number-${project.id}`} 
-                      className={`flex justify-start transition-all duration-500 ease-out ${
-                        isVisible 
-                          ? 'opacity-100 transform translate-y-0' 
-                          : 'opacity-0 transform translate-y-4'
-                      }`}
+                    <div
+                      key={`number-${project.id}`}
+                      className="flex justify-start transition-opacity transition-transform duration-700 ease-out"
                       style={{
-                        transitionDelay: `${globalIndex * 80}ms`
+                        opacity: isVisible ? 1 : 0,
+                        transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
+                        WebkitTransform: isVisible ? 'translateY(0)' : 'translateY(12px)',
+                        transitionDelay: `${globalIndex * 80}ms`,
+                        willChange: 'opacity, transform'
                       }}
                     >
                       {/* Ambos tipos usan el mismo ancho para mantener alineación vertical consistente */}
@@ -223,13 +221,13 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   return (
                     <div
                       key={project.id}
-                      className={`transition-all duration-500 ease-out ${
-                        isVisible 
-                          ? 'opacity-100 transform translate-y-0' 
-                          : 'opacity-0 transform translate-y-4'
-                      }`}
+                      className="transition-opacity transition-transform duration-700 ease-out"
                       style={{
-                        transitionDelay: `${globalIndex * 80}ms`
+                        opacity: isVisible ? 1 : 0,
+                        transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
+                        WebkitTransform: isVisible ? 'translateY(0)' : 'translateY(12px)',
+                        transitionDelay: `${globalIndex * 80}ms`,
+                        willChange: 'opacity, transform'
                       }}
                     >
                       <ProjectItem
@@ -256,15 +254,15 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   const isVisible = visibleProjects.has(globalIndex)
 
                   return (
-                    <div 
-                      key={`title-${project.id}`} 
-                      className={`flex justify-start transition-all duration-500 ease-out ${
-                        isVisible 
-                          ? 'opacity-100 transform translate-y-0' 
-                          : 'opacity-0 transform translate-y-4'
-                      }`}
+                    <div
+                      key={`title-${project.id}`}
+                      className="flex justify-start transition-opacity transition-transform duration-700 ease-out"
                       style={{
-                        transitionDelay: `${globalIndex * 80}ms`
+                        opacity: isVisible ? 1 : 0,
+                        transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
+                        WebkitTransform: isVisible ? 'translateY(0)' : 'translateY(12px)',
+                        transitionDelay: `${globalIndex * 80}ms`,
+                        willChange: 'opacity, transform'
                       }}
                     >
                       <div className="w-5/6">

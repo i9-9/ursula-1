@@ -24,15 +24,28 @@ const MobileProjectItem = memo(({
   }, [project.videoUrl, project.thumbnail]);
 
   return (
-    <div className="flex justify-center pb-20">
-      <div className="relative w-11/12 max-w-[320px]">
+    <div
+      className="flex justify-center pb-20"
+      style={{
+        paddingLeft: 'max(1rem, env(safe-area-inset-left))',
+        paddingRight: 'max(1rem, env(safe-area-inset-right))'
+      }}
+    >
+      <div className="relative w-11/12">
         <a
           href={`/work/${generateSemanticSlug(project.title, project.artist)}`}
-          className="group relative section-title"
+          className="group relative section-title block"
           aria-label={`Ver ${project.title} by ${project.artist}`}
           role="button"
           tabIndex={0}
         >
+          {/* Número - posicionado absolutamente arriba a la derecha */}
+          <div className="absolute z-20 -top-6 right-0">
+            <span className="font-normal text-foreground text-[11px]">
+              {projectNumber}
+            </span>
+          </div>
+
           {/* Imagen optimizada para móvil */}
           <StaticVideoThumbnail
             src={mediaSource}
@@ -41,15 +54,8 @@ const MobileProjectItem = memo(({
             isMobile={true}
             className="w-full h-auto block"
           />
-          
-          {/* Número - solo en mobile */}
-          <div className="absolute z-20 -top-6 right-0">
-            <span className="font-normal text-foreground text-[11px]">
-              {projectNumber}
-            </span>
-          </div>
 
-          {/* Título - solo en mobile */}
+          {/* Título - debajo de la imagen */}
           <div className="absolute left-0 z-20 w-full top-full mt-4">
             <p className="font-normal uppercase tracking-wide text-foreground text-left leading-tight text-[14px]">
               {project.title}, {project.artist}
