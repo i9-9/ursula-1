@@ -2,13 +2,13 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  
+
   "functions": {
     "app/api/revalidate/route.ts": {
       "maxDuration": 10
     }
   },
-  
+
   "headers": [
     {
       "source": "/_next/static/(.*)",
@@ -20,7 +20,7 @@
       ]
     },
     {
-      "source": "/:path*\\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2)",
+      "source": "/:path*\\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|otf)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -33,83 +33,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=2592000, must-revalidate"
-        }
-      ]
-    },
-    {
-      "source": "/work/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate, max-age=0"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
-        },
-        {
-          "key": "Vary",
-          "value": "User-Agent, Accept-Encoding"
-        }
-      ]
-    },
-    {
-      "source": "/archive/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate, max-age=0"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
-        }
-      ]
-    },
-    {
-      "source": "/about",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate, max-age=0"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
-        }
-      ]
-    },
-    {
-      "source": "/",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate, max-age=0, s-maxage=0"
-        },
-        {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
-        },
-        {
-          "key": "Surrogate-Control",
-          "value": "no-store"
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
         }
       ]
     },
@@ -124,55 +48,12 @@
     },
     {
       "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "ursulabenavidez.com"
-        }
-      ],
       "headers": [
         {
-          "key": "X-Domain-Source",
-          "value": "naked-domain"
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=60, stale-while-revalidate=86400"
         }
       ]
-    },
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.ursulabenavidez.com"
-        }
-      ],
-      "headers": [
-        {
-          "key": "X-Domain-Source",
-          "value": "www-domain"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "ursula-b.vercel.app"
-        }
-      ],
-      "headers": [
-        {
-          "key": "X-Domain-Source",
-          "value": "vercel-domain"
-        }
-      ]
-    }
-  ],
-  
-  "rewrites": [
-    {
-      "source": "/api/revalidate",
-      "destination": "/api/revalidate"
     }
   ]
 }

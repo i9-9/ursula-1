@@ -17,7 +17,6 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
   const playerRef = useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
   const isDraggingRef = useRef(false);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isClient, setIsClient] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
   const [hasShownInitialTimeline, setHasShownInitialTimeline] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -28,14 +27,9 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
   const [isMouseOverVideo, setIsMouseOverVideo] = useState(false);
   const { theme } = useThemeContext();
 
-  // Ensure component only renders on client side to prevent hydration issues
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   // Initialize Vimeo Player with dynamic import
   useEffect(() => {
-    if (!isClient || !project.vimeoId) return;
+    if (!project.vimeoId) return;
 
     const initializePlayer = async () => {
       try {
@@ -106,7 +100,7 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
         setIsPlayerReady(false);
       }
     };
-  }, [isClient, project.vimeoId]);
+  }, [project.vimeoId]);
 
   const updateTimeFromPosition = useCallback((clientX: number, element: HTMLDivElement) => {
     if (!playerRef.current || !isPlayerReady || duration === 0) return;
@@ -134,15 +128,13 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
       }
     };
 
-    if (isClient) {
-      document.addEventListener('mouseup', handleGlobalMouseUp);
-      document.addEventListener('mousemove', handleGlobalMouseMove);
-      return () => {
-        document.removeEventListener('mouseup', handleGlobalMouseUp);
-        document.removeEventListener('mousemove', handleGlobalMouseMove);
-      };
-    }
-  }, [isClient, updateTimeFromPosition]);
+    document.addEventListener('mouseup', handleGlobalMouseUp);
+    document.addEventListener('mousemove', handleGlobalMouseMove);
+    return () => {
+      document.removeEventListener('mouseup', handleGlobalMouseUp);
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
+    };
+  }, [updateTimeFromPosition]);
 
   // Listener para eventos de YouTube
   useEffect(() => {
@@ -168,13 +160,13 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
       }
     };
 
-    if (isClient && project.videoUrl && extractYouTubeId(project.videoUrl)) {
+    if (project.videoUrl && extractYouTubeId(project.videoUrl)) {
       window.addEventListener('message', handleYouTubeMessage);
       return () => {
         window.removeEventListener('message', handleYouTubeMessage);
       };
     }
-  }, [isClient, project.videoUrl]);
+  }, [project.videoUrl]);
 
   // Mostrar timeline inicialmente cuando el player esté listo
   useEffect(() => {
@@ -201,19 +193,6 @@ export default function VideoPlayer({ project, displayTitle, displayIndex }: Vid
       };
     }
   }, [isPlayerReady, hasShownInitialTimeline, isMouseOverVideo]);
-
-  // Don't render anything until client-side hydration is complete
-  if (!isClient) {
-    return (
-      <div className="relative w-screen archive-page-fullscreen" style={{ height: 'calc(100vh - 36px)', width: '100vw', maxWidth: '100vw' }}>
-        <div className="w-full h-full flex items-center justify-center p-8">
-          <div className="relative w-[500px] aspect-video bg-black overflow-hidden shadow-2xl flex items-center justify-center">
-            <span className="text-sm text-white">Loading...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const togglePlayPause = () => {
     if (project.vimeoId && playerRef.current && isPlayerReady) {

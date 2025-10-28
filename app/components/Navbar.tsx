@@ -4,13 +4,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { useHydrationSafe } from "./HydrationSafe";
+import { useIsMounted } from "./HydrationSafe";
 import UrsulaLogo from "./UrsulaLogo";
 import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const pathname = usePathname();
-  const isClient = useHydrationSafe();
+  const isClient = useIsMounted();
 
   const NavContent = () => (
     <>

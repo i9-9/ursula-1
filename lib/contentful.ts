@@ -237,7 +237,7 @@ export const getProjects = unstable_cache(
   ['projects'],
   {
     tags: ['projects', 'contentful'],
-    revalidate: false, // Sin cache - siempre obtener datos frescos
+    revalidate: 60, // Cache for 60 seconds - balance between freshness and performance
   }
 );
 
@@ -342,7 +342,7 @@ export const getWorksGridProjects = unstable_cache(
   ['works-grid-projects'],
   {
     tags: ['projects', 'contentful', 'works-grid'],
-    revalidate: false, // Sin cache - siempre obtener datos frescos
+    revalidate: 60, // Cache for 60 seconds - balance between freshness and performance
   }
 );
 

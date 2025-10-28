@@ -9,25 +9,27 @@ interface HydrationSafeProps {
 }
 
 /**
- * Component that prevents hydration mismatches by ensuring
- * consistent rendering between server and client
+ * Component that prevents hydration mismatches by deferring
+ * client-only rendering until after hydration completes
  */
-export default function HydrationSafe({ 
-  children, 
-  fallback = null, 
-  delay = 0 
+export default function HydrationSafe({
+  children,
+  fallback = null,
+  delay = 0
 }: HydrationSafeProps) {
-  const [isClient, setIsClient] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsClient(true);
+      setIsMounted(true);
     }, delay);
-    
+
     return () => clearTimeout(timer);
   }, [delay]);
 
-  if (!isClient) {
+  // Render fallback during SSR and initial client render (prevents mismatch)
+  // After hydration, show children
+  if (!isMounted) {
     return <>{fallback}</>;
   }
 
@@ -35,14 +37,15 @@ export default function HydrationSafe({
 }
 
 /**
- * Hook for safely accessing client-side only features
+ * Hook for detecting when component has mounted (client-side)
+ * Returns false during SSR and initial render to prevent hydration mismatch
  */
-export function useHydrationSafe() {
-  const [isClient, setIsClient] = useState(false);
+export function useIsMounted() {
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
+    setIsMounted(true);
   }, []);
 
-  return isClient;
+  return isMounted;
 }

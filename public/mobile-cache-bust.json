@@ -1,8 +1,0 @@
-{
-  "version": "mobile-v20251014-1760475329004",
-  "timestamp": 1760475329004,
-  "buildDate": "2025-10-14T20:55:29.006Z",
-  "cacheBusting": true,
-  "target": "mobile-work-page",
-  "userAgent": "mobile-specific"
-}

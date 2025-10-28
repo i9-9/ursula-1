@@ -3,13 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 
 export const useIsMobile = (breakpoint: number = 1024) => {
+  // Start with false (desktop) to match SSR - prevents hydration mismatch
   const [isMobile, setIsMobile] = useState(false);
-  const [isClient, setIsClient] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    setIsClient(true);
-    
     const checkIsMobile = () => {
       const newIsMobile = window.innerWidth < breakpoint;
       // Solo actualizar si el valor realmente cambió
@@ -37,6 +35,6 @@ export const useIsMobile = (breakpoint: number = 1024) => {
     };
   }, [breakpoint]);
 
-  // Retornar true en mobile, false en desktop, undefined durante SSR
-  return isClient ? isMobile : undefined;
+  // Always return boolean (never undefined) to match SSR
+  return isMobile;
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { Project } from '../../../lib/contentful';
 import { useTheme } from '../../hooks/useTheme';
@@ -16,31 +16,14 @@ interface VideoPlayerProps {
 export default function VideoPlayer({ project, displayTitle, displayCreator, displayIndex }: VideoPlayerProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isClient, setIsClient] = useState(false);
-  const { theme } = useTheme();
-  
+  const { theme} = useTheme();
+
   // Sequential animation for project info sections
   const { getItemAnimationProps } = useSequentialAnimation({
     itemCount: 3, // Three info sections: title/client, year/type, company
     delayBetweenItems: 150,
     initialDelay: 300
   });
-
-  // Ensure component only renders on client side to prevent hydration issues
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Don't render anything until client-side hydration is complete
-  if (!isClient) {
-    return (
-      <div className="relative w-screen archive-page-fullscreen" style={{ height: '100vh', width: '100vw', maxWidth: '100vw' }}>
-        <div className="w-screen h-full flex items-center justify-center text-white bg-black">
-          <span className="text-sm">Loading...</span>
-        </div>
-      </div>
-    );
-  }
 
   // Wrap the entire component logic in a try-catch to prevent crashes
   try {
