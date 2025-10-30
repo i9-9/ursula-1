@@ -48,6 +48,14 @@ export async function POST(request: NextRequest) {
     const authHeader = request.headers.get('authorization');
     const webhookSecret = process.env.CONTENTFUL_WEBHOOK_SECRET;
 
+    // Log para debugging (ayuda a ver qué está enviando Contentful)
+    console.log('🔍 Debug Info:', {
+      receivedHeader: authHeader,
+      expectedHeader: `Bearer ${webhookSecret}`,
+      headersMatch: authHeader === `Bearer ${webhookSecret}`,
+      allHeaders: Object.fromEntries(request.headers.entries())
+    });
+
     if (!webhookSecret) {
       console.error('CONTENTFUL_WEBHOOK_SECRET not configured');
       return NextResponse.json(
@@ -59,7 +67,7 @@ export async function POST(request: NextRequest) {
     if (!authHeader || authHeader !== `Bearer ${webhookSecret}`) {
       console.error('Unauthorized webhook attempt');
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Unauthorized', debug: { receivedHeader: authHeader ? 'present but incorrect' : 'missing' } },
         { status: 401 }
       );
     }
