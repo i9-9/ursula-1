@@ -8,9 +8,15 @@ interface MainContentWrapperProps {
 }
 
 export default function MainContentWrapper({ children }: MainContentWrapperProps) {
-  const { isSplashVisible } = useSplash();
+  const { isSplashVisible, isInitialized } = useSplash();
 
-  // Hide main content when splash is visible to prevent flash
+  // Wait for initialization to prevent flash of content
+  if (!isInitialized) {
+    return null;
+  }
+
+  // Hide main content only when splash is visible and initialized
+  // This ensures content shows immediately on non-home pages
   if (isSplashVisible) {
     return null;
   }

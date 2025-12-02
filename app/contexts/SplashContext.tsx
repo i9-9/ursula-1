@@ -6,6 +6,7 @@ interface SplashContextType {
   isSplashVisible: boolean;
   hideSplash: () => void;
   resetSplash: () => void;
+  isInitialized: boolean;
 }
 
 const SplashContext = createContext<SplashContextType | undefined>(undefined);
@@ -23,8 +24,9 @@ interface SplashProviderProps {
 }
 
 export const SplashProvider: React.FC<SplashProviderProps> = ({ children }) => {
-  // Start with splash visible to prevent flash, then hide if not needed
-  const [isSplashVisible, setIsSplashVisible] = useState(true);
+  // Start with splash hidden by default, will be shown only on home page if needed
+  const [isSplashVisible, setIsSplashVisible] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const hideSplash = useCallback(() => {
     setIsSplashVisible(false);
@@ -42,15 +44,20 @@ export const SplashProvider: React.FC<SplashProviderProps> = ({ children }) => {
     }
   }, []);
 
-  // Check if splash should be shown after hydration
+  // Initialize splash state based on current page and session
   useEffect(() => {
     const isHomePage = window.location.pathname === '/';
     const splashShown = sessionStorage.getItem('splashShown');
     
-    // Hide splash immediately if not on home page or already shown
-    if (!isHomePage || splashShown === 'true') {
+    // Only show splash on home page and if not already shown
+    if (isHomePage && splashShown !== 'true') {
+      setIsSplashVisible(true);
+    } else {
       setIsSplashVisible(false);
     }
+    
+    // Mark as initialized to prevent flashing
+    setIsInitialized(true);
   }, []);
 
   // Auto-hide splash after 2.5 seconds if it's visible
@@ -66,7 +73,7 @@ export const SplashProvider: React.FC<SplashProviderProps> = ({ children }) => {
   }, [isSplashVisible]);
 
   return (
-    <SplashContext.Provider value={{ isSplashVisible, hideSplash, resetSplash }}>
+    <SplashContext.Provider value={{ isSplashVisible, hideSplash, resetSplash, isInitialized }}>
       {children}
     </SplashContext.Provider>
   );

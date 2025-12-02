@@ -7,11 +7,16 @@ import Navbar from './Navbar';
 import { useSplash } from '../contexts/SplashContext';
 
 export default function NavbarWithLoader() {
-  const { isSplashVisible } = useSplash();
+  const { isSplashVisible, isInitialized } = useSplash();
   const [shouldShowNavbar, setShouldShowNavbar] = useState(false);
 
-  // Mostrar navbar después de un delay más corto, incluso si splash está visible
+  // Mostrar navbar después de la inicialización
   useEffect(() => {
+    // Wait for splash context to initialize
+    if (!isInitialized) {
+      return;
+    }
+
     if (!isSplashVisible) {
       // Si splash no está visible, mostrar navbar inmediatamente
       setShouldShowNavbar(true);
@@ -23,7 +28,7 @@ export default function NavbarWithLoader() {
 
       return () => clearTimeout(timer);
     }
-  }, [isSplashVisible]);
+  }, [isSplashVisible, isInitialized]);
   
   return (
     <AnimatePresence>

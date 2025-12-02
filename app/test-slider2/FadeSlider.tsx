@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import { HeroSlide } from '@/lib/contentful'
+import { useIsMobile } from '@/app/hooks/useIsMobile'
 
 // ═══════════════════════════════════════════════════════════════
 // 🎯 CONFIGURACIÓN: Slideshow - Ritmo sincronizado con /work y /archive
@@ -10,6 +11,8 @@ import { HeroSlide } from '@/lib/contentful'
 
 const SLIDE_HEIGHT_VH = 50 // Altura más pequeña
 const AUTOPLAY_DELAY = 700 // Slider más rápido - 0.7 segundos
+const MOBILE_IMAGE_QUALITY = 75 // Calidad reducida para mobile
+const DESKTOP_IMAGE_QUALITY = 95 // Calidad alta para desktop
 
 // ═══════════════════════════════════════════════════════════════
 // 📦 FadeSlider - Imagen central con transición de opacidad
@@ -24,6 +27,7 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
   const [hasStarted, setHasStarted] = useState(false)
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
   const imageRefs = useRef<Map<string, HTMLImageElement>>(new Map())
+  const isMobile = useIsMobile(768) // Detectar mobile con breakpoint 768px
 
   // Calcular altura responsive basada en viewport
   const slideHeightPx = typeof window !== 'undefined' 
@@ -32,10 +36,16 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
       : (window.innerHeight * SLIDE_HEIGHT_VH) / 100 // 70vh en desktop
     : 700
 
-  // Pre-cargar imágenes para evitar flicker
+  // Pre-cargar imágenes de forma optimizada según dispositivo
   useEffect(() => {
     const preloadImages = async () => {
-      const imagePromises = slides
+      // En mobile: solo precargar la primera imagen para mejorar performance
+      // En desktop: precargar todas las imágenes para evitar flicker
+      const slidesToPreload = isMobile 
+        ? slides.slice(0, 1) // Solo primera en mobile
+        : slides // Todas en desktop
+
+      const imagePromises = slidesToPreload
         .filter(slide => slide.src)
         .map(slide => {
           return new Promise<string>((resolve, reject) => {
@@ -58,7 +68,24 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
     }
 
     preloadImages()
-  }, [slides])
+  }, [slides, isMobile])
+
+  // En mobile: precargar la siguiente imagen cuando cambia el índice actual
+  useEffect(() => {
+    if (!isMobile || !hasStarted) return
+
+    const nextIndex = (currentIndex + 1) % slides.length
+    const nextSlide = slides[nextIndex]
+    
+    if (nextSlide?.src && !loadedImages.has(nextSlide.src)) {
+      const img = new window.Image()
+      img.onload = () => {
+        imageRefs.current.set(nextSlide.src!, img)
+        setLoadedImages(prev => new Set(prev).add(nextSlide.src!))
+      }
+      img.src = nextSlide.src
+    }
+  }, [currentIndex, slides, isMobile, hasStarted, loadedImages])
 
   // Initial delay - mismo patrón que WorksGrid (100ms)
   useEffect(() => {
@@ -111,10 +138,14 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
           margin: '0 auto',
         }}
       >
-        {/* Renderizar todas las slides con transición de opacidad */}
+        {/* Renderizar slides con transición de opacidad */}
         {slides.map((slide, index) => {
           const isActive = index === currentIndex
-          const isVisible = isActive || loadedImages.has(slide.src || '')
+          // En mobile: solo renderizar la activa y la siguiente (precargada)
+          // En desktop: renderizar todas las precargadas
+          const isVisible = isMobile 
+            ? isActive || (index === (currentIndex + 1) % slides.length && loadedImages.has(slide.src || ''))
+            : isActive || loadedImages.has(slide.src || '')
           
           if (!isVisible) return null
 
@@ -125,6 +156,7 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
               style={{
                 opacity: isActive ? 1 : 0,
                 zIndex: isActive ? 2 : 1,
+                transition: 'opacity 0.3s ease-in-out',
               }}
             >
               {slide.videoUrl ? (
@@ -134,6 +166,7 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
                   loop
                   muted
                   playsInline
+                  preload={isMobile ? (isActive ? 'auto' : 'none') : 'auto'}
                   style={{
                     height: '100%',
                     width: 'auto',
@@ -158,9 +191,13 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
                     style={{
                       objectFit: 'contain',
                     }}
-                    sizes="(max-width: 768px) 60vw, (max-width: 1200px) 50vw, 40vw"
-                    priority={isActive}
-                    quality={95}
+                    sizes={isMobile 
+                      ? "(max-width: 768px) 90vw, 90vw" 
+                      : "(max-width: 768px) 60vw, (max-width: 1200px) 50vw, 40vw"
+                    }
+                    priority={isActive && index === 0}
+                    quality={isMobile ? MOBILE_IMAGE_QUALITY : DESKTOP_IMAGE_QUALITY}
+                    loading={isActive ? 'eager' : 'lazy'}
                   />
                 </div>
               ) : (
@@ -182,9 +219,9 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
  * CARACTERÍSTICAS:
  * - Imagen central que NUNCA se mueve
  * - Transición suave de opacidad (300ms)
- * - Pre-carga de imágenes para evitar flicker
+ * - Pre-carga optimizada según dispositivo
  * - Ritmo variable: 5 slides normales (2s) + 9 slides acelerados (50ms)
- * - Altura normalizada (50vh)
+ * - Altura normalizada (50vh desktop, 60vh mobile)
  * - Sin UI decorativa
  * - Ciclos de aceleración automáticos
  * 
@@ -193,11 +230,12 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
  * - Acelerado: 50ms por slide (9 slides = 450ms)
  * - Ciclo completo: ~8 segundos
  * 
- * MEJORAS ANTI-FLICKER:
- * - Pre-carga de todas las imágenes al inicio
- * - Renderizado de slides con transición de opacidad
- * - Control de estado de transición para evitar cambios durante fade
- * - Prioridad de carga para la imagen activa
- * - Calidad de imagen optimizada (95%)
+ * OPTIMIZACIONES DE PERFORMANCE:
+ * - Desktop: Pre-carga de todas las imágenes al inicio (95% calidad)
+ * - Mobile: Solo precarga la primera imagen, luego carga la siguiente on-demand (75% calidad)
+ * - Lazy loading agresivo en mobile para imágenes no visibles
+ * - Preload de videos solo cuando están activos en mobile
+ * - Renderizado optimizado: solo renderiza la activa y la siguiente en mobile
+ * - Sizes attributes optimizados para mobile (90vw vs 60vw desktop)
  */
 
