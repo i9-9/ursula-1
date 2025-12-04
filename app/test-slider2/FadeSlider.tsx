@@ -156,7 +156,6 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
               style={{
                 opacity: isActive ? 1 : 0,
                 zIndex: isActive ? 2 : 1,
-                transition: 'opacity 0.3s ease-in-out',
               }}
             >
               {slide.videoUrl ? (
@@ -218,7 +217,7 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
  * 
  * CARACTERÍSTICAS:
  * - Imagen central que NUNCA se mueve
- * - Transición suave de opacidad (300ms)
+ * - Transición inmediata (sin animación)
  * - Pre-carga optimizada según dispositivo
  * - Ritmo variable: 5 slides normales (2s) + 9 slides acelerados (50ms)
  * - Altura normalizada (50vh desktop, 60vh mobile)

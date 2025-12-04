@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useHydration, useSafeBrowserEffect } from '../hooks/useHydration';
 import { Project } from '@/lib/contentful';
 import { generateSemanticSlug } from '@/lib/slug-utils';
@@ -12,11 +12,20 @@ interface ArchiveProps {
 
 const Archive = ({ projects }: ArchiveProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [selectedFilter, setSelectedFilter] = useState('');
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
   const [animationKey, setAnimationKey] = useState(0); // Force re-render on filter change
   const isHydrated = useHydration();
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Leer filtro inicial desde URL params
+  useEffect(() => {
+    const filterFromUrl = searchParams.get('filter');
+    if (filterFromUrl && ['music-videos', 'commercial', 'set-design', 'narrative'].includes(filterFromUrl)) {
+      setSelectedFilter(filterFromUrl);
+    }
+  }, [searchParams]);
 
   const filteredItems = useMemo(() => {
     if (!projects || projects.length === 0) return [];

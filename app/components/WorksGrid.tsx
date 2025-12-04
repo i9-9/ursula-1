@@ -132,13 +132,10 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
           return (
             <div
               key={project.id}
-              className="transition-opacity transition-transform duration-700 ease-out"
+              className="transition-opacity duration-500 ease-out"
               style={{
                 opacity: isVisible ? 1 : 0,
-                transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
-                WebkitTransform: isVisible ? 'translateY(0)' : 'translateY(12px)',
-                transitionDelay: `${index * 80}ms`,
-                willChange: 'opacity, transform'
+                transitionDelay: `${index * 40}ms`,
               }}
             >
               <MobileProjectItem
@@ -191,13 +188,10 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   return (
                     <div
                       key={`number-${project.id}`}
-                      className="flex justify-start transition-opacity transition-transform duration-700 ease-out"
+                      className="flex justify-start transition-opacity duration-500 ease-out"
                       style={{
                         opacity: isVisible ? 1 : 0,
-                        transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
-                        WebkitTransform: isVisible ? 'translateY(0)' : 'translateY(12px)',
-                        transitionDelay: `${globalIndex * 80}ms`,
-                        willChange: 'opacity, transform'
+                        transitionDelay: `${globalIndex * 40}ms`,
                       }}
                     >
                       {/* Ambos tipos usan el mismo ancho para mantener alineación vertical consistente */}
@@ -221,13 +215,10 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   return (
                     <div
                       key={project.id}
-                      className="transition-opacity transition-transform duration-700 ease-out"
+                      className="transition-opacity duration-500 ease-out"
                       style={{
                         opacity: isVisible ? 1 : 0,
-                        transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
-                        WebkitTransform: isVisible ? 'translateY(0)' : 'translateY(12px)',
-                        transitionDelay: `${globalIndex * 80}ms`,
-                        willChange: 'opacity, transform'
+                        transitionDelay: `${globalIndex * 40}ms`,
                       }}
                     >
                       <ProjectItem
@@ -256,13 +247,10 @@ const WorksGrid = ({ works = [] }: WorksGridProps) => {
                   return (
                     <div
                       key={`title-${project.id}`}
-                      className="flex justify-start transition-opacity transition-transform duration-700 ease-out"
+                      className="flex justify-start transition-opacity duration-500 ease-out"
                       style={{
                         opacity: isVisible ? 1 : 0,
-                        transform: isVisible ? 'translateY(0)' : 'translateY(12px)',
-                        WebkitTransform: isVisible ? 'translateY(0)' : 'translateY(12px)',
-                        transitionDelay: `${globalIndex * 80}ms`,
-                        willChange: 'opacity, transform'
+                        transitionDelay: `${globalIndex * 40}ms`,
                       }}
                     >
                       <div className="w-5/6">

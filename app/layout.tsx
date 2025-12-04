@@ -14,8 +14,8 @@ import MainContentWrapper from './components/MainContentWrapper';
 
 
 export const metadata: Metadata = {
-  title: 'URSULA BENAVIDEZ - WEB',
-  description: 'PRODUCTION DESIGNER, ART DIRECTOR, SET DESIGNER',
+  title: 'URSULA BENAVIDEZ',
+  description: 'WEB / PRODUCTION DESIGNER, ART DIRECTOR, SET DESIGNER',
   keywords: ['portfolio', 'art director', 'set designer', 'creative', 'design'],
   authors: [{ name: 'Ursula Benavidez' }],
   creator: 'Ursula Benavidez',
@@ -37,8 +37,8 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'URSULA BENAVIDEZ - WEB',
-    description: 'PRODUCTION DESIGNER, ART DIRECTOR, SET DESIGNER',
+    title: 'Ursula Benavidez',
+    description: 'WEB / PRODUCTION DESIGNER, ART DIRECTOR, SET DESIGNER',
     url: 'https://ursulabenavidez.com',
     siteName: 'Ursula Benavidez Web',
     images: [
@@ -54,8 +54,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'URSULA BENAVIDEZ - WEB',
-    description: 'PRODUCTION DESIGNER, ART DIRECTOR, SET DESIGNER',
+    title: 'Ursula Benavidez',
+    description: 'WEB / PRODUCTION DESIGNER, ART DIRECTOR, SET DESIGNER',
     images: ['/seo/twitter-image.jpg'],
   },
   robots: {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Project } from '../../lib/contentful';
 
 interface AnimatedProjectInfoProps {
@@ -9,6 +10,24 @@ interface AnimatedProjectInfoProps {
   topPosition?: 'top-4' | 'top-20';
   showProductionCompany?: boolean;
 }
+
+// Convertir categoría a filtro de URL
+const categoryToFilter = (category: string | undefined): string => {
+  if (!category) return '';
+  const normalized = category.toUpperCase().trim();
+  switch (normalized) {
+    case 'MUSIC VIDEO':
+      return 'music-videos';
+    case 'COMMERCIAL':
+      return 'commercial';
+    case 'SET DESIGN':
+      return 'set-design';
+    case 'NARRATIVE':
+      return 'narrative';
+    default:
+      return '';
+  }
+};
 
 export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosition = 'top-4', showProductionCompany = true }: AnimatedProjectInfoProps) {
   const [line1Visible, setLine1Visible] = useState(false);
@@ -73,7 +92,14 @@ export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosi
             <span className="text-gray-400">YEAR</span>
             <span className="text-foreground">{project.year || '2024'}</span>
             <span className="text-gray-400">TYPE</span>
-            <span className="text-foreground">{project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}</span>
+            <Link 
+              href={`/archive?filter=${categoryToFilter(project.category)}`}
+              className="text-foreground hover:opacity-60 transition-opacity cursor-pointer"
+              tabIndex={0}
+              aria-label={`Filter by ${project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}`}
+            >
+              {project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}
+            </Link>
           </div>
           
           {/* Línea 4: Compañía (solo si showProductionCompany es true) */}
@@ -137,7 +163,14 @@ export default function AnimatedProjectInfo({ project, displayIndex = 0, topPosi
             }`}
           >
             <span className="text-xs text-gray-400">TYPE</span>
-            <span className="text-xs text-foreground ml-2">{project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}</span>
+            <Link 
+              href={`/archive?filter=${categoryToFilter(project.category)}`}
+              className="text-xs text-foreground ml-2 hover:opacity-60 transition-opacity cursor-pointer"
+              tabIndex={0}
+              aria-label={`Filter by ${project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}`}
+            >
+              {project.category?.toUpperCase().replace(/-/g, ' ') || 'MUSIC VIDEO'}
+            </Link>
           </div>
           
           {/* Compañía (solo si showProductionCompany es true) */}
