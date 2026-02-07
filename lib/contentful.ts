@@ -426,10 +426,12 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
 
   try {
     // First try to get heroSlide content type
+    // include: 1 resuelve referencias a Assets (imagen) para que venga fields.file.url
     const entries = await client.getEntries({
       content_type: 'heroSlide',
       order: ['fields.order'],
       limit: 20, // Aumentado para incluir todos los slides actuales y futuros
+      include: 1,
     });
     
     if (entries.items.length > 0) {
