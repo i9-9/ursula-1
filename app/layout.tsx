@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import "./globals.css";
 import { suisseBpIntl } from './fonts';
 import PreloadScript from './components/PreloadScript';
@@ -13,6 +13,14 @@ import SplashScreen from './components/SplashScreen';
 import MainContentWrapper from './components/MainContentWrapper';
 
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: 'cover',
+};
+
 export const metadata: Metadata = {
   title: 'Ursula Benavidez',
   description: 'Web / Production Designer, Art Director, Set Designer',
@@ -20,13 +28,6 @@ export const metadata: Metadata = {
   authors: [{ name: 'Ursula Benavidez' }],
   creator: 'Ursula Benavidez',
   publisher: 'Ursula Benavidez',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-    viewportFit: 'cover', // iOS safe area support
-  },
   formatDetection: {
     email: false,
     address: false,
