@@ -121,6 +121,31 @@ export function optimizeGalleryImage(url: string): string {
   return optimizeContentfulImage(url, 1920, 1080, 'webp', 95); // Alta calidad para galerías
 }
 
+// Normalizar campos de video: si en Contentful ponen "No", "N/A", etc., no usarlos como URL/ID
+function isPlaceholder(value: string | undefined): boolean {
+  if (value == null || typeof value !== 'string') return true;
+  const t = value.trim().toLowerCase();
+  return t === '' || /^(no|n\/a|na|-|—|none)$/.test(t);
+}
+function normalizeVideoUrl(value: string | undefined): string {
+  if (isPlaceholder(value)) return '';
+  const s = value!.trim();
+  if (s.startsWith('http') || s.includes('vimeo') || s.includes('youtube') || /\.(mp4|webm|ogg)(\?|$)/i.test(s)) return s;
+  return '';
+}
+function normalizeVimeoId(value: string | undefined): string {
+  if (isPlaceholder(value)) return '';
+  const s = value!.trim();
+  if (/^\d+$/.test(s)) return s;
+  return '';
+}
+function normalizeYoutubeUrl(value: string | undefined): string {
+  if (isPlaceholder(value)) return '';
+  const s = value!.trim();
+  if (s.includes('youtube') || s.includes('youtu.be') || /^[a-zA-Z0-9_-]{10,}$/.test(s)) return s;
+  return '';
+}
+
 // Función helper para generar slug desde el título si no existe (DEPRECATED - usar generateTitleSlug)
 function generateSlug(title: string): string {
   return generateTitleSlug(title);
@@ -140,15 +165,13 @@ async function _getProjects(): Promise<Project[]> {
       content_type: 'projects',
       order: ['fields.archiveOrder'],
       limit: 1000,
+      include: 1,
     });
-    
 
-    
-    // If still no projects, return empty array
     if (entries.items.length === 0) {
       return [];
     }
-    
+
     return entries.items.map((item: { 
       fields: { 
         title?: string;
@@ -197,9 +220,9 @@ async function _getProjects(): Promise<Project[]> {
         ? `https:${fields.videoThumbnail.fields.file.url}` 
         : undefined;
       
-      // Usar únicamente campos de video de Contentful
-      const vimeoId = fields.vimeoId || '';
-      const youtubeUrl = fields.youtubeUrl || '';
+      const vimeoId = normalizeVimeoId(fields.vimeoId);
+      const youtubeUrl = normalizeYoutubeUrl(fields.youtubeUrl);
+      const videoUrl = normalizeVideoUrl(fields.videoUrl);
 
       return {
         id: item.sys.id,
@@ -209,10 +232,10 @@ async function _getProjects(): Promise<Project[]> {
         thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, undefined, undefined, 'webp', 95) : undefined,
         images: images.length > 0 ? images : undefined,
         hoverImages: hoverImages.length > 0 ? hoverImages : undefined,
-        videoUrl: fields.videoUrl || '',
+        videoUrl,
         videoThumbnail: videoThumbnailUrl,
-        vimeoId: vimeoId,
-        youtubeUrl: youtubeUrl,
+        vimeoId,
+        youtubeUrl,
         archiveOrder: fields.archiveOrder || fields.order || 0,
         worksGridOrder: fields.worksGridOrder || undefined,
         year: fields.year || '2024',
@@ -255,8 +278,9 @@ async function _getWorksGridProjects(): Promise<Project[]> {
       'fields.worksGridOrder[exists]': true,
       order: ['fields.worksGridOrder'],
       limit: 100,
+      include: 1,
     });
-    
+
     return entries.items.map((item: { 
       fields: { 
         title?: string;
@@ -304,7 +328,11 @@ async function _getWorksGridProjects(): Promise<Project[]> {
       const videoThumbnailUrl = fields.videoThumbnail?.fields?.file?.url 
         ? `https:${fields.videoThumbnail.fields.file.url}` 
         : undefined;
-      
+
+      const vimeoId = normalizeVimeoId(fields.vimeoId);
+      const youtubeUrl = normalizeYoutubeUrl(fields.youtubeUrl);
+      const videoUrl = normalizeVideoUrl(fields.videoUrl);
+
       return {
         id: item.sys.id,
         title: fields.title || '',
@@ -313,10 +341,10 @@ async function _getWorksGridProjects(): Promise<Project[]> {
         thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, undefined, undefined, 'webp', 95) : undefined,
         images: images.length > 0 ? images : undefined,
         hoverImages: hoverImages.length > 0 ? hoverImages : undefined,
-        videoUrl: fields.videoUrl || '',
+        videoUrl,
         videoThumbnail: videoThumbnailUrl,
-        vimeoId: fields.vimeoId || '',
-        youtubeUrl: fields.youtubeUrl || '',
+        vimeoId,
+        youtubeUrl,
         archiveOrder: fields.archiveOrder || 0,
         worksGridOrder: fields.worksGridOrder || 0,
         year: fields.year || '2024',
@@ -360,8 +388,9 @@ export async function getArchiveProjects(): Promise<Project[]> {
       'fields.worksGridOrder[exists]': false,
       order: ['fields.archiveOrder'],
       limit: 1000,
+      include: 1,
     });
-    
+
     return entries.items.map((item: { 
       fields: { 
         title?: string;
@@ -388,18 +417,22 @@ export async function getArchiveProjects(): Promise<Project[]> {
       const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
         ? `https:${fields.thumbnail.fields.file.url}` 
         : undefined;
-      
+
+      const vimeoId = normalizeVimeoId(fields.vimeoId);
+      const youtubeUrl = normalizeYoutubeUrl(fields.youtubeUrl);
+      const videoUrl = normalizeVideoUrl(fields.videoUrl);
+
       return {
         id: item.sys.id,
         title: fields.title || '',
         artist: fields.artist || '',
         company: fields.company || '',
         thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, undefined, undefined, 'webp', 95) : undefined,
-        videoUrl: fields.videoUrl || '',
-        vimeoId: fields.vimeoId || '',
-        youtubeUrl: fields.youtubeUrl || '',
+        videoUrl,
+        vimeoId,
+        youtubeUrl,
         archiveOrder: fields.archiveOrder || 0,
-        worksGridOrder: undefined, // No tiene worksGridOrder
+        worksGridOrder: undefined,
         year: fields.year || '2024',
         description: fields.description || '',
         category: fields.category || 'MUSIC VIDEO',
@@ -577,21 +610,21 @@ export async function getProjectById(id: string): Promise<Project | null> {
     const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
       ? `https:${fields.thumbnail.fields.file.url}` 
       : undefined;
-    
+
     return {
       id: entry.sys.id,
       title: fields.title || '',
       artist: fields.artist || '',
       company: fields.company || '',
       thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 1920, 1080, 'webp', 95) : undefined,
-      videoUrl: fields.videoUrl || '',
-      vimeoId: fields.vimeoId || '',
-      youtubeUrl: fields.youtubeUrl || '',
+      videoUrl: normalizeVideoUrl(fields.videoUrl),
+      vimeoId: normalizeVimeoId(fields.vimeoId),
+      youtubeUrl: normalizeYoutubeUrl(fields.youtubeUrl),
       archiveOrder: fields.archiveOrder || fields.order || 0,
       worksGridOrder: fields.worksGridOrder || undefined,
       year: fields.year || '2024',
       description: fields.description || '',
-        category: fields.category || 'MUSIC VIDEO',
+      category: fields.category || 'MUSIC VIDEO',
       slug: fields.slug || generateSlug(fields.title || ''),
       projectType: fields.projectType || 'music-video',
       productionCompany: fields.productionCompany || '',
@@ -617,14 +650,14 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       content_type: 'projects',
       'fields.slug': slug,
       limit: 1,
+      include: 1,
     });
-    
+
     if (entries.items.length === 0) {
       return null;
     }
-    
+
     const entry = entries.items[0];
-    
     const fields = entry.fields as {
       title?: string;
       artist?: string;
@@ -648,16 +681,16 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     const thumbnailUrl = fields.thumbnail?.fields?.file?.url 
       ? `https:${fields.thumbnail.fields.file.url}` 
       : undefined;
-    
+
     return {
       id: entry.sys.id,
       title: fields.title || '',
       artist: fields.artist || '',
       company: fields.company || '',
       thumbnail: thumbnailUrl ? optimizeContentfulImage(thumbnailUrl, 1920, 1080, 'webp', 95) : undefined,
-      videoUrl: fields.videoUrl || '',
-      vimeoId: fields.vimeoId || '',
-      youtubeUrl: fields.youtubeUrl || '',
+      videoUrl: normalizeVideoUrl(fields.videoUrl),
+      vimeoId: normalizeVimeoId(fields.vimeoId),
+      youtubeUrl: normalizeYoutubeUrl(fields.youtubeUrl),
       archiveOrder: fields.archiveOrder || 0,
       worksGridOrder: fields.worksGridOrder || undefined,
       year: fields.year || '2024',
