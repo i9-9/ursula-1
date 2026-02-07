@@ -459,16 +459,11 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
         const imageUrl = fields.image?.fields?.file?.url 
           ? `https:${fields.image.fields.file.url}` 
           : '';
-        
-        // Debug: Log image URL
-        
-        // Generar slug del proyecto referenciado si existe
         let projectSlug: string | undefined;
         let projectId: string | undefined;
         
         if (fields.project?.fields) {
           projectId = fields.project.sys?.id;
-          // Siempre generar slug usando título + artista para mantener consistencia con Archive/WorksGrid
           if (fields.project.fields.title && fields.project.fields.artist) {
             projectSlug = generateSemanticSlug(fields.project.fields.title, fields.project.fields.artist);
           }
@@ -480,8 +475,8 @@ export async function getHeroSlides(): Promise<HeroSlide[]> {
           client: fields.client || '',
           src: imageUrl ? optimizeContentfulImage(imageUrl, 1920, 1080, 'webp', 85) : '',
           alt: fields.image?.fields?.description || fields.title || '',
-          type: fields.videoUrl ? 'video' as const : 'image' as const,
-          videoUrl: fields.videoUrl,
+          type: 'image' as const,
+          videoUrl: undefined,
           order: fields.order,
           projectSlug,
           projectId,

@@ -158,22 +158,7 @@ export default function FadeSlider({ slides }: FadeSliderProps) {
                 zIndex: isActive ? 2 : 1,
               }}
             >
-              {slide.videoUrl ? (
-                <video
-                  src={slide.videoUrl}
-                  autoPlay={isActive}
-                  loop
-                  muted
-                  playsInline
-                  preload={isMobile ? (isActive ? 'auto' : 'none') : 'auto'}
-                  style={{
-                    height: '100%',
-                    width: 'auto',
-                    maxWidth: '100%',
-                    objectFit: 'contain',
-                  }}
-                />
-              ) : slide.src ? (
+              {slide.src ? (
                 <div 
                   className="relative flex items-center justify-center"
                   style={{
